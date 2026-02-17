@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EduCrm.Modules.Account.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+72f4fdf9b81c0682452a85ed9ba7fc5e6e308bf4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+08b6afa3ae56ed3bdc66609be9e16edf132723d0")]
 [assembly: System.Reflection.AssemblyProductAttribute("EduCrm.Modules.Account.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EduCrm.Modules.Account.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
