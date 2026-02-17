@@ -23,8 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "People.Infrastructure", "Pe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "People.Contracts", "People.Contracts", "{014222B1-8F77-4871-AECA-AD4D86D529FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduCrm.ArchitectureTests", "..\tests\ArchitectureTests\EduCrm.ArchitectureTests.csproj", "{6CD74221-BE39-40F1-A197-E111CE111028}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Account", "Account", "{F2AF0F28-868F-4DF4-9E12-3D0922EEFBF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Account.Domain", "Account.Domain", "{BA4CE2B8-80BB-44EA-9027-D9E9FADACB65}"
@@ -85,10 +83,6 @@ Global
 		{28150AE1-F8DD-49BC-9D82-E50C025E9DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28150AE1-F8DD-49BC-9D82-E50C025E9DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28150AE1-F8DD-49BC-9D82-E50C025E9DFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CD74221-BE39-40F1-A197-E111CE111028}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CD74221-BE39-40F1-A197-E111CE111028}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CD74221-BE39-40F1-A197-E111CE111028}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CD74221-BE39-40F1-A197-E111CE111028}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9AC03344-81E8-4235-A08F-9B05561B5C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9AC03344-81E8-4235-A08F-9B05561B5C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AC03344-81E8-4235-A08F-9B05561B5C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = EduCrm.Modules.People.Contracts
-build_property.ProjectDir = /Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/
+build_property.ProjectDir = /Users/ticimax/Documents/akn/be/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

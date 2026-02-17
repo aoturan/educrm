@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
+      "projectUniqueName": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
       "projectName": "EduCrm.SharedKernel",
-      "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
+      "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
       "packagesPath": "/Users/ticimax/.nuget/packages/",
-      "outputPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/",
+      "outputPath": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/ticimax/.nuget/NuGet/NuGet.Config"

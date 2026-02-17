@@ -9,3 +9,14 @@
 /Users/ticimax/Documents/source/personal/EduCrm/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.pdb
 /Users/ticimax/Documents/source/personal/EduCrm/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/ref/EduCrm.Modules.Account.Domain.dll
 /Users/ticimax/Documents/source/personal/EduCrm/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.csproj.CoreCompileInputs.cache
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/bin/Debug/net8.0/EduCrm.Modules.Account.Domain.deps.json
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/bin/Debug/net8.0/EduCrm.Modules.Account.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/bin/Debug/net8.0/EduCrm.Modules.Account.Domain.pdb
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.AssemblyInfoInputs.cache
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.AssemblyInfo.cs
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.csproj.CoreCompileInputs.cache
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/refint/EduCrm.Modules.Account.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.pdb
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/ref/EduCrm.Modules.Account.Domain.dll

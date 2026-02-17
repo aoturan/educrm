@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj": {}
+    "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj": {}
   },
   "projects": {
-    "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj": {
+    "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj",
+        "projectUniqueName": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj",
         "projectName": "EduCrm.Modules.People.Application",
-        "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj",
+        "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj",
         "packagesPath": "/Users/ticimax/.nuget/packages/",
-        "outputPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Application/EduCrm.Modules.People.Application/obj/",
+        "outputPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/ticimax/.nuget/NuGet/NuGet.Config"
@@ -26,11 +26,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj": {
-                "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj"
+              "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj": {
+                "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj"
               },
-              "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
-                "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj"
+              "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
+                "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj"
               }
             }
           }
@@ -75,14 +75,14 @@
         }
       }
     },
-    "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj": {
+    "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj",
+        "projectUniqueName": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj",
         "projectName": "EduCrm.Modules.People.Domain",
-        "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj",
+        "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj",
         "packagesPath": "/Users/ticimax/.nuget/packages/",
-        "outputPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/obj/",
+        "outputPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/ticimax/.nuget/NuGet/NuGet.Config"
@@ -97,8 +97,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
-                "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj"
+              "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
+                "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj"
               }
             }
           }
@@ -137,14 +137,14 @@
         }
       }
     },
-    "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
+    "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
+        "projectUniqueName": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
         "projectName": "EduCrm.SharedKernel",
-        "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
+        "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
         "packagesPath": "/Users/ticimax/.nuget/packages/",
-        "outputPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/",
+        "outputPath": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/ticimax/.nuget/NuGet/NuGet.Config"

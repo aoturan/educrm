@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj": {}
+    "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj": {}
   },
   "projects": {
-    "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj": {
+    "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj",
+        "projectUniqueName": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj",
         "projectName": "EduCrm.Modules.People.Contracts",
-        "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj",
+        "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj",
         "packagesPath": "/Users/ticimax/.nuget/packages/",
-        "outputPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/obj/",
+        "outputPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/ticimax/.nuget/NuGet/NuGet.Config"

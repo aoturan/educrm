@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tu2HsJuRTRw=",
+  "dgSpecHash": "97/1OrcP4sE=",
   "success": true,
-  "projectFilePath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/WebApi/EduCrm.WebApi.csproj",
+  "projectFilePath": "/Users/ticimax/Documents/akn/be/src/Shared/WebApi/EduCrm.WebApi.csproj",
   "expectedPackageFiles": [
     "/Users/ticimax/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
     "/Users/ticimax/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",

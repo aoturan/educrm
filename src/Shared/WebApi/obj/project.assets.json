@@ -1684,11 +1684,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/WebApi/EduCrm.WebApi.csproj",
+      "projectUniqueName": "/Users/ticimax/Documents/akn/be/src/Shared/WebApi/EduCrm.WebApi.csproj",
       "projectName": "EduCrm.WebApi",
-      "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/WebApi/EduCrm.WebApi.csproj",
+      "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/WebApi/EduCrm.WebApi.csproj",
       "packagesPath": "/Users/ticimax/.nuget/packages/",
-      "outputPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/WebApi/obj/",
+      "outputPath": "/Users/ticimax/Documents/akn/be/src/Shared/WebApi/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/ticimax/.nuget/NuGet/NuGet.Config"
@@ -1703,26 +1703,26 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/ticimax/Documents/akn/EduCrm/src/Modules/Account/Account.Application/EduCrm.Modules.Account.Application/EduCrm.Modules.Account.Application.csproj": {
-              "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/Account/Account.Application/EduCrm.Modules.Account.Application/EduCrm.Modules.Account.Application.csproj"
+            "/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Application/EduCrm.Modules.Account.Application/EduCrm.Modules.Account.Application.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Application/EduCrm.Modules.Account.Application/EduCrm.Modules.Account.Application.csproj"
             },
-            "/Users/ticimax/Documents/akn/EduCrm/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/EduCrm.Modules.Account.Domain.csproj": {
-              "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/EduCrm.Modules.Account.Domain.csproj"
+            "/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/EduCrm.Modules.Account.Domain.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/EduCrm.Modules.Account.Domain.csproj"
             },
-            "/Users/ticimax/Documents/akn/EduCrm/src/Modules/Account/Account.Infrastructure/EduCrm.Modules.Account.Infrastructure/EduCrm.Modules.Account.Infrastructure.csproj": {
-              "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/Account/Account.Infrastructure/EduCrm.Modules.Account.Infrastructure/EduCrm.Modules.Account.Infrastructure.csproj"
+            "/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Infrastructure/EduCrm.Modules.Account.Infrastructure/EduCrm.Modules.Account.Infrastructure.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Infrastructure/EduCrm.Modules.Account.Infrastructure/EduCrm.Modules.Account.Infrastructure.csproj"
             },
-            "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj": {
-              "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj"
+            "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj"
             },
-            "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Infrastructure/EduCrm.Modules.People.Infrastructure/EduCrm.Modules.People.Infrastructure.csproj": {
-              "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Infrastructure/EduCrm.Modules.People.Infrastructure/EduCrm.Modules.People.Infrastructure.csproj"
+            "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Infrastructure/EduCrm.Modules.People.Infrastructure/EduCrm.Modules.People.Infrastructure.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Infrastructure/EduCrm.Modules.People.Infrastructure/EduCrm.Modules.People.Infrastructure.csproj"
             },
-            "/Users/ticimax/Documents/akn/EduCrm/src/Shared/Infrastructure/EduCrm.Infrastructure.csproj": {
-              "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/Infrastructure/EduCrm.Infrastructure.csproj"
+            "/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/EduCrm.Infrastructure.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/EduCrm.Infrastructure.csproj"
             },
-            "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
-              "projectPath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj"
+            "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj"
             }
           }
         }

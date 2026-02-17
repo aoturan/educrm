@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "LtU58S7NtqQ=",
+  "dgSpecHash": "kQQpce+7gGY=",
   "success": true,
-  "projectFilePath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj",
+  "projectFilePath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj",
   "expectedPackageFiles": [
     "/Users/ticimax/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.1/microsoft.extensions.dependencyinjection.abstractions.10.0.1.nupkg.sha512"
   ],

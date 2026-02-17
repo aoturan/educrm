@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XYj5UtSeGCU=",
+  "dgSpecHash": "fFZxc2pQAYw=",
   "success": true,
-  "projectFilePath": "/Users/ticimax/Documents/akn/EduCrm/src/Shared/Infrastructure/EduCrm.Infrastructure.csproj",
+  "projectFilePath": "/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/EduCrm.Infrastructure.csproj",
   "expectedPackageFiles": [
     "/Users/ticimax/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/ticimax/.nuget/packages/microsoft.bcl.asyncinterfaces/6.0.0/microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

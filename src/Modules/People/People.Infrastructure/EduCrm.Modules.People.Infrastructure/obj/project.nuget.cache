@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XWepXFvBhFs=",
+  "dgSpecHash": "rqWX65d/T6U=",
   "success": true,
-  "projectFilePath": "/Users/ticimax/Documents/akn/EduCrm/src/Modules/People/People.Infrastructure/EduCrm.Modules.People.Infrastructure/EduCrm.Modules.People.Infrastructure.csproj",
+  "projectFilePath": "/Users/ticimax/Documents/akn/be/src/Modules/People/People.Infrastructure/EduCrm.Modules.People.Infrastructure/EduCrm.Modules.People.Infrastructure.csproj",
   "expectedPackageFiles": [
     "/Users/ticimax/.nuget/packages/microsoft.entityframeworkcore/8.0.11/microsoft.entityframeworkcore.8.0.11.nupkg.sha512",
     "/Users/ticimax/.nuget/packages/microsoft.entityframeworkcore.abstractions/8.0.11/microsoft.entityframeworkcore.abstractions.8.0.11.nupkg.sha512",

@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = EduCrm.SharedKernel
-build_property.ProjectDir = /Users/ticimax/Documents/akn/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/
+build_property.ProjectDir = /Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
