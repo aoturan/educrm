@@ -1,0 +1,11 @@
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/bin/Debug/net8.0/EduCrm.Infrasturcture.deps.json
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/bin/Debug/net8.0/EduCrm.Infrasturcture.dll
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/bin/Debug/net8.0/EduCrm.Infrasturcture.pdb
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/obj/Debug/net8.0/EduCrm.Infrasturcture.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/obj/Debug/net8.0/EduCrm.Infrasturcture.AssemblyInfoInputs.cache
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/obj/Debug/net8.0/EduCrm.Infrasturcture.AssemblyInfo.cs
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/obj/Debug/net8.0/EduCrm.Infrasturcture.csproj.CoreCompileInputs.cache
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/obj/Debug/net8.0/EduCrm.Infrasturcture.dll
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/obj/Debug/net8.0/refint/EduCrm.Infrasturcture.dll
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/obj/Debug/net8.0/EduCrm.Infrasturcture.pdb
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/EduCrm.Infrasturcture/obj/Debug/net8.0/ref/EduCrm.Infrasturcture.dll

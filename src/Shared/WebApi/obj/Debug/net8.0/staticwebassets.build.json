@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "XTiP3G7K2DGKiaiFQEojeyWih9R5C9KaAcuVy6mt5D0=",
+  "Source": "EduCrm.WebApi",
+  "BasePath": "_content/EduCrm.WebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Shared\Infrastructure\EduCrm.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\..\People\People.Application\EduCrm.Modules.People.Application\EduCrm.Modules.People.Application.csproj" />
+      <ProjectReference Include="..\..\Account.Domain\EduCrm.Modules.Account.Domain\EduCrm.Modules.Account.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
+    </ItemGroup>
+
+</Project>

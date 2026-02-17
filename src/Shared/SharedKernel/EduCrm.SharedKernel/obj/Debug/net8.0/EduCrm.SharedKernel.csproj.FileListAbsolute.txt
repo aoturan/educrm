@@ -1,0 +1,11 @@
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/bin/Debug/net8.0/EduCrm.SharedKernel.deps.json
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/bin/Debug/net8.0/EduCrm.SharedKernel.dll
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/bin/Debug/net8.0/EduCrm.SharedKernel.pdb
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/Debug/net8.0/EduCrm.SharedKernel.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/Debug/net8.0/EduCrm.SharedKernel.AssemblyInfoInputs.cache
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/Debug/net8.0/EduCrm.SharedKernel.AssemblyInfo.cs
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/Debug/net8.0/EduCrm.SharedKernel.dll
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/Debug/net8.0/refint/EduCrm.SharedKernel.dll
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/Debug/net8.0/EduCrm.SharedKernel.pdb
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/Debug/net8.0/ref/EduCrm.SharedKernel.dll
+/Users/ticimax/Documents/source/personal/EduCrm/src/Shared/SharedKernel/EduCrm.SharedKernel/obj/Debug/net8.0/EduCrm.SharedKernel.csproj.CoreCompileInputs.cache
