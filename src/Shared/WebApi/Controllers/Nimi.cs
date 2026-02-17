@@ -1,0 +1,1 @@
+namespace EduCrm.WebApi.Controllers;
