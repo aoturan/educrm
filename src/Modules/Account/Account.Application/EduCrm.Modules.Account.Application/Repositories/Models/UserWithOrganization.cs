@@ -2,7 +2,7 @@ using EduCrm.Modules.Account.Domain.Enums;
 
 namespace EduCrm.Modules.Account.Application.Repositories.Models;
 
-public sealed record UserWithPersonName(
+public sealed record UserWithOrganization(
     Guid Id,
     Guid OrganizationId,
     UserStatus Status,

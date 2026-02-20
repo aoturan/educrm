@@ -32,13 +32,13 @@ public sealed class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.Email == email, ct);
     }
 
-    public async Task<UserWithPersonName?> GetByEmailWithPersonNameAsync(string email, CancellationToken ct)
+    public async Task<UserWithOrganization?> GetByEmailWithOrganizationAsync(string email, CancellationToken ct)
     {
         return await (
                 from u in _db.Users
                 where u.Email == email
                 join o in _db.Organizations on u.OrganizationId equals o.Id
-                select new UserWithPersonName(
+                select new UserWithOrganization(
                     u.Id,
                     u.OrganizationId,
                     u.Status,
@@ -52,13 +52,13 @@ public sealed class UserRepository : IUserRepository
             .FirstOrDefaultAsync(ct);
     }
     
-    public async Task<UserWithPersonName?> GetByIdWithPersonNameAsync(Guid userId, CancellationToken ct)
+    public async Task<UserWithOrganization?> GetByIdWithOrganizationAsync(Guid userId, CancellationToken ct)
     {
         return await (
                 from u in _db.Users
                 where u.Id == userId
                 join o in _db.Organizations on u.OrganizationId equals o.Id
-                select new UserWithPersonName(
+                select new UserWithOrganization(
                     u.Id,
                     u.OrganizationId,
                     u.Status,

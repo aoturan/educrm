@@ -17,7 +17,7 @@ public sealed class LoginService(
     public async Task<Result<LoginResult>> LoginAsync(LoginInput input, CancellationToken ct)
     {
         // 1) Find user by email (with name_surname projection)
-        var userWithName = await userRepo.GetByEmailWithPersonNameAsync(input.Email, ct);
+        var userWithName = await userRepo.GetByEmailWithOrganizationAsync(input.Email, ct);
         if (userWithName is null)
         {
             return Result<LoginResult>.Fail(AccountErrors.InvalidCredentials());

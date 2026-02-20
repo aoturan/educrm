@@ -9,7 +9,7 @@ public sealed class GetMeService(IUserRepository userRepo) : IGetMeService
 {
     public async Task<Result<GetMeResult>> GetMeAsync(Guid userId, CancellationToken ct)
     {
-        var user = await userRepo.GetByIdWithPersonNameAsync(userId, ct);
+        var user = await userRepo.GetByIdWithOrganizationAsync(userId, ct);
         if (user is null)
         {
             return Result<GetMeResult>.Fail(AccountErrors.NotFound(userId));

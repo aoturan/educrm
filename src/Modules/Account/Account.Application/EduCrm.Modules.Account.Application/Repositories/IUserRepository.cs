@@ -8,6 +8,6 @@ public interface IUserRepository
     void Add(User user);
     Task<User?> GetByIdAsync(Guid userId, CancellationToken ct);
     Task<User?> GetByEmailAsync(string email, CancellationToken ct);
-    Task<UserWithPersonName?> GetByEmailWithPersonNameAsync(string email, CancellationToken ct);
-    Task<UserWithPersonName?> GetByIdWithPersonNameAsync(Guid userId, CancellationToken ct);
+    Task<UserWithOrganization?> GetByEmailWithOrganizationAsync(string email, CancellationToken ct);
+    Task<UserWithOrganization?> GetByIdWithOrganizationAsync(Guid userId, CancellationToken ct);
 }

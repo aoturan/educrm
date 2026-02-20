@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EduCrm.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+08b6afa3ae56ed3bdc66609be9e16edf132723d0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d3b93909cbd41cba76fa1a65f0409149e9794155")]
 [assembly: System.Reflection.AssemblyProductAttribute("EduCrm.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EduCrm.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
