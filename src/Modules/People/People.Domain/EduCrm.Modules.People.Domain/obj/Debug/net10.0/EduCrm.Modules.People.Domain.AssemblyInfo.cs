@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EduCrm.Modules.People.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b68862a60844cebaae459b35ea9953cf101fe0f5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e92903a1a616237ae04ddffe9377690fe784d311")]
 [assembly: System.Reflection.AssemblyProductAttribute("EduCrm.Modules.People.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EduCrm.Modules.People.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
