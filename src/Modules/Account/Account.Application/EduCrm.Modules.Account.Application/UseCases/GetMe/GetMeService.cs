@@ -1,6 +1,6 @@
+using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
-using EduCrm.SharedKernel.Errors;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.GetMe;
@@ -24,4 +24,3 @@ public sealed class GetMeService(IUserRepository userRepo) : IGetMeService
             user.OrganizationName));
     }
 }
-

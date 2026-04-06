@@ -20,3 +20,7 @@
 /Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/refint/EduCrm.Modules.Account.Domain.dll
 /Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.pdb
 /Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/ref/EduCrm.Modules.Account.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/bin/Debug/net8.0/EduCrm.Modules.Account.Contracts.dll
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/bin/Debug/net8.0/EduCrm.Modules.Account.Contracts.pdb
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.Modules.Account.Domain.csproj.AssemblyReference.cache
+/Users/ticimax/Documents/akn/be/src/Modules/Account/Account.Domain/EduCrm.Modules.Account.Domain/obj/Debug/net8.0/EduCrm.M.6D82FC84.Up2Date

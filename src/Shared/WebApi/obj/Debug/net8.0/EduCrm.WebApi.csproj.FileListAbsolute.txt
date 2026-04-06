@@ -203,3 +203,11 @@
 /Users/ticimax/Documents/akn/be/src/Shared/WebApi/obj/Debug/net8.0/EduCrm.WebApi.pdb
 /Users/ticimax/Documents/akn/be/src/Shared/WebApi/obj/Debug/net8.0/EduCrm.WebApi.genruntimeconfig.cache
 /Users/ticimax/Documents/akn/be/src/Shared/WebApi/obj/Debug/net8.0/ref/EduCrm.WebApi.dll
+/Users/ticimax/Documents/akn/be/src/Shared/WebApi/bin/Debug/net8.0/EduCrm.Modules.Account.Contracts.dll
+/Users/ticimax/Documents/akn/be/src/Shared/WebApi/bin/Debug/net8.0/EduCrm.Modules.Program.Application.dll
+/Users/ticimax/Documents/akn/be/src/Shared/WebApi/bin/Debug/net8.0/EduCrm.Modules.Program.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Shared/WebApi/bin/Debug/net8.0/EduCrm.Modules.Program.Infrastructure.dll
+/Users/ticimax/Documents/akn/be/src/Shared/WebApi/bin/Debug/net8.0/EduCrm.Modules.Program.Infrastructure.pdb
+/Users/ticimax/Documents/akn/be/src/Shared/WebApi/bin/Debug/net8.0/EduCrm.Modules.Account.Contracts.pdb
+/Users/ticimax/Documents/akn/be/src/Shared/WebApi/bin/Debug/net8.0/EduCrm.Modules.Program.Application.pdb
+/Users/ticimax/Documents/akn/be/src/Shared/WebApi/bin/Debug/net8.0/EduCrm.Modules.Program.Domain.pdb

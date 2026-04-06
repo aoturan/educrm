@@ -1,0 +1,54 @@
+using EduCrm.SharedKernel.Errors;
+
+namespace EduCrm.Modules.Account.Application.Errors;
+
+/// <summary>
+/// Account domain-specific error factory methods.
+/// </summary>
+public static class AccountErrors
+{
+    public static Error EmailTaken(string email) =>
+        new(
+            Code: AccountErrorCodes.EmailTaken,
+            Message: "Bu e-posta adresi zaten kullanımda.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["email"] = email
+            }
+        );
+
+    public static Error InvalidCredentials() =>
+        new(
+            Code: AccountErrorCodes.InvalidCredentials,
+            Message: "Yanlış e-posta veya şifre."
+        );
+
+    public static Error InvalidOldPassword() =>
+        new(
+            Code: AccountErrorCodes.InvalidOldPassword,
+            Message: "Mevcut şifre yanlış."
+        );
+
+    public static Error NotFound(Guid userId) =>
+        new(
+            Code: AccountErrorCodes.NotFound,
+            Message: "User account was not found.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["userId"] = userId
+            }
+        );
+
+    public static Error InvalidToken() =>
+        new(
+            Code: AccountErrorCodes.InvalidToken,
+            Message: "The provided token is invalid or expired."
+        );
+
+    public static Error UserInactive() =>
+        new(
+            Code: AccountErrorCodes.UserInactive,
+            Message: "User account is not active."
+        );
+}
+

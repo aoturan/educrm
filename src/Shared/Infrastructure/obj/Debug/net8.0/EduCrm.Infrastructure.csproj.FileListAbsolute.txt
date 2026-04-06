@@ -61,3 +61,7 @@
 /Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/obj/Debug/net8.0/EduCrm.Infrastructure.pdb
 /Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/obj/Debug/net8.0/EduCrm.Infrastructure.genruntimeconfig.cache
 /Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/obj/Debug/net8.0/ref/EduCrm.Infrastructure.dll
+/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/bin/Debug/net8.0/EduCrm.Modules.Account.Contracts.dll
+/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/bin/Debug/net8.0/EduCrm.Modules.Program.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/bin/Debug/net8.0/EduCrm.Modules.Program.Domain.pdb
+/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/bin/Debug/net8.0/EduCrm.Modules.Account.Contracts.pdb

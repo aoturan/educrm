@@ -23,9 +23,6 @@ public sealed class User
     [Column("full_name")]
     public string FullName { get; private set; } = null!;
     
-    [Column("phone")]
-    public string? Phone { get; private set; }
-    
     [Required]
     [Column("password_hash")]
     public string PasswordHash { get; private set; } = null!;
@@ -50,7 +47,7 @@ public sealed class User
 
     private User() { } // EF
 
-    public User(Guid id, Guid organizationId, string email, string fullName, string? phone, string passwordHash, DateTime createdAtUtc)
+    public User(Guid id, Guid organizationId, string email, string fullName, string passwordHash, DateTime createdAtUtc)
     {
         if (id == Guid.Empty) throw new ArgumentException("User id is required.", nameof(id));
         if (organizationId == Guid.Empty) throw new ArgumentException("Organization is required.", nameof(organizationId));
@@ -62,7 +59,6 @@ public sealed class User
         OrganizationId = organizationId;
         Email = email.Trim();
         FullName = fullName.Trim();
-        Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim();
         PasswordHash = passwordHash;
         Status = UserStatus.WaitingForActivation;
         CreatedAtUtc = createdAtUtc;
@@ -99,12 +95,6 @@ public sealed class User
         if (string.IsNullOrWhiteSpace(fullName)) throw new ArgumentException("FullName is required.", nameof(fullName));
 
         FullName = fullName.Trim();
-        UpdatedAtUtc = utcNow;
-    }
-
-    public void ChangePhone(string? phone, DateTime utcNow)
-    {
-        Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim();
         UpdatedAtUtc = utcNow;
     }
 

@@ -1,10 +1,10 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Application.Security;
 using EduCrm.Modules.Account.Domain.Entities;
 using EduCrm.SharedKernel.Abstractions;
-using EduCrm.SharedKernel.Errors;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.Register;
@@ -40,7 +40,8 @@ public sealed class RegisterService(
             var organization = new Organization(
                 accountId,
                 input.OrganizationName,
-                now);
+                now,
+                input.ContactPhone);
 
             orgRepo.Add(organization);
 
@@ -50,7 +51,6 @@ public sealed class RegisterService(
                 accountId,
                 input.Email,
                 input.Name,
-                input.Phone,
                 input.PasswordHash,
                 now);
 

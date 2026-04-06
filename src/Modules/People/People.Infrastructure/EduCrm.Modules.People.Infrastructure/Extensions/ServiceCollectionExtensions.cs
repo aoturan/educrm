@@ -8,12 +8,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPeopleInfra(this IServiceCollection services)
     {
-        // TODO (Phase 1): register People module services & repositories here.
-        // Example:
-        // services.AddScoped<IPeopleService, PeopleService>();
         services.AddScoped<IPersonRepository, PersonRepository>();
-        
-
+        services.AddScoped<IFollowUpRepository, FollowUpRepository>();
         return services;
     }
 }

@@ -25,9 +25,9 @@ public sealed class RegisterRequestValidator : AbstractValidator<RegisterRequest
             .MinimumLength(8)
             .MaximumLength(200);
 
-        RuleFor(x => x.Phone)
-            .NotEmpty()
+        RuleFor(x => x.ContactPhone)
             .Matches(@"^\d{10}$")
-            .WithMessage("Phone must be exactly 10 digits (XXXXXXXXXX)");
+            .WithMessage("ContactPhone must be exactly 10 digits (XXXXXXXXXX)")
+            .When(x => x.ContactPhone is not null);
     }
 }

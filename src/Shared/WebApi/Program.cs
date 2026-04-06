@@ -1,18 +1,32 @@
 using EduCrm.Infrastructure.Extensions;
+using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Extensions;
 using EduCrm.Modules.Account.Infrastructure.Extensions;
+using EduCrm.Modules.People.Application.Errors;
 using EduCrm.Modules.People.Application.Extensions;
 using EduCrm.Modules.People.Infrastructure.Extensions;
+using EduCrm.Modules.Program.Application.Errors;
+using EduCrm.Modules.Program.Application.Extensions;
+using EduCrm.Modules.Program.Infrastructure.Extensions;
+using EduCrm.SharedKernel.Errors;
 using EduCrm.WebApi.Extensions;
 using EduCrm.WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Register domain error-to-HTTP-status mappings
+ErrorHttpStatusMapper.Register(AccountErrorMappings.Mappings);
+builder.Services.AddProgramInfra();
+builder.Services.AddProgramApplication();
+ErrorHttpStatusMapper.Register(ProgramErrorMappings.Mappings);
 
 builder.Services.AddInfrastructure();
 builder.Services.AddPostgresDb(builder.Configuration);
 
 builder.Services.AddJwtAuth(builder.Configuration);
+
+builder.Services.AddAccountInfra();
+builder.Services.AddAccountApplication();
 
 builder.Services.AddPeopleInfra();
 builder.Services.AddPeopleApplication();

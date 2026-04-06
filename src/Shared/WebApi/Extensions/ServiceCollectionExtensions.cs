@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using EduCrm.WebApi.Validations;
 using FluentValidation;
 
@@ -7,7 +8,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddWebApiConventions(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 

@@ -1,9 +1,9 @@
+using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Application.Repositories.Models;
 using EduCrm.Modules.Account.Application.Security;
 using EduCrm.Modules.Account.Domain.Enums;
-using EduCrm.SharedKernel.Errors;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.Login;

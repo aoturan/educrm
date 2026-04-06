@@ -1,8 +1,8 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Application.Security;
 using EduCrm.SharedKernel.Abstractions;
-using EduCrm.SharedKernel.Errors;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.ChangePassword;
@@ -38,4 +38,3 @@ public sealed class ChangePasswordService(
         return Result.Success();
     }
 }
-

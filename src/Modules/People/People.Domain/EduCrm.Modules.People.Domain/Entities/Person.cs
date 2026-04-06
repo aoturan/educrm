@@ -10,121 +10,115 @@ public sealed class Person
     [Key]
     [Column("id")]
     public Guid Id { get; private set; }
-    
-    
-    [Required]
-    [Column("account_user_id")]
-    public Guid AccountUserId { get; private set; } // FK -> accounts_organizations.id
-    
+
     [Required]
     [Column("organization_id")]
-    public Guid AccountOrganizationId { get; private set; } 
-
-    // enum -> smallint conversion Fluent ile yapılacak
-    [Required]
-    [Column("type")]
-    public PersonType Type { get; private set; }
+    public Guid OrganizationId { get; private set; }
 
     [Required]
-    [Column("name_surname")]
-    public string NameSurname { get; private set; } = default!;
-    
-    [Required]
-    [Column("email")]
-    public string Email { get; private set; } = default!;
-    
-    [Required]
+    [Column("full_name")]
+    public string FullName { get; private set; } = null!;
+
     [Column("phone")]
-    public string Phone { get; private set; } = default!;
+    public string? Phone { get; private set; }
+
+    [Column("email")]
+    public string? Email { get; private set; }
 
     [Column("notes")]
     public string? Notes { get; private set; }
-    
-    // enum -> smallint conversion Fluent ile yapılacak
+
     [Required]
-    [Column("status")]
-    public PersonStatus Status { get; private set; }
+    [Column("source")]
+    public SourceType Source { get; private set; }
 
     [Required]
     [Column("created_at_utc")]
     public DateTime CreatedAtUtc { get; private set; }
-    
+
+    [Required]
     [Column("updated_at_utc")]
-    public DateTime? UpdatedAtUtc { get; private set; }
-    
-    private Person() { } // EF
+    public DateTime UpdatedAtUtc { get; private set; }
+
+    [Required]
+    [Column("is_archived")]
+    public bool IsArchived { get; private set; }
+
+    [Column("archived_at_utc")]
+    public DateTime? ArchivedAtUtc { get; private set; }
+
+    private Person()
+    {
+    }
 
     public Person(
-        Guid id,
-        Guid accountOrganizationId,
-        Guid userId,
-        PersonType type,
-        string name,
-        string email,
-        string phone,
-        DateTime createdAtUtc)
+        Guid organizationId,
+        string fullName,
+        SourceType source,
+        DateTime nowUtc,
+        string? phone = null,
+        string? email = null,
+        string? notes = null)
     {
-        if (id == Guid.Empty) throw new ArgumentException("Person id is required.", nameof(id));
-        if (accountOrganizationId == Guid.Empty) throw new ArgumentException("Organization is required.", nameof(accountOrganizationId));
-        if (userId == Guid.Empty) throw new ArgumentException("UserID is required.", nameof(userId));
-        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name is required.", nameof(name));
-        if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
-        if (string.IsNullOrWhiteSpace(phone)) throw new ArgumentException("Phone is required.", nameof(phone));
+        if (organizationId == Guid.Empty)
+            throw new ArgumentException("Organization ID cannot be empty.", nameof(organizationId));
 
-        Id = id;
-        AccountOrganizationId = accountOrganizationId;
-        AccountUserId = userId;
-        Type = type;
+        if (string.IsNullOrWhiteSpace(fullName))
+            throw new ArgumentException("Full name cannot be null or empty.", nameof(fullName));
 
-        NameSurname = name.Trim();
-        Email = email.Trim();
-        Phone = phone.Trim();
+        if (!Enum.IsDefined(typeof(SourceType), source))
+            throw new ArgumentException("Source must be a valid value.", nameof(source));
 
-        Status = PersonStatus.Active;
-        CreatedAtUtc = createdAtUtc;
-    }
+        if (nowUtc == default)
+            throw new ArgumentException("Current UTC time is required.", nameof(nowUtc));
 
-    public void UpdateContact(string email, string phone, DateTime utcNow)
-    {
-        if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
-        if (string.IsNullOrWhiteSpace(phone)) throw new ArgumentException("Phone is required.", nameof(phone));
-
-        Email = email.Trim();
-        Phone = phone.Trim();
-        UpdatedAtUtc = utcNow;
-    }
-
-    public void UpdateNameSurname(string nameSurname, DateTime utcNow)
-    {
-        if (string.IsNullOrWhiteSpace(nameSurname)) throw new ArgumentException("Name is required.", nameof(nameSurname));
-
-        NameSurname = nameSurname.Trim();
-        UpdatedAtUtc = utcNow;
-    }
-
-    public void UpdateEmail(string email, DateTime utcNow)
-    {
-        if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
-
-        Email = email.Trim();
-        UpdatedAtUtc = utcNow;
-    }
-
-    public void SetNotes(string? notes, DateTime utcNow)
-    {
+        Id = Guid.NewGuid();
+        OrganizationId = organizationId;
+        FullName = fullName.Trim();
+        Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim();
+        Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim();
         Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
-        UpdatedAtUtc = utcNow;
+        Source = source;
+        CreatedAtUtc = nowUtc;
+        UpdatedAtUtc = nowUtc;
+        IsArchived = false;
+        ArchivedAtUtc = null;
     }
 
     public void Archive(DateTime utcNow)
     {
-        Status = PersonStatus.Archived;
+        if (IsArchived)
+            throw new InvalidOperationException("Person is already archived.");
+
+        IsArchived = true;
+        ArchivedAtUtc = utcNow;
         UpdatedAtUtc = utcNow;
     }
 
-    public void Activate(DateTime utcNow)
+    public void Unarchive(DateTime utcNow)
     {
-        Status = PersonStatus.Active;
+        if (!IsArchived)
+            throw new InvalidOperationException("Person is not archived.");
+
+        IsArchived = false;
+        ArchivedAtUtc = null;
+        UpdatedAtUtc = utcNow;
+    }
+
+    public void Update(
+        string fullName,
+        string? phone,
+        string? email,
+        string? notes,
+        DateTime utcNow)
+    {
+        if (string.IsNullOrWhiteSpace(fullName))
+            throw new ArgumentException("Full name cannot be null or empty.", nameof(fullName));
+
+        FullName = fullName.Trim();
+        Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim();
+        Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim();
+        Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
         UpdatedAtUtc = utcNow;
     }
 }

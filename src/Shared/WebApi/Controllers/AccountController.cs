@@ -68,7 +68,7 @@ public sealed class AccountController : ControllerBase
             req.Email,
             req.OrganizationName,
             passwordHash,
-            req.Phone
+            req.ContactPhone
         );
 
         // 3) call

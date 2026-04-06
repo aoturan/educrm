@@ -1,5 +1,7 @@
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Application.Security;
+using EduCrm.Modules.Account.Contracts.Abstractions;
+using EduCrm.Modules.Account.Infrastructure.Queries;
 using EduCrm.Modules.Account.Infrastructure.Repositories;
 using EduCrm.Modules.Account.Infrastructure.Security;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserOrganizationResolver, UserOrganizationResolver>();
         services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IOrganizationReader, OrganizationReader>();
+        services.AddScoped<IOrganizationWriter, OrganizationWriter>();
         return services;
     }
 }

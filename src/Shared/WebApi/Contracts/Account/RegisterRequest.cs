@@ -5,4 +5,4 @@ public sealed record RegisterRequest(
     string Email,
     string OrganizationName,
     string Password,
-    string Phone);
+    string? ContactPhone);

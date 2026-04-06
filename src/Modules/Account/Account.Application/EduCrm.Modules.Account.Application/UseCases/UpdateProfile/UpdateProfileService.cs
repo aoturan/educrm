@@ -1,8 +1,8 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.SharedKernel.Abstractions;
-using EduCrm.SharedKernel.Errors;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.UpdateProfile;
@@ -32,7 +32,7 @@ public sealed class UpdateProfileService(
             if (existingUser is not null && existingUser.Id != input.UserId)
             {
                 return Result<UpdateProfileResult>.Fail(AccountErrors.EmailTaken(input.Email));
-            }
+            } 
         }
 
         // 3) Get organization
