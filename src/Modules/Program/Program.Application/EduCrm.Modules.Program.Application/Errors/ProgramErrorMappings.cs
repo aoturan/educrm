@@ -28,7 +28,14 @@ public static class ProgramErrorMappings
         { ProgramErrorCodes.ProgramAlreadyArchived, ErrorHttpStatusMapper.Status400BadRequest },
         { ProgramErrorCodes.ProgramNotArchived, ErrorHttpStatusMapper.Status400BadRequest },
         { ProgramErrorCodes.ProgramAlreadyPublic, ErrorHttpStatusMapper.Status400BadRequest },
-        { ProgramErrorCodes.ProgramNotPublic, ErrorHttpStatusMapper.Status400BadRequest }
+        { ProgramErrorCodes.ProgramNotPublic, ErrorHttpStatusMapper.Status400BadRequest },
+        { ProgramErrorCodes.ApplicationAlreadyExists, ErrorHttpStatusMapper.Status400BadRequest },
+        { ProgramErrorCodes.AmbiguousPersonMatch, ErrorHttpStatusMapper.Status400BadRequest },
+        { ProgramErrorCodes.ProgramNotAvailable, ErrorHttpStatusMapper.Status404NotFound },
+        { ProgramErrorCodes.InvalidPhoneFormat, ErrorHttpStatusMapper.Status400BadRequest },
+        { ProgramErrorCodes.ApplicationNotFound, ErrorHttpStatusMapper.Status404NotFound },
+        { ProgramErrorCodes.ApplicationNotNew, ErrorHttpStatusMapper.Status400BadRequest },
+        { ProgramErrorCodes.ApplicationAlreadyHasPerson, ErrorHttpStatusMapper.Status400BadRequest },
+        { ProgramErrorCodes.PersonNotInOrganization, ErrorHttpStatusMapper.Status400BadRequest }
     };
 }
-

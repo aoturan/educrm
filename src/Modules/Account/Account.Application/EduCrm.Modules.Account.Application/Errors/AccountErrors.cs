@@ -32,7 +32,7 @@ public static class AccountErrors
     public static Error NotFound(Guid userId) =>
         new(
             Code: AccountErrorCodes.NotFound,
-            Message: "User account was not found.",
+            Message: "Kullanıcı hesabı bulunamadı.",
             Metadata: new Dictionary<string, object>
             {
                 ["userId"] = userId
@@ -42,13 +42,13 @@ public static class AccountErrors
     public static Error InvalidToken() =>
         new(
             Code: AccountErrorCodes.InvalidToken,
-            Message: "The provided token is invalid or expired."
+            Message: "Sağlanan token geçersiz veya süresi dolmuş."
         );
 
     public static Error UserInactive() =>
         new(
             Code: AccountErrorCodes.UserInactive,
-            Message: "User account is not active."
+            Message: "Kullanıcı hesabı aktif değil."
         );
 }
 

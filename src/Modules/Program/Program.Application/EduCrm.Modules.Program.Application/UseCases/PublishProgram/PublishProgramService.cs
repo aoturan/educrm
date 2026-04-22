@@ -30,6 +30,9 @@ public sealed class PublishProgramService(
         if (program.IsPublic)
             return Result<PublishProgramResult>.Fail(ProgramErrors.ProgramAlreadyPublic(input.ProgramId));
 
+        if (program.IsArchived)
+            return Result<PublishProgramResult>.Fail(ProgramErrors.ProgramAlreadyArchived(input.ProgramId));
+
         var slug = program.PublicSlug ?? GenerateSlug(program.Name);
         var now = clock.UtcNow.UtcDateTime;
 

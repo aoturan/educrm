@@ -43,7 +43,7 @@ public sealed class EnrollmentRepository(AppDbContext db) : IEnrollmentRepositor
                    || EF.Functions.ILike(p.FullName, $"%{search}%")
                    || (p.Email != null && EF.Functions.ILike(p.Email, $"%{search}%"))
                    || (p.Phone != null && EF.Functions.ILike(p.Phone, $"%{search}%")))
-            orderby p.FullName
+            orderby p.CreatedAtUtc descending
             select new EnrollmentCandidateData(p.Id, p.FullName, p.Phone, p.Email);
 
         var totalCount = await query.CountAsync(ct);
@@ -63,6 +63,16 @@ public sealed class EnrollmentRepository(AppDbContext db) : IEnrollmentRepositor
             .AnyAsync(e => e.ProgramId == programId
                         && e.PersonId == personId
                         && e.OrganizationId == organizationId, ct);
+    }
+
+    public Task<Guid?> GetIdAsync(Guid programId, Guid personId, Guid organizationId, CancellationToken ct)
+    {
+        return db.Enrollments
+            .Where(e => e.ProgramId == programId
+                     && e.PersonId == personId
+                     && e.OrganizationId == organizationId)
+            .Select(e => (Guid?)e.Id)
+            .FirstOrDefaultAsync(ct);
     }
 
     public Task<bool> PersonExistsInOrgAsync(Guid personId, Guid organizationId, CancellationToken ct)

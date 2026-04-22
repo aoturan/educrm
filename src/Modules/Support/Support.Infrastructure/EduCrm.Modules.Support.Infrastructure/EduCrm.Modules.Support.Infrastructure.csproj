@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Shared\Infrastructure\EduCrm.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\..\..\Shared\SharedKernel\EduCrm.SharedKernel\EduCrm.SharedKernel.csproj" />
+      <ProjectReference Include="..\..\Support.Application\EduCrm.Modules.Support.Application\EduCrm.Modules.Support.Application.csproj" />
+      <ProjectReference Include="..\..\Support.Contracts\EduCrm.Modules.Support.Contracts\EduCrm.Modules.Support.Contracts.csproj" />
+      <ProjectReference Include="..\..\Support.Domain\EduCrm.Modules.Support.Domain\EduCrm.Modules.Support.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -39,10 +39,16 @@ public sealed class ChangeProgramStatusService(
         {
             if (input.Status == ProgramStatus.Completed)
             {
+                if (program.IsPublic)
+                    program.Unpublish(now);
+
                 program.Complete(now);
             }
             else
             {
+                if (program.IsPublic)
+                    program.Unpublish(now);
+
                 program.Archive(now);
             }
         }

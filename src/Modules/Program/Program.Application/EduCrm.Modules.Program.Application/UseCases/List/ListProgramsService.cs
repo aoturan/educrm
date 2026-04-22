@@ -14,6 +14,8 @@ public sealed class ListProgramsService(
         if (orgContext.OrganizationId is null)
             return Result<ProgramListPagedResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
 
+        var onlyApproaching = string.Equals(input.Face, ProgramListFace.Approaching, StringComparison.OrdinalIgnoreCase);
+
         var queryResult = await programRepo.GetPagedListAsync(
             orgContext.OrganizationId.Value,
             input.Page,
@@ -22,7 +24,8 @@ public sealed class ListProgramsService(
             input.SearchTerm,
             input.PreFilter,
             input.ShowArchived,
-            input.PersonId);
+            input.PersonId,
+            onlyApproaching);
 
         return Result<ProgramListPagedResult>.Success(new ProgramListPagedResult(
             queryResult.Items.Select(x => new ProgramListResult(

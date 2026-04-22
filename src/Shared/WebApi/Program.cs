@@ -8,6 +8,8 @@ using EduCrm.Modules.People.Infrastructure.Extensions;
 using EduCrm.Modules.Program.Application.Errors;
 using EduCrm.Modules.Program.Application.Extensions;
 using EduCrm.Modules.Program.Infrastructure.Extensions;
+using EduCrm.Modules.Support.Application.Extensions;
+using EduCrm.Modules.Support.Infrastructure.Extensions;
 using EduCrm.SharedKernel.Errors;
 using EduCrm.WebApi.Extensions;
 using EduCrm.WebApi.Middlewares;
@@ -31,8 +33,8 @@ builder.Services.AddAccountApplication();
 builder.Services.AddPeopleInfra();
 builder.Services.AddPeopleApplication();
 
-builder.Services.AddAccountInfra();
-builder.Services.AddAccountApplication();
+builder.Services.AddSupportInfra();
+builder.Services.AddSupportApplication();
 
 builder.Services.AddFluentValidation();
 builder.Services.AddWebApiConventions();

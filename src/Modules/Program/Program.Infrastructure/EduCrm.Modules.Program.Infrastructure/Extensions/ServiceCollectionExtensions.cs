@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddProgramInfra(this IServiceCollection services)
     {
+        services.AddScoped<IApplicationRepository, ApplicationRepository>();
         services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
         services.AddScoped<IProgramRepository, ProgramRepository>();
         services.AddScoped<IProgramReader, ProgramReader>();

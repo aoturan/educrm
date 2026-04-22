@@ -9,22 +9,25 @@ public sealed class CreatePersonRequestValidator : AbstractValidator<CreatePerso
     {
         RuleFor(x => x.FullName)
             .NotEmpty()
-            .MaximumLength(200);
+            .MaximumLength(100);
+
+        RuleFor(x => x)
+            .Must(x => !string.IsNullOrWhiteSpace(x.Phone) || !string.IsNullOrWhiteSpace(x.Email))
+            .WithMessage("Telefon numarası veya e-posta adresinden en az biri girilmelidir.")
+            .WithName("Contact");
 
         RuleFor(x => x.Phone)
-            .NotEmpty()
-            .Matches(@"^\d{10}$")
-            .WithMessage("Phone must be exactly 10 digits (XXXXXXXXXX)");
+            .Matches(@"^\+?\d{10,12}$")
+            .WithMessage("Lütfen geçerli bir telefon numarası giriniz. (örn: +905XXXXXXXXX)")
+            .When(x => !string.IsNullOrWhiteSpace(x.Phone));
 
         RuleFor(x => x.Email)
-            .NotEmpty()
             .EmailAddress()
-            .MaximumLength(320);
-
+            .MaximumLength(320)
+            .When(x => !string.IsNullOrWhiteSpace(x.Email));
 
         RuleFor(x => x.Notes)
             .MaximumLength(2000)
             .When(x => x.Notes is not null);
     }
 }
-

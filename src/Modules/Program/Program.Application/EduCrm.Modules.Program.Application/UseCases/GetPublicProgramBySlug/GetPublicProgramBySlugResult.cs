@@ -18,6 +18,7 @@ public sealed record GetPublicProgramBySlugResult(
     int? PriceAmount,
     PriceCurrency? PriceCurrency,
     string? PriceNote,
+    ProgramPriceType PriceType,
     bool IsPublic,
     string OrganizationName);
 

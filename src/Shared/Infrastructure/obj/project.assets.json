@@ -1171,6 +1171,16 @@
           "bin/placeholder/EduCrm.Modules.Program.Domain.dll": {}
         }
       },
+      "EduCrm.Modules.Support.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/EduCrm.Modules.Support.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EduCrm.Modules.Support.Domain.dll": {}
+        }
+      },
       "EduCrm.SharedKernel/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
@@ -3015,6 +3025,11 @@
       "path": "../../Modules/Program/Program.Domain/EduCrm.Modules.Program.Domain/EduCrm.Modules.Program.Domain.csproj",
       "msbuildProject": "../../Modules/Program/Program.Domain/EduCrm.Modules.Program.Domain/EduCrm.Modules.Program.Domain.csproj"
     },
+    "EduCrm.Modules.Support.Domain/1.0.0": {
+      "type": "project",
+      "path": "../../Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/EduCrm.Modules.Support.Domain.csproj",
+      "msbuildProject": "../../Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/EduCrm.Modules.Support.Domain.csproj"
+    },
     "EduCrm.SharedKernel/1.0.0": {
       "type": "project",
       "path": "../SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
@@ -3026,6 +3041,7 @@
       "EduCrm.Modules.Account.Domain >= 1.0.0",
       "EduCrm.Modules.People.Domain >= 1.0.0",
       "EduCrm.Modules.Program.Domain >= 1.0.0",
+      "EduCrm.Modules.Support.Domain >= 1.0.0",
       "EduCrm.SharedKernel >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 10.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 10.0.0",
@@ -3066,6 +3082,9 @@
             },
             "/Users/ticimax/Documents/akn/be/src/Modules/Program/Program.Domain/EduCrm.Modules.Program.Domain/EduCrm.Modules.Program.Domain.csproj": {
               "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Program/Program.Domain/EduCrm.Modules.Program.Domain/EduCrm.Modules.Program.Domain.csproj"
+            },
+            "/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/EduCrm.Modules.Support.Domain.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/EduCrm.Modules.Support.Domain.csproj"
             },
             "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj": {
               "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj"

@@ -59,16 +59,19 @@ public class ProgramRepository: IProgramRepository
         string? searchTerm = null,
         string? preFilter = null,
         bool showArchived = false,
-        Guid? personId = null)
+        Guid? personId = null,
+        bool onlyApproaching = false)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var in7Days = today.AddDays(7);
 
         var baseQuery = _db.Programs
             .AsNoTracking()
             .Where(p => p.OrganizationId == organizationId
                 && (showArchived || !p.IsArchived)
                 && (searchTerm == null || EF.Functions.ILike(p.Name, $"%{searchTerm}%"))
-                && (personId == null || _db.Enrollments.Any(e => e.ProgramId == p.Id && e.PersonId == personId && e.OrganizationId == organizationId)));
+                && (personId == null || _db.Enrollments.Any(e => e.ProgramId == p.Id && e.PersonId == personId && e.OrganizationId == organizationId))
+                && (!onlyApproaching || (p.StartDate >= today && p.StartDate <= in7Days)));
 
         var filteredQuery = preFilter switch
         {
@@ -115,6 +118,7 @@ public class ProgramRepository: IProgramRepository
             from e in _db.Enrollments
             where e.ProgramId == programId && e.OrganizationId == organizationId
             join p in _db.Persons on e.PersonId equals p.Id
+             orderby e.EnrolledAtUtc descending
             select new EnrollmentWithPersonData(
                 e.Id,
                 e.PersonId,
@@ -156,8 +160,36 @@ public class ProgramRepository: IProgramRepository
             .AnyAsync(p => p.Id == programId && p.OrganizationId == organizationId, ct);
     }
 
-    public Task<PublicProgramData?> GetPublicBySlugAsync(string slug, CancellationToken ct)
+    public Task<Guid?> GetOrganizationIdAsync(Guid programId, CancellationToken ct)
     {
+        return _db.Programs
+            .Where(p => p.Id == programId)
+            .Select(p => (Guid?)p.OrganizationId)
+            .FirstOrDefaultAsync(ct);
+    }
+
+    public Task<(Guid OrganizationId, ProgramStatus Status, bool IsPublic)?> GetPublicApplicationCheckAsync(Guid programId, CancellationToken ct)
+    {
+        return _db.Programs
+            .Where(p => p.Id == programId)
+            .Select(p => ((Guid OrganizationId, ProgramStatus Status, bool IsPublic)?)
+                new ValueTuple<Guid, ProgramStatus, bool>(p.OrganizationId, p.Status, p.IsPublic))
+            .FirstOrDefaultAsync(ct);
+    }
+
+    public async Task<PublicApplicationCheckData?> GetPublicApplicationCheckBySlugAsync(string slug, CancellationToken ct)
+    {
+        var row = await _db.Programs
+            .Where(p => p.PublicSlug == slug)
+            .Select(p => new { p.Id, p.OrganizationId, p.Status, p.IsPublic })
+            .FirstOrDefaultAsync(ct);
+
+        if (row is null) return null;
+
+        return new PublicApplicationCheckData(row.Id, row.OrganizationId, row.Status, row.IsPublic);
+    }
+
+    public Task<PublicProgramData?> GetPublicBySlugAsync(string slug, CancellationToken ct)    {
         return (
             from p in _db.Programs
             where p.PublicSlug == slug && p.IsPublic
@@ -178,9 +210,23 @@ public class ProgramRepository: IProgramRepository
                 p.PriceAmount,
                 p.PriceCurrency,
                 p.PriceNote,
+                p.PriceType,
                 p.IsPublic,
                 o.Name))
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
+    }
+
+    public Task<int> CountActiveStartingInNext7DaysAsync(Guid organizationId, CancellationToken ct)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var in7Days = today.AddDays(7);
+
+        return _db.Programs
+            .CountAsync(p => p.OrganizationId == organizationId
+                          && !p.IsArchived
+                          && p.Status == ProgramStatus.Active
+                          && p.StartDate >= today
+                          && p.StartDate < in7Days, ct);
     }
 }

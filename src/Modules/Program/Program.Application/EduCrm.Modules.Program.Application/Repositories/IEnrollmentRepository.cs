@@ -14,6 +14,7 @@ public interface IEnrollmentRepository
     void Add(Enrollment enrollment);
     Task<bool> DeleteAsync(Guid enrollmentId, Guid organizationId, CancellationToken ct);
     Task<bool> ExistsAsync(Guid programId, Guid personId, Guid organizationId, CancellationToken ct);
+    Task<Guid?> GetIdAsync(Guid programId, Guid personId, Guid organizationId, CancellationToken ct);
     Task<bool> PersonExistsInOrgAsync(Guid personId, Guid organizationId, CancellationToken ct);
     Task<ProgramStatus?> GetProgramStatusByEnrollmentIdAsync(Guid enrollmentId, Guid organizationId, CancellationToken ct);
     Task<(IReadOnlyList<EnrollmentCandidateData> items, int totalCount)> GetCandidatesAsync(

@@ -272,6 +272,7 @@
           "EduCrm.Modules.Account.Domain": "1.0.0",
           "EduCrm.Modules.People.Domain": "1.0.0",
           "EduCrm.Modules.Program.Domain": "1.0.0",
+          "EduCrm.Modules.Support.Domain": "1.0.0",
           "EduCrm.SharedKernel": "1.0.0",
           "Microsoft.EntityFrameworkCore": "10.0.0",
           "Microsoft.EntityFrameworkCore.Relational": "10.0.0",
@@ -326,6 +327,16 @@
           "bin/placeholder/EduCrm.Modules.People.Application.dll": {}
         }
       },
+      "EduCrm.Modules.People.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/EduCrm.Modules.People.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EduCrm.Modules.People.Contracts.dll": {}
+        }
+      },
       "EduCrm.Modules.People.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
@@ -344,6 +355,7 @@
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
           "EduCrm.Infrastructure": "1.0.0",
+          "EduCrm.Modules.People.Contracts": "1.0.0",
           "EduCrm.Modules.Program.Domain": "1.0.0"
         },
         "compile": {
@@ -371,6 +383,16 @@
         },
         "runtime": {
           "bin/placeholder/EduCrm.Modules.Program.Domain.dll": {}
+        }
+      },
+      "EduCrm.Modules.Support.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/EduCrm.Modules.Support.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EduCrm.Modules.Support.Domain.dll": {}
         }
       },
       "EduCrm.SharedKernel/1.0.0": {
@@ -827,6 +849,11 @@
       "path": "../../../People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj",
       "msbuildProject": "../../../People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj"
     },
+    "EduCrm.Modules.People.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../../../People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj",
+      "msbuildProject": "../../../People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj"
+    },
     "EduCrm.Modules.People.Domain/1.0.0": {
       "type": "project",
       "path": "../../../People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj",
@@ -846,6 +873,11 @@
       "type": "project",
       "path": "../../../Program/Program.Domain/EduCrm.Modules.Program.Domain/EduCrm.Modules.Program.Domain.csproj",
       "msbuildProject": "../../../Program/Program.Domain/EduCrm.Modules.Program.Domain/EduCrm.Modules.Program.Domain.csproj"
+    },
+    "EduCrm.Modules.Support.Domain/1.0.0": {
+      "type": "project",
+      "path": "../../../Support/Support.Domain/EduCrm.Modules.Support.Domain/EduCrm.Modules.Support.Domain.csproj",
+      "msbuildProject": "../../../Support/Support.Domain/EduCrm.Modules.Support.Domain/EduCrm.Modules.Support.Domain.csproj"
     },
     "EduCrm.SharedKernel/1.0.0": {
       "type": "project",

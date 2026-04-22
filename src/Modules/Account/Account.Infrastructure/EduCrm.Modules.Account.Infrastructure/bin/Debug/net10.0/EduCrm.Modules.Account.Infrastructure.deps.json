@@ -125,6 +125,7 @@
           "EduCrm.Modules.Account.Domain": "1.0.0",
           "EduCrm.Modules.People.Domain": "1.0.0",
           "EduCrm.Modules.Program.Domain": "1.0.0",
+          "EduCrm.Modules.Support.Domain": "1.0.0",
           "EduCrm.SharedKernel": "1.0.0",
           "Microsoft.EntityFrameworkCore": "10.0.0",
           "Microsoft.EntityFrameworkCore.Relational": "10.0.0",
@@ -183,6 +184,14 @@
           }
         }
       },
+      "EduCrm.Modules.People.Contracts/1.0.0": {
+        "runtime": {
+          "EduCrm.Modules.People.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "EduCrm.Modules.People.Domain/1.0.0": {
         "dependencies": {
           "EduCrm.SharedKernel": "1.0.0"
@@ -197,6 +206,7 @@
       "EduCrm.Modules.Program.Application/1.0.0": {
         "dependencies": {
           "EduCrm.Infrastructure": "1.0.0",
+          "EduCrm.Modules.People.Contracts": "1.0.0",
           "EduCrm.Modules.Program.Domain": "1.0.0"
         },
         "runtime": {
@@ -217,6 +227,14 @@
       "EduCrm.Modules.Program.Domain/1.0.0": {
         "runtime": {
           "EduCrm.Modules.Program.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "EduCrm.Modules.Support.Domain/1.0.0": {
+        "runtime": {
+          "EduCrm.Modules.Support.Domain.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -333,6 +351,11 @@
       "serviceable": false,
       "sha512": ""
     },
+    "EduCrm.Modules.People.Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
     "EduCrm.Modules.People.Domain/1.0.0": {
       "type": "project",
       "serviceable": false,
@@ -349,6 +372,11 @@
       "sha512": ""
     },
     "EduCrm.Modules.Program.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "EduCrm.Modules.Support.Domain/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

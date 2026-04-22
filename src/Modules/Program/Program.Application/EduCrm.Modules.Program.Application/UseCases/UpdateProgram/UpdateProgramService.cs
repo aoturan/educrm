@@ -27,24 +27,28 @@ public class UpdateProgramService(
             return Result<UpdateProgramResult>.Fail(ProgramErrors.ProgramNotFound(input.ProgramId));
 
         // Modality rules
+        string? locationDetails;
+        string? onlineParticipationInfo;
+
         if (input.PublicModality == Domain.Enums.ProgramModality.Online)
         {
             if (string.IsNullOrWhiteSpace(input.OnlineParticipationInfo))
                 return Result<UpdateProgramResult>.Fail(ProgramErrors.OnlineModalityRequiresParticipationInfo());
 
-            if (input.LocationDetails is not null)
-                return Result<UpdateProgramResult>.Fail(ProgramErrors.OnlineModalityMustNotHaveLocationDetails());
+            onlineParticipationInfo = input.OnlineParticipationInfo;
+            locationDetails = null;
         }
         else
         {
             if (string.IsNullOrWhiteSpace(input.LocationDetails))
                 return Result<UpdateProgramResult>.Fail(ProgramErrors.OnsiteOrHybridModalityRequiresLocationDetails());
 
-            if (input.OnlineParticipationInfo is not null)
-                return Result<UpdateProgramResult>.Fail(ProgramErrors.OnsiteOrHybridModalityMustNotHaveParticipationInfo());
+            locationDetails = input.LocationDetails;
+            onlineParticipationInfo = null;
         }
 
         var now = clock.UtcNow.UtcDateTime;
+        var isPaid = input.PriceType == Domain.Enums.ProgramPriceType.Paid;
 
         program.Update(
             input.Name,
@@ -54,16 +58,17 @@ public class UpdateProgramService(
             input.PublicModality,
             input.PublicScheduleText,
             now,
+            input.PriceType,
             input.InternalNotes,
             input.PublicDetailedDescription,
-            input.LocationDetails,
-            input.OnlineParticipationInfo,
+            locationDetails,
+            onlineParticipationInfo,
             input.Capacity,
             input.PublicInstructorName,
             input.PublicEnrollmentDeadline,
-            input.PriceAmount,
-            input.PriceAmount is not null ? input.PriceCurrency : null,
-            input.PriceAmount is not null ? input.PriceNote : null);
+            isPaid ? input.PriceAmount : null,
+            isPaid ? input.PriceCurrency : null,
+            input.PriceNote);
 
         await uow.SaveChangesAsync(ct);
 

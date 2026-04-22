@@ -1,0 +1,11 @@
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/bin/Debug/net10.0/EduCrm.Modules.Support.Domain.deps.json
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/bin/Debug/net10.0/EduCrm.Modules.Support.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/bin/Debug/net10.0/EduCrm.Modules.Support.Domain.pdb
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/obj/Debug/net10.0/EduCrm.Modules.Support.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/obj/Debug/net10.0/EduCrm.Modules.Support.Domain.AssemblyInfoInputs.cache
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/obj/Debug/net10.0/EduCrm.Modules.Support.Domain.AssemblyInfo.cs
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/obj/Debug/net10.0/EduCrm.Modules.Support.Domain.csproj.CoreCompileInputs.cache
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/obj/Debug/net10.0/EduCrm.Modules.Support.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/obj/Debug/net10.0/refint/EduCrm.Modules.Support.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/obj/Debug/net10.0/EduCrm.Modules.Support.Domain.pdb
+/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/obj/Debug/net10.0/ref/EduCrm.Modules.Support.Domain.dll

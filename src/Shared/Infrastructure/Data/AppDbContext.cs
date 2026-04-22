@@ -2,6 +2,7 @@ using EduCrm.Infrastructure.Persistence;
 using EduCrm.Modules.Account.Domain.Entities;
 using EduCrm.Modules.People.Domain.Entities;
 using EduCrm.Modules.Program.Domain.Entities;
+using EduCrm.Modules.Support.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EduCrm.Infrastructure.Data;
@@ -22,6 +23,8 @@ public sealed class AppDbContext : DbContext, IUnitOfWork
     
     public DbSet<Program> Programs => Set<Program>();
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();
+    public DbSet<Application> Applications => Set<Application>();
+    public DbSet<SupportRequest> SupportRequests => Set<SupportRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

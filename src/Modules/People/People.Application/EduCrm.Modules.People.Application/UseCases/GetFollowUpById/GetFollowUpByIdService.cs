@@ -38,6 +38,8 @@ public sealed class GetFollowUpByIdService(
                 data.Person.Phone),
             data.Program is null ? null : new GetFollowUpByIdProgramResult(
                 data.Program.Id,
-                data.Program.Name)));
+                data.Program.Name,
+                data.Program.StartDate,
+                data.Program.EndDate)));
     }
 }

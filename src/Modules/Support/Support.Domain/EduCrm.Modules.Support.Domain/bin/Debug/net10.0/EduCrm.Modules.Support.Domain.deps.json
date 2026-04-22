@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "EduCrm.Modules.Support.Domain/1.0.0": {
+        "runtime": {
+          "EduCrm.Modules.Support.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "EduCrm.Modules.Support.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

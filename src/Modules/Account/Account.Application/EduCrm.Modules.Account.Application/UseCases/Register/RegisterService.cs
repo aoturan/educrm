@@ -41,6 +41,8 @@ public sealed class RegisterService(
                 accountId,
                 input.OrganizationName,
                 now,
+                input.Name,
+                input.Email,
                 input.ContactPhone);
 
             orgRepo.Add(organization);

@@ -32,6 +32,7 @@ public sealed class GetPublicProgramBySlugService(
             data.PriceAmount,
             data.PriceCurrency,
             data.PriceNote,
+            data.PriceType,
             data.IsPublic,
             data.OrganizationName));
     }

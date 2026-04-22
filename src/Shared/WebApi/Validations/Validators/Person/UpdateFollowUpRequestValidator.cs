@@ -15,11 +15,10 @@ public sealed class UpdateFollowUpRequestValidator : AbstractValidator<UpdateFol
 
         RuleFor(x => x.Title)
             .NotEmpty()
-            .MaximumLength(200);
-
+            .MaximumLength(150);
 
         RuleFor(x => x.Note)
-            .MaximumLength(4000)
+            .MaximumLength(2000)
             .When(x => x.Note is not null);
     }
 }

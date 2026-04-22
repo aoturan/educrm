@@ -11,7 +11,7 @@ public sealed class CreateProgramRequestValidator : AbstractValidator<CreateProg
 
         RuleFor(x => x.Name)
             .NotEmpty()
-            .MaximumLength(200);
+            .MaximumLength(100);
 
         RuleFor(x => x.StartDate)
             .NotEmpty()
@@ -27,26 +27,34 @@ public sealed class CreateProgramRequestValidator : AbstractValidator<CreateProg
 
         RuleFor(x => x.PublicShortDescription)
             .NotEmpty()
-            .MaximumLength(500);
+            .MaximumLength(250);
 
         RuleFor(x => x.PublicModality)
             .IsInEnum();
 
+        RuleFor(x => x.PriceType)
+            .IsInEnum()
+            .WithMessage("PriceType is required and must be a valid value (Free, Paid, ContactForPrice).");
+
         RuleFor(x => x.PublicScheduleText)
             .NotEmpty()
-            .MaximumLength(500);
+            .MaximumLength(150);
 
         RuleFor(x => x.PublicDetailedDescription)
             .MaximumLength(2000)
             .When(x => x.PublicDetailedDescription is not null);
 
-        RuleFor(x => x.LocationDetails)
-            .MaximumLength(500)
-            .When(x => x.LocationDetails is not null);
-
         RuleFor(x => x.OnlineParticipationInfo)
-            .MaximumLength(1000)
-            .When(x => x.OnlineParticipationInfo is not null);
+            .NotEmpty()
+            .WithMessage("Online modda katılım bilgisi girilmelidir.")
+            .MaximumLength(200)
+            .When(x => x.PublicModality == EduCrm.Modules.Program.Domain.Enums.ProgramModality.Online);
+
+        RuleFor(x => x.LocationDetails)
+            .NotEmpty()
+            .WithMessage("Yüz yüze/Hibrit modda konum bilgisi girilmelidir.")
+            .MaximumLength(200)
+            .When(x => x.PublicModality != EduCrm.Modules.Program.Domain.Enums.ProgramModality.Online);
 
         RuleFor(x => x.Capacity)
             .GreaterThan(0)
@@ -54,7 +62,7 @@ public sealed class CreateProgramRequestValidator : AbstractValidator<CreateProg
             .When(x => x.Capacity is not null);
 
         RuleFor(x => x.PublicInstructorName)
-            .MaximumLength(200)
+            .MaximumLength(80)
             .When(x => x.PublicInstructorName is not null);
 
         RuleFor(x => x.PublicEnrollmentDeadline)
@@ -68,19 +76,27 @@ public sealed class CreateProgramRequestValidator : AbstractValidator<CreateProg
             .When(x => x.PublicEnrollmentDeadline is not null);
 
         RuleFor(x => x.PriceAmount)
+            .NotNull()
+            .WithMessage("PriceAmount is required when PriceType is Paid.")
             .GreaterThan(0)
             .WithMessage("PriceAmount must be greater than 0.")
-            .When(x => x.PriceAmount is not null);
+            .LessThanOrEqualTo(999999)
+            .WithMessage("PriceAmount cannot exceed 999999.")
+            .When(x => x.PriceType == EduCrm.Modules.Program.Domain.Enums.ProgramPriceType.Paid);
 
         RuleFor(x => x.PriceCurrency)
             .NotNull()
-            .WithMessage("PriceCurrency is required when PriceAmount is provided.")
+            .WithMessage("PriceCurrency is required when PriceType is Paid.")
             .IsInEnum()
             .WithMessage("PriceCurrency must be a valid currency (TRY, USD, EUR).")
-            .When(x => x.PriceAmount is not null);
+            .When(x => x.PriceType == EduCrm.Modules.Program.Domain.Enums.ProgramPriceType.Paid);
 
         RuleFor(x => x.PriceNote)
-            .MaximumLength(1000)
+            .MaximumLength(150)
             .When(x => x.PriceNote is not null);
+
+        RuleFor(x => x.InternalNotes)
+            .MaximumLength(500)
+            .When(x => x.InternalNotes is not null);
     }
 }

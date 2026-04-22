@@ -20,6 +20,25 @@ public sealed class PersonRepository : IPersonRepository
         _db.Persons.Add(person);
     }
 
+    public Task<bool> ExistsByContactAsync(Guid organizationId, string email, string phone, CancellationToken ct)
+    {
+        return _db.Persons
+            .AnyAsync(p => p.OrganizationId == organizationId
+                        && !p.IsArchived
+                        && ((email != string.Empty && p.Email == email)
+                            || (phone != string.Empty && p.Phone == phone)), ct);
+    }
+
+    public Task<bool> ExistsByContactExcludingAsync(Guid organizationId, string email, string phone, Guid excludePersonId, CancellationToken ct)
+    {
+        return _db.Persons
+            .AnyAsync(p => p.OrganizationId == organizationId
+                        && !p.IsArchived
+                        && p.Id != excludePersonId
+                        && ((email != string.Empty && p.Email == email)
+                            || (phone != string.Empty && p.Phone == phone)), ct);
+    }
+
     public async Task<Person?> GetByIdAsync(Guid personId, Guid organizationId, CancellationToken ct)
     {
         return await _db.Persons
@@ -42,7 +61,7 @@ public sealed class PersonRepository : IPersonRepository
             from e in _db.Enrollments
             where e.PersonId == personId && e.OrganizationId == organizationId
             join p in _db.Programs on e.ProgramId equals p.Id
-            orderby p.StartDate descending
+            orderby e.EnrolledAtUtc descending
             select new PersonEnrolledProgramData(
                 p.Id,
                 p.Name,
@@ -50,6 +69,7 @@ public sealed class PersonRepository : IPersonRepository
                 p.EndDate,
                 p.Status))
             .AsNoTracking()
+            .Take(10)
             .ToListAsync(ct);
     }
 
@@ -71,6 +91,7 @@ public sealed class PersonRepository : IPersonRepository
                 f.SnoozedUntilUtc,
                 prog == null ? null : prog.Name))
             .AsNoTracking()
+            .Take(10)
             .ToListAsync(ct);
     }
 

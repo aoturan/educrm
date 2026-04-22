@@ -14,5 +14,10 @@ public static class PeopleErrorMappings
         { PeopleErrorCodes.PersonNotArchived, ErrorHttpStatusMapper.Status400BadRequest },
         { PeopleErrorCodes.PersonCannotBeUpdated, ErrorHttpStatusMapper.Status400BadRequest },
         { PeopleErrorCodes.PersonAlreadyArchived, ErrorHttpStatusMapper.Status400BadRequest },
+        { PeopleErrorCodes.InvalidPhoneFormat, ErrorHttpStatusMapper.Status400BadRequest },
+        { PeopleErrorCodes.DuplicateContactInfo, ErrorHttpStatusMapper.Status409Conflict },
+        { PeopleErrorCodes.PhoneRequired, ErrorHttpStatusMapper.Status400BadRequest },
+        { PeopleErrorCodes.EmailRequired, ErrorHttpStatusMapper.Status400BadRequest },
+        { PeopleErrorCodes.ContactInfoRequired, ErrorHttpStatusMapper.Status400BadRequest },
     };
 }

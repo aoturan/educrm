@@ -4,7 +4,7 @@ using EduCrm.Modules.People.Domain.Enums;
 namespace EduCrm.Modules.People.Application.UseCases.GetFollowUpById;
 
 public sealed record GetFollowUpByIdPersonResult(Guid Id, string FullName, string? Email, string? Phone);
-public sealed record GetFollowUpByIdProgramResult(Guid Id, string Name);
+public sealed record GetFollowUpByIdProgramResult(Guid Id, string Name, DateOnly StartDate, DateOnly EndDate);
 
 public sealed record GetFollowUpByIdResult(
     Guid Id,

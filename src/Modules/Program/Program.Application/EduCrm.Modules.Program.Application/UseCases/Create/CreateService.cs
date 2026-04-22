@@ -62,22 +62,27 @@ public class CreateService(
         }
 
         // Modality kuralları
+        string? locationDetails;
+        string? onlineParticipationInfo;
+
         if (input.PublicModality == Domain.Enums.ProgramModality.Online)
         {
             if (string.IsNullOrWhiteSpace(input.OnlineParticipationInfo))
                 return Result<CreateResult>.Fail(ProgramErrors.OnlineModalityRequiresParticipationInfo());
 
-            if (input.LocationDetails is not null)
-                return Result<CreateResult>.Fail(ProgramErrors.OnlineModalityMustNotHaveLocationDetails());
+            onlineParticipationInfo = input.OnlineParticipationInfo;
+            locationDetails = null;
         }
         else
         {
             if (string.IsNullOrWhiteSpace(input.LocationDetails))
                 return Result<CreateResult>.Fail(ProgramErrors.OnsiteOrHybridModalityRequiresLocationDetails());
 
-            if (input.OnlineParticipationInfo is not null)
-                return Result<CreateResult>.Fail(ProgramErrors.OnsiteOrHybridModalityMustNotHaveParticipationInfo());
+            locationDetails = input.LocationDetails;
+            onlineParticipationInfo = null;
         }
+
+        var isPaid = input.PriceType == Domain.Enums.ProgramPriceType.Paid;
 
         var program = new Domain.Entities.Program(
             orgContext.OrganizationId.Value,
@@ -92,14 +97,15 @@ public class CreateService(
             now,
             input.InternalNotes,
             input.PublicDetailedDescription,
-            input.LocationDetails,
-            input.OnlineParticipationInfo,
+            locationDetails,
+            onlineParticipationInfo,
             input.Capacity,
             input.PublicInstructorName,
             input.PublicEnrollmentDeadline,
-            input.PriceAmount,
-            input.PriceAmount is not null ? input.PriceCurrency : null,
-            input.PriceAmount is not null ? input.PriceNote : null);
+            isPaid ? input.PriceAmount : null,
+            isPaid ? input.PriceCurrency : null,
+            input.PriceNote,
+            input.PriceType);
 
         await using var trx = await tx.BeginAsync(ct);
 

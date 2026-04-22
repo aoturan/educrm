@@ -10,6 +10,7 @@ public sealed record UpdateProgramInput(
     string PublicShortDescription,
     ProgramModality PublicModality,
     string PublicScheduleText,
+    ProgramPriceType PriceType,
     string? InternalNotes = null,
     string? PublicDetailedDescription = null,
     string? LocationDetails = null,
@@ -20,4 +21,3 @@ public sealed record UpdateProgramInput(
     int? PriceAmount = null,
     PriceCurrency? PriceCurrency = null,
     string? PriceNote = null);
-

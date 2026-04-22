@@ -33,6 +33,9 @@ public sealed class ArchiveProgramService(
             if (program.IsArchived)
                 return Result<ArchiveProgramResult>.Fail(ProgramErrors.ProgramAlreadyArchived(input.ProgramId));
 
+            if (program.IsPublic)
+                program.Unpublish(now);
+
             program.Archive(now);
         }
         else

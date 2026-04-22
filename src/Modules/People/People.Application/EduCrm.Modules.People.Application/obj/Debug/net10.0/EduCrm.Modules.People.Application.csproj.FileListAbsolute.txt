@@ -73,3 +73,7 @@
 /Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/bin/Debug/net10.0/EduCrm.Modules.Program.Application.pdb
 /Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/bin/Debug/net10.0/EduCrm.Modules.Program.Contracts.dll
 /Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/bin/Debug/net10.0/EduCrm.Modules.Program.Contracts.pdb
+/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/bin/Debug/net10.0/EduCrm.Modules.People.Contracts.dll
+/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/bin/Debug/net10.0/EduCrm.Modules.People.Contracts.pdb
+/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/bin/Debug/net10.0/EduCrm.Modules.Support.Domain.dll
+/Users/ticimax/Documents/akn/be/src/Modules/People/People.Application/EduCrm.Modules.People.Application/bin/Debug/net10.0/EduCrm.Modules.Support.Domain.pdb

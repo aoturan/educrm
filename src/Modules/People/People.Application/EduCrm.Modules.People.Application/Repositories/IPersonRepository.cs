@@ -31,6 +31,10 @@ public interface IPersonRepository
 {
     void Add(Person person);
 
+    Task<bool> ExistsByContactAsync(Guid organizationId, string email, string phone, CancellationToken ct);
+
+    Task<bool> ExistsByContactExcludingAsync(Guid organizationId, string email, string phone, Guid excludePersonId, CancellationToken ct);
+
     Task<Person?> GetByIdAsync(Guid personId, Guid organizationId, CancellationToken ct);
 
     Task<Person?> GetTrackedByIdAsync(Guid personId, Guid organizationId, CancellationToken ct);

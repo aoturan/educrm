@@ -89,7 +89,7 @@ public class FollowUpController : ControllerBase
                 r.CompletedAtUtc,
                 r.CancelledAtUtc,
                 new FollowUpPersonResponse(r.Person.Id, r.Person.FullName, r.Person.Email, r.Person.Phone),
-                r.Program is null ? null : new FollowUpProgramResponse(r.Program.Id, r.Program.Name))));
+                r.Program is null ? null : new FollowUpProgramResponse(r.Program.Id, r.Program.Name, r.Program.StartDate, r.Program.EndDate))));
     }
 
     [HttpPost("{id:guid}/update")]
@@ -180,6 +180,8 @@ public class FollowUpController : ControllerBase
         [FromQuery] string? status = null,
         [FromQuery] Guid? personId = null,
         [FromQuery] Guid? programId = null,
+        [FromQuery] bool isBrief = false,
+        [FromQuery] string? face = null,
         CancellationToken ct = default)
     {
         if (page < 1) page = 1;
@@ -211,7 +213,7 @@ public class FollowUpController : ControllerBase
             if (statuses.Count > 0) statusFilter = statuses;
         }
 
-        var input = new ListFollowUpsInput(page, pageSize, typeFilter, statusFilter, personId, programId);
+        var input = new ListFollowUpsInput(page, pageSize, typeFilter, statusFilter, personId, programId, isBrief, face);
         var result = await _list.ListAsync(input, ct);
 
         return result.ToActionResult(HttpContext, this, r =>

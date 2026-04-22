@@ -80,6 +80,9 @@ public class Program
     [Column("price_note")]
     public string? PriceNote { get; private set; }
 
+    [Column("price_type")]
+    public ProgramPriceType PriceType { get; private set; }
+
     [Column("is_archived")]
     public bool IsArchived { get; private set; }
 
@@ -122,8 +125,8 @@ public class Program
         DateOnly? publicEnrollmentDeadline = null,
         int? priceAmount = null,
         PriceCurrency? priceCurrency = null,
-        string? priceNote = null)
-    {
+        string? priceNote = null,
+        ProgramPriceType priceType = default)    {
         if (organizationId == Guid.Empty)
             throw new ArgumentException("Organization ID cannot be empty.", nameof(organizationId));
         
@@ -172,6 +175,7 @@ public class Program
         PriceAmount = priceAmount;
         PriceCurrency = priceCurrency;
         PriceNote = priceNote;
+        PriceType = priceType;
 
         IsArchived = false;
         IsPublic = false;
@@ -185,13 +189,11 @@ public class Program
 
     public void Complete(DateTime utcNow)
     {
-
-            throw new InvalidOperationException("Program is already completed.");
-
         if (Status == ProgramStatus.Archived)
             throw new InvalidOperationException("An archived program cannot be completed.");
 
         Status = ProgramStatus.Completed;
+        CompletedAtUtc = utcNow;    
         UpdatedAtUtc = utcNow;
     }
 
@@ -208,7 +210,13 @@ public class Program
 
     public void Unarchive(DateTime utcNow)
     {
-        // ...existing code...
+        if (!IsArchived)
+            throw new InvalidOperationException("Program is not archived.");
+
+        Status = ProgramStatus.Active;
+        IsArchived = false;
+        ArchivedAtUtc = null;
+        UpdatedAtUtc = utcNow;
     }
 
     public void Publish(string slug, DateTime utcNow)
@@ -239,6 +247,7 @@ public class Program
         ProgramModality publicModality,
         string publicScheduleText,
         DateTime utcNow,
+        ProgramPriceType priceType = default,
         string? internalNotes = null,
         string? publicDetailedDescription = null,
         string? locationDetails = null,
@@ -278,6 +287,7 @@ public class Program
         PriceAmount = priceAmount;
         PriceCurrency = priceAmount is not null ? priceCurrency : null;
         PriceNote = priceAmount is not null ? priceNote : null;
+        PriceType = priceType;
         UpdatedAtUtc = utcNow;
     }
 }

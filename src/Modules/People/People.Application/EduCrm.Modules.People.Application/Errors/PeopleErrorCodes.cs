@@ -14,4 +14,9 @@ public static class PeopleErrorCodes
     public const string PersonAlreadyArchived = "people.person_already_archived";
     public const string PersonNotArchived = "people.person_not_archived";
     public const string PersonCannotBeUpdated = "people.person_cannot_be_updated";
+    public const string InvalidPhoneFormat = "people.invalid_phone_format";
+    public const string DuplicateContactInfo = "people.duplicate_contact_info";
+    public const string PhoneRequired = "people.phone_required";
+    public const string EmailRequired = "people.email_required";
+    public const string ContactInfoRequired = "people.contact_info_required";
 }

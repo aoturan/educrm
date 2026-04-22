@@ -26,6 +26,10 @@ public sealed class UpdateProgramRequestValidator : AbstractValidator<UpdateProg
         RuleFor(x => x.PublicModality)
             .IsInEnum();
 
+        RuleFor(x => x.PriceType)
+            .IsInEnum()
+            .WithMessage("PriceType is required and must be a valid value (Free, Paid, ContactForPrice).");
+
         RuleFor(x => x.PublicScheduleText)
             .NotEmpty()
             .MaximumLength(500);
@@ -34,13 +38,17 @@ public sealed class UpdateProgramRequestValidator : AbstractValidator<UpdateProg
             .MaximumLength(2000)
             .When(x => x.PublicDetailedDescription is not null);
 
-        RuleFor(x => x.LocationDetails)
-            .MaximumLength(500)
-            .When(x => x.LocationDetails is not null);
-
         RuleFor(x => x.OnlineParticipationInfo)
+            .NotEmpty()
+            .WithMessage("Online modda katılım bilgisi girilmelidir.")
             .MaximumLength(1000)
-            .When(x => x.OnlineParticipationInfo is not null);
+            .When(x => x.PublicModality == EduCrm.Modules.Program.Domain.Enums.ProgramModality.Online);
+
+        RuleFor(x => x.LocationDetails)
+            .NotEmpty()
+            .WithMessage("Yüz yüze/Hibrit modda konum bilgisi girilmelidir.")
+            .MaximumLength(500)
+            .When(x => x.PublicModality != EduCrm.Modules.Program.Domain.Enums.ProgramModality.Online);
 
         RuleFor(x => x.Capacity)
             .GreaterThan(0)
@@ -60,16 +68,20 @@ public sealed class UpdateProgramRequestValidator : AbstractValidator<UpdateProg
             .When(x => x.PublicEnrollmentDeadline is not null);
 
         RuleFor(x => x.PriceAmount)
+            .NotNull()
+            .WithMessage("PriceAmount is required when PriceType is Paid.")
             .GreaterThan(0)
             .WithMessage("PriceAmount must be greater than 0.")
-            .When(x => x.PriceAmount is not null);
+            .LessThanOrEqualTo(999999)
+            .WithMessage("PriceAmount cannot exceed 999999.")
+            .When(x => x.PriceType == EduCrm.Modules.Program.Domain.Enums.ProgramPriceType.Paid);
 
         RuleFor(x => x.PriceCurrency)
             .NotNull()
-            .WithMessage("PriceCurrency is required when PriceAmount is provided.")
+            .WithMessage("PriceCurrency is required when PriceType is Paid.")
             .IsInEnum()
             .WithMessage("PriceCurrency must be a valid currency (TRY, USD, EUR).")
-            .When(x => x.PriceAmount is not null);
+            .When(x => x.PriceType == EduCrm.Modules.Program.Domain.Enums.ProgramPriceType.Paid);
 
         RuleFor(x => x.PriceNote)
             .MaximumLength(1000)

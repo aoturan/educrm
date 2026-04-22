@@ -42,14 +42,20 @@ public sealed class Organization
     [Column("free_program_consumed_at_utc")]
     public DateTime? FreeProgramConsumedAtUtc { get; private set; }
 
+    [Column("contact_name")]
+    public string? ContactName { get; private set; }
+
+    [Column("contact_email")]
+    public string? ContactEmail { get; private set; }
+
     [Column("contact_phone")]
     public string? ContactPhone { get; private set; }
-    
+
     public ICollection<User> Users { get; set; } = new List<User>();
 
     private Organization() { } // EF
 
-    public Organization(Guid id, string name, DateTime createdAtUtc, string? contactPhone = null)
+    public Organization(Guid id, string name, DateTime createdAtUtc, string? contactName = null, string? contactEmail = null, string? contactPhone = null)
     {
         if (id == Guid.Empty) throw new ArgumentException("Organization id is required.", nameof(id));
         if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Organization name is required.", nameof(name));
@@ -63,6 +69,8 @@ public sealed class Organization
         SubscriptionStartedAtUtc = null;
         SubscriptionEndsAtUtc = null;
         FreeProgramConsumedAtUtc = null;
+        ContactName = string.IsNullOrWhiteSpace(contactName) ? null : contactName.Trim();
+        ContactEmail = string.IsNullOrWhiteSpace(contactEmail) ? null : contactEmail.Trim();
         ContactPhone = string.IsNullOrWhiteSpace(contactPhone) ? null : contactPhone.Trim();
     }
 
@@ -74,8 +82,10 @@ public sealed class Organization
         UpdatedAtUtc = utcNow;
     }
 
-    public void ChangeContactPhone(string? contactPhone, DateTime utcNow)
+    public void ChangeContactInfo(string? contactName, string? contactEmail, string? contactPhone, DateTime utcNow)
     {
+        ContactName = string.IsNullOrWhiteSpace(contactName) ? null : contactName.Trim();
+        ContactEmail = string.IsNullOrWhiteSpace(contactEmail) ? null : contactEmail.Trim();
         ContactPhone = string.IsNullOrWhiteSpace(contactPhone) ? null : contactPhone.Trim();
         UpdatedAtUtc = utcNow;
     }

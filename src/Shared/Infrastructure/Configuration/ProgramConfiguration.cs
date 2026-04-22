@@ -20,6 +20,10 @@ public sealed class ProgramConfiguration : IEntityTypeConfiguration<Program>
             .HasConversion<string>()
             .HasMaxLength(3);
 
+        b.Property(x => x.PriceType)
+            .HasConversion<string>()
+            .HasMaxLength(30);
+
         // FK: OrganizationId (navigation yok)
         b.HasOne<Organization>()
             .WithMany()

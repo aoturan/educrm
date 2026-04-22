@@ -2,6 +2,12 @@ using EduCrm.Modules.Program.Domain.Enums;
 
 namespace EduCrm.Modules.Program.Application.Repositories;
 
+public record PublicApplicationCheckData(
+    Guid ProgramId,
+    Guid OrganizationId,
+    ProgramStatus Status,
+    bool IsPublic);
+
 public record ProgramListItemData(
     Guid Id,
     string Name,
@@ -40,6 +46,7 @@ public record PublicProgramData(
     int? PriceAmount,
     PriceCurrency? PriceCurrency,
     string? PriceNote,
+    ProgramPriceType PriceType,
     bool IsPublic,
     string OrganizationName);
 
@@ -62,7 +69,8 @@ public interface IProgramRepository
         string? searchTerm = null,
         string? preFilter = null,
         bool showArchived = false,
-        Guid? personId = null);
+        Guid? personId = null,
+        bool onlyApproaching = false);
 
     Task<(Domain.Entities.Program program, IReadOnlyList<EnrollmentWithPersonData> enrollments)?> GetByIdAsync(
         Guid programId,
@@ -81,5 +89,13 @@ public interface IProgramRepository
 
     Task<bool> ExistsAsync(Guid programId, Guid organizationId, CancellationToken ct);
 
+    Task<Guid?> GetOrganizationIdAsync(Guid programId, CancellationToken ct);
+
+    Task<(Guid OrganizationId, ProgramStatus Status, bool IsPublic)?> GetPublicApplicationCheckAsync(Guid programId, CancellationToken ct);
+
+    Task<PublicApplicationCheckData?> GetPublicApplicationCheckBySlugAsync(string slug, CancellationToken ct);
+
     Task<PublicProgramData?> GetPublicBySlugAsync(string slug, CancellationToken ct);
+
+    Task<int> CountActiveStartingInNext7DaysAsync(Guid organizationId, CancellationToken ct);
 }

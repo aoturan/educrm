@@ -341,6 +341,7 @@
           "EduCrm.Modules.Account.Domain": "1.0.0",
           "EduCrm.Modules.People.Domain": "1.0.0",
           "EduCrm.Modules.Program.Domain": "1.0.0",
+          "EduCrm.Modules.Support.Domain": "1.0.0",
           "EduCrm.SharedKernel": "1.0.0",
           "Microsoft.EntityFrameworkCore": "10.0.0",
           "Microsoft.EntityFrameworkCore.Relational": "10.0.0",
@@ -425,6 +426,16 @@
           "bin/placeholder/EduCrm.Modules.People.Application.dll": {}
         }
       },
+      "EduCrm.Modules.People.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/EduCrm.Modules.People.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EduCrm.Modules.People.Contracts.dll": {}
+        }
+      },
       "EduCrm.Modules.People.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
@@ -459,6 +470,7 @@
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
           "EduCrm.Infrastructure": "1.0.0",
+          "EduCrm.Modules.People.Contracts": "1.0.0",
           "EduCrm.Modules.Program.Domain": "1.0.0"
         },
         "compile": {
@@ -500,6 +512,59 @@
         },
         "runtime": {
           "bin/placeholder/EduCrm.Modules.Program.Infrastructure.dll": {}
+        }
+      },
+      "EduCrm.Modules.Support.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "EduCrm.Infrastructure": "1.0.0",
+          "EduCrm.Modules.Support.Contracts": "1.0.0",
+          "EduCrm.Modules.Support.Domain": "1.0.0",
+          "EduCrm.SharedKernel": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/EduCrm.Modules.Support.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EduCrm.Modules.Support.Application.dll": {}
+        }
+      },
+      "EduCrm.Modules.Support.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/EduCrm.Modules.Support.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EduCrm.Modules.Support.Contracts.dll": {}
+        }
+      },
+      "EduCrm.Modules.Support.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/EduCrm.Modules.Support.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EduCrm.Modules.Support.Domain.dll": {}
+        }
+      },
+      "EduCrm.Modules.Support.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "EduCrm.Infrastructure": "1.0.0",
+          "EduCrm.Modules.Support.Application": "1.0.0",
+          "EduCrm.Modules.Support.Contracts": "1.0.0",
+          "EduCrm.Modules.Support.Domain": "1.0.0",
+          "EduCrm.SharedKernel": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/EduCrm.Modules.Support.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EduCrm.Modules.Support.Infrastructure.dll": {}
         }
       },
       "EduCrm.SharedKernel/1.0.0": {
@@ -1183,6 +1248,11 @@
       "path": "../../Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj",
       "msbuildProject": "../../Modules/People/People.Application/EduCrm.Modules.People.Application/EduCrm.Modules.People.Application.csproj"
     },
+    "EduCrm.Modules.People.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../../Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj",
+      "msbuildProject": "../../Modules/People/People.Contracts/EduCrm.Modules.People.Contracts/EduCrm.Modules.People.Contracts.csproj"
+    },
     "EduCrm.Modules.People.Domain/1.0.0": {
       "type": "project",
       "path": "../../Modules/People/People.Domain/EduCrm.Modules.People.Domain/EduCrm.Modules.People.Domain.csproj",
@@ -1213,6 +1283,26 @@
       "path": "../../Modules/Program/Program.Infrastructure/EduCrm.Modules.Program.Infrastructure/EduCrm.Modules.Program.Infrastructure.csproj",
       "msbuildProject": "../../Modules/Program/Program.Infrastructure/EduCrm.Modules.Program.Infrastructure/EduCrm.Modules.Program.Infrastructure.csproj"
     },
+    "EduCrm.Modules.Support.Application/1.0.0": {
+      "type": "project",
+      "path": "../../Modules/Support/Support.Application/EduCrm.Modules.Support.Application/EduCrm.Modules.Support.Application.csproj",
+      "msbuildProject": "../../Modules/Support/Support.Application/EduCrm.Modules.Support.Application/EduCrm.Modules.Support.Application.csproj"
+    },
+    "EduCrm.Modules.Support.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../../Modules/Support/Support.Contracts/EduCrm.Modules.Support.Contracts/EduCrm.Modules.Support.Contracts.csproj",
+      "msbuildProject": "../../Modules/Support/Support.Contracts/EduCrm.Modules.Support.Contracts/EduCrm.Modules.Support.Contracts.csproj"
+    },
+    "EduCrm.Modules.Support.Domain/1.0.0": {
+      "type": "project",
+      "path": "../../Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/EduCrm.Modules.Support.Domain.csproj",
+      "msbuildProject": "../../Modules/Support/Support.Domain/EduCrm.Modules.Support.Domain/EduCrm.Modules.Support.Domain.csproj"
+    },
+    "EduCrm.Modules.Support.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../../Modules/Support/Support.Infrastructure/EduCrm.Modules.Support.Infrastructure/EduCrm.Modules.Support.Infrastructure.csproj",
+      "msbuildProject": "../../Modules/Support/Support.Infrastructure/EduCrm.Modules.Support.Infrastructure/EduCrm.Modules.Support.Infrastructure.csproj"
+    },
     "EduCrm.SharedKernel/1.0.0": {
       "type": "project",
       "path": "../SharedKernel/EduCrm.SharedKernel/EduCrm.SharedKernel.csproj",
@@ -1230,6 +1320,9 @@
       "EduCrm.Modules.People.Infrastructure >= 1.0.0",
       "EduCrm.Modules.Program.Application >= 1.0.0",
       "EduCrm.Modules.Program.Infrastructure >= 1.0.0",
+      "EduCrm.Modules.Support.Application >= 1.0.0",
+      "EduCrm.Modules.Support.Contracts >= 1.0.0",
+      "EduCrm.Modules.Support.Infrastructure >= 1.0.0",
       "EduCrm.SharedKernel >= 1.0.0",
       "FluentValidation >= 12.1.1",
       "FluentValidation.DependencyInjectionExtensions >= 12.1.1",
@@ -1285,6 +1378,15 @@
             },
             "/Users/ticimax/Documents/akn/be/src/Modules/Program/Program.Infrastructure/EduCrm.Modules.Program.Infrastructure/EduCrm.Modules.Program.Infrastructure.csproj": {
               "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Program/Program.Infrastructure/EduCrm.Modules.Program.Infrastructure/EduCrm.Modules.Program.Infrastructure.csproj"
+            },
+            "/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Application/EduCrm.Modules.Support.Application/EduCrm.Modules.Support.Application.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Application/EduCrm.Modules.Support.Application/EduCrm.Modules.Support.Application.csproj"
+            },
+            "/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Contracts/EduCrm.Modules.Support.Contracts/EduCrm.Modules.Support.Contracts.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Contracts/EduCrm.Modules.Support.Contracts/EduCrm.Modules.Support.Contracts.csproj"
+            },
+            "/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Infrastructure/EduCrm.Modules.Support.Infrastructure/EduCrm.Modules.Support.Infrastructure.csproj": {
+              "projectPath": "/Users/ticimax/Documents/akn/be/src/Modules/Support/Support.Infrastructure/EduCrm.Modules.Support.Infrastructure/EduCrm.Modules.Support.Infrastructure.csproj"
             },
             "/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/EduCrm.Infrastructure.csproj": {
               "projectPath": "/Users/ticimax/Documents/akn/be/src/Shared/Infrastructure/EduCrm.Infrastructure.csproj"

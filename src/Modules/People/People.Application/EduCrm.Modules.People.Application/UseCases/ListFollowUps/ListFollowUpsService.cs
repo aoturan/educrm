@@ -15,15 +15,30 @@ public sealed class ListFollowUpsService(
             return Result<ListFollowUpsPagedResult>.Fail(
                 CommonErrors.Forbidden("Organization scope is missing."));
 
+        var onlyOverDue = string.Equals(input.Face, FollowUpFace.OverDue, StringComparison.OrdinalIgnoreCase);
+
+        int page, pageSize;
+        if (input.IsBrief)
+        {
+            page = 1;
+            pageSize = 5;
+        }
+        else
+        {
+            page = input.Page;
+            pageSize = input.PageSize;
+        }
+
         var (items, totalCount) = await followUpRepo.GetListAsync(
             orgContext.OrganizationId.Value,
-            input.Page,
-            input.PageSize,
+            page,
+            pageSize,
             ct,
             input.PreFilter,
             input.Status,
             input.PersonId,
-            input.ProgramId);
+            input.ProgramId,
+            onlyOverDue);
 
         var results = items
             .Select(x => new FollowUpListItemResult(
@@ -41,4 +56,3 @@ public sealed class ListFollowUpsService(
             new ListFollowUpsPagedResult(results, totalCount));
     }
 }
-

@@ -4,6 +4,7 @@ using EduCrm.Modules.Program.Application.UseCases.CreateEnrollment;
 using EduCrm.Modules.Program.Application.UseCases.ChangeStatus;
 using EduCrm.Modules.Program.Application.UseCases.DeleteEnrollment;
 using EduCrm.Modules.Program.Application.UseCases.GetById;
+using EduCrm.Modules.Program.Application.UseCases.GetDashboardCounts;
 using EduCrm.Modules.Program.Application.UseCases.GetEnrollmentCandidates;
 using EduCrm.Modules.Program.Application.UseCases.GetPublicProgramBySlug;
 using EduCrm.Modules.Program.Application.UseCases.List;
@@ -29,6 +30,7 @@ public class ProgramController : ControllerBase
     private readonly ICreateService _create;
     private readonly ICreateEnrollmentService _createEnrollment;
     private readonly IDeleteEnrollmentService _deleteEnrollment;
+    private readonly IGetDashboardCountsService _getDashboardCounts;
     private readonly IGetEnrollmentCandidatesService _getEnrollmentCandidates;
     private readonly IGetProgramByIdService _getById;
     private readonly IGetPublicProgramBySlugService _getPublicBySlug;
@@ -46,6 +48,7 @@ public class ProgramController : ControllerBase
         ICreateService create,
         ICreateEnrollmentService createEnrollment,
         IDeleteEnrollmentService deleteEnrollment,
+        IGetDashboardCountsService getDashboardCounts,
         IGetEnrollmentCandidatesService getEnrollmentCandidates,
         IGetProgramByIdService getById,
         IGetPublicProgramBySlugService getPublicBySlug,
@@ -62,6 +65,7 @@ public class ProgramController : ControllerBase
         _create = create;
         _createEnrollment = createEnrollment;
         _deleteEnrollment = deleteEnrollment;
+        _getDashboardCounts = getDashboardCounts;
         _getEnrollmentCandidates = getEnrollmentCandidates;
         _getById = getById;
         _getPublicBySlug = getPublicBySlug;
@@ -72,6 +76,20 @@ public class ProgramController : ControllerBase
         _unpublish = unpublish;
         _update = update;
         _validator = validator;
+    }
+
+    [HttpGet("dashboard/counts")]
+    [Authorize]
+    public async Task<IActionResult> GetDashboardCounts(CancellationToken ct)
+    {
+        var result = await _getDashboardCounts.GetAsync(ct);
+
+        return result.ToActionResult(HttpContext, this, r =>
+            Ok(new DashboardCountsResponse(
+                r.NewApplicationsCount,
+                r.ProgramsStartingInNext7DaysCount,
+                r.OpenFollowUpsCount,
+                r.OverdueFollowUpsCount)));
     }
 
     [HttpPost("{id:guid}/status")]
@@ -164,6 +182,7 @@ public class ProgramController : ControllerBase
                 r.PriceAmount,
                 r.PriceCurrency,
                 r.PriceNote,
+                r.PriceType,
                 r.IsPublic,
                 r.OrganizationName)));
     }
@@ -201,6 +220,7 @@ public class ProgramController : ControllerBase
                 p.PriceAmount,
                 p.PriceCurrency,
                 p.PriceNote,
+                p.PriceType,
                 p.PublicSlug,
                 p.PublicPublishedAtUtc,
                 p.Enrollments
@@ -217,18 +237,16 @@ public class ProgramController : ControllerBase
     [HttpGet("list")]
     [Authorize]
     public async Task<IActionResult> List(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] string? q = null,
-        [FromQuery] string? preFilter = null,
-        [FromQuery] bool showArchived = false,
-        [FromQuery] Guid? personId = null,
-        CancellationToken ct = default)
+        [FromQuery] ListProgramsQuery query,
+        CancellationToken ct)
     {
-        if (page < 1) page = 1;
-        if (pageSize is < 1 or > 100) pageSize = 10;
+        var validation = await _validator.ValidateAsync(query, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var input = new ListProgramsInput(page, pageSize, q, preFilter, showArchived, personId);
+        var page = query.Page < 1 ? 1 : query.Page;
+        var pageSize = query.PageSize is < 1 or > 100 ? 10 : query.PageSize;
+
+        var input = new ListProgramsInput(page, pageSize, query.Q, query.PreFilter, query.ShowArchived, query.PersonId, query.Face);
         var result = await _list.ListAsync(input, ct);
 
         return result.ToActionResult(HttpContext, this, r =>
@@ -275,6 +293,7 @@ public class ProgramController : ControllerBase
         var input = new CreateInput(
             req.Name, req.StartDate, req.EndDate,
             req.PublicShortDescription, req.PublicModality, req.PublicScheduleText,
+            req.PriceType,
             req.InternalNotes, req.PublicDetailedDescription,
             req.LocationDetails, req.OnlineParticipationInfo, req.Capacity,
             req.PublicInstructorName, req.PublicEnrollmentDeadline,
@@ -304,6 +323,7 @@ public class ProgramController : ControllerBase
             req.PublicShortDescription,
             req.PublicModality,
             req.PublicScheduleText,
+            req.PriceType,
             req.InternalNotes,
             req.PublicDetailedDescription,
             req.LocationDetails,

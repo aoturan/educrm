@@ -54,6 +54,7 @@ public sealed class GetProgramByIdService(
             program.PriceAmount,
             program.PriceCurrency,
             program.PriceNote,
+            program.PriceType,
             program.PublicSlug,
             program.PublicPublishedAtUtc,
             enrollments

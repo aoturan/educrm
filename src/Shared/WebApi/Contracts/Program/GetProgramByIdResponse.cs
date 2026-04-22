@@ -37,6 +37,7 @@ public sealed record GetProgramByIdResponse(
     int? PriceAmount,
     PriceCurrency? PriceCurrency,
     string? PriceNote,
+    ProgramPriceType PriceType,
     string? PublicSlug,
     DateTime? PublicPublishedAtUtc,
     IReadOnlyList<ProgramEnrollmentResponse> Enrollments);

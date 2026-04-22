@@ -21,4 +21,13 @@ public static class ProgramErrorCodes
     public const string ProgramNotArchived = "program.not_archived";
     public const string ProgramAlreadyPublic = "program.already_public";
     public const string ProgramNotPublic = "program.not_public";
+    public const string ApplicationAlreadyExists = "program.application_already_exists";
+    public const string AmbiguousPersonMatch = "program.ambiguous_person_match";
+    public const string ProgramNotAvailable = "program.not_available";
+    public const string InvalidPhoneFormat = "program.invalid_phone_format";
+    public const string ApplicationNotFound = "program.application_not_found";
+    public const string ApplicationNotNew = "program.application_not_new";
+    public const string ApplicationAlreadyHasPerson = "program.application_already_has_person";
+    public const string PersonNotInOrganization = "program.person_not_in_organization";
+    public const string ApplicationCannotBeClosed = "program.application_cannot_be_closed";
 }

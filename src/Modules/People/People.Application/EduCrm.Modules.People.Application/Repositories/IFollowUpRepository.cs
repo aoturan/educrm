@@ -4,7 +4,7 @@ using EduCrm.Modules.People.Domain.Enums;
 namespace EduCrm.Modules.People.Application.Repositories;
 
 public record FollowUpPersonInfo(Guid Id, string FullName, string? Email, string? Phone);
-public record FollowUpProgramInfo(Guid Id, string Name);
+public record FollowUpProgramInfo(Guid Id, string Name, DateOnly StartDate, DateOnly EndDate);
 
 public record FollowUpByIdData(
     Guid Id,
@@ -46,5 +46,6 @@ public interface IFollowUpRepository
         IReadOnlyList<FollowUpType>? typeFilter = null,
         IReadOnlyList<FollowUpStatus>? statusFilter = null,
         Guid? personId = null,
-        Guid? programId = null);
+        Guid? programId = null,
+        bool onlyOverDue = false);
 }

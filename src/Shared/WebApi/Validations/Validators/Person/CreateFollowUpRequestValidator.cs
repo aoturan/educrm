@@ -15,7 +15,7 @@ public sealed class CreateFollowUpRequestValidator : AbstractValidator<CreateFol
 
         RuleFor(x => x.Title)
             .NotEmpty()
-            .MaximumLength(200);
+            .MaximumLength(150);
 
         RuleFor(x => x.DueAtUtc)
             .NotEmpty()
@@ -23,7 +23,7 @@ public sealed class CreateFollowUpRequestValidator : AbstractValidator<CreateFol
             .WithMessage("DueAtUtc must be a future date.");
 
         RuleFor(x => x.Note)
-            .MaximumLength(4000)
+            .MaximumLength(2000)
             .When(x => x.Note is not null);
     }
 }

@@ -9,6 +9,7 @@ public sealed record CreateProgramRequest(
     string PublicShortDescription,
     ProgramModality PublicModality,
     string PublicScheduleText,
+    ProgramPriceType PriceType,
     string? InternalNotes = null,
     string? PublicDetailedDescription = null,
     string? LocationDetails = null,
@@ -20,4 +21,3 @@ public sealed record CreateProgramRequest(
     PriceCurrency? PriceCurrency = null,
     string? PriceNote = null
 );
-

@@ -45,7 +45,7 @@ public sealed class FollowUpRepository : IFollowUpRepository
                 f.CompletedAtUtc,
                 f.CancelledAtUtc,
                 new FollowUpPersonInfo(p.Id, p.FullName, p.Email, p.Phone),
-                prog == null ? null : new FollowUpProgramInfo(prog.Id, prog.Name)))
+                prog == null ? null : new FollowUpProgramInfo(prog.Id, prog.Name, prog.StartDate, prog.EndDate)))
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
 
@@ -60,8 +60,11 @@ public sealed class FollowUpRepository : IFollowUpRepository
         IReadOnlyList<FollowUpType>? typeFilter = null,
         IReadOnlyList<FollowUpStatus>? statusFilter = null,
         Guid? personId = null,
-        Guid? programId = null)
+        Guid? programId = null,
+        bool onlyOverDue = false)
     {
+        var now = DateTime.UtcNow;
+
         var query =
             from f in _db.FollowUps
             where f.OrganizationId == organizationId
@@ -69,6 +72,7 @@ public sealed class FollowUpRepository : IFollowUpRepository
                && (programId == null || f.ProgramId == programId)
                && (typeFilter == null || typeFilter.Count == 0 || typeFilter.Contains(f.Type))
                && (statusFilter == null || statusFilter.Count == 0 || statusFilter.Contains(f.Status))
+               && (!onlyOverDue || f.DueAtUtc < now)
             join p in _db.Persons on f.PersonId equals p.Id
             from prog in _db.Programs.Where(x => x.Id == f.ProgramId).DefaultIfEmpty()
             orderby f.DueAtUtc ascending

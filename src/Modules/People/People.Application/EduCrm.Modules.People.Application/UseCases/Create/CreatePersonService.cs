@@ -1,4 +1,6 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.People.Application.Errors;
+using EduCrm.Modules.People.Application.Helpers;
 using EduCrm.Modules.People.Application.Repositories;
 using EduCrm.Modules.People.Application.UseCases.Create;
 using EduCrm.Modules.People.Domain.Entities;
@@ -17,20 +19,39 @@ public sealed class CreatePersonService(
     public async Task<Result<CreateResult>> CreateAsync(CreateInput input, CancellationToken ct)
     {
         if (orgContext.OrganizationId is null)
-        {
             return Result<CreateResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
+
+        var organizationId = orgContext.OrganizationId.Value;
+
+        string? normalizedPhone = null;
+        if (input.Phone is not null)
+        {
+            var phoneResult = PhoneNormalizer.NormalizePhone(input.Phone);
+            if (!phoneResult.IsSuccess)
+                return Result<CreateResult>.Fail(phoneResult.Errors);
+            normalizedPhone = phoneResult.Value;
+        }
+
+        var normalizedEmail = input.Email?.Trim().ToLowerInvariant();
+
+        if (normalizedEmail is not null || normalizedPhone is not null)
+        {
+            var duplicate = await personRepo.ExistsByContactAsync(
+                organizationId, normalizedEmail ?? string.Empty, normalizedPhone ?? string.Empty, ct);
+            if (duplicate)
+                return Result<CreateResult>.Fail(PeopleErrors.DuplicateContactInfo());
         }
 
         var now = clock.UtcNow.UtcDateTime;
 
         var person = new Person(
-            orgContext.OrganizationId.Value,
-            input.FullName,
+            organizationId,
+            input.FullName.Trim(),
             input.Source,
             now,
-            input.Phone,
-            input.Email,
-            input.Notes);
+            normalizedPhone,
+            normalizedEmail,
+            input.Notes?.Trim());
 
         personRepo.Add(person);
         await uow.SaveChangesAsync(ct);

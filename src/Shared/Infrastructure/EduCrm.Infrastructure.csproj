@@ -29,6 +29,7 @@
       <ProjectReference Include="..\..\Modules\Account\Account.Domain\EduCrm.Modules.Account.Domain\EduCrm.Modules.Account.Domain.csproj" />
       <ProjectReference Include="..\..\Modules\People\People.Domain\EduCrm.Modules.People.Domain\EduCrm.Modules.People.Domain.csproj" />
       <ProjectReference Include="..\..\Modules\Program\Program.Domain\EduCrm.Modules.Program.Domain\EduCrm.Modules.Program.Domain.csproj" />
+      <ProjectReference Include="..\..\Modules\Support\Support.Domain\EduCrm.Modules.Support.Domain\EduCrm.Modules.Support.Domain.csproj" />
       <ProjectReference Include="..\SharedKernel\EduCrm.SharedKernel\EduCrm.SharedKernel.csproj" />
     </ItemGroup>
 

@@ -45,16 +45,16 @@ public static class ProgramErrors
         );
 
     public static Error OnlineModalityRequiresParticipationInfo() =>
-        InvalidModalityConfiguration("Online modality requires OnlineParticipationInfo to be provided.");
+        InvalidModalityConfiguration("Online katılım için bilgisi girilmelidir.");
 
     public static Error OnlineModalityMustNotHaveLocationDetails() =>
-        InvalidModalityConfiguration("Online modality must not have LocationDetails.");
+        InvalidModalityConfiguration("Online modda lokasyon bilgidsi boş olmalıdır.");
 
     public static Error OnsiteOrHybridModalityRequiresLocationDetails() =>
-        InvalidModalityConfiguration("Onsite/Hybrid modality requires LocationDetails to be provided.");
+        InvalidModalityConfiguration("Lokasyon bilgisi girilmelidir.");
 
     public static Error OnsiteOrHybridModalityMustNotHaveParticipationInfo() =>
-        InvalidModalityConfiguration("Onsite/Hybrid modality must not have OnlineParticipationInfo.");
+        InvalidModalityConfiguration("Online bilgi alanı boş olmalıdır.");
 
     public static Error EnrollmentNotFound(Guid enrollmentId) =>
         new(
@@ -139,5 +139,61 @@ public static class ProgramErrors
             Code: ProgramErrorCodes.ProgramNotPublic,
             Message: "Program zaten yayında değil.",
             Metadata: new Dictionary<string, object> { ["programId"] = programId }
+        );
+
+    public static Error ApplicationAlreadyExists() =>
+        new(
+            Code: ProgramErrorCodes.ApplicationAlreadyExists,
+            Message: "Daha önce bu bilgiler ile başvuru yapılmıştır."
+        );
+
+    public static Error AmbiguousPersonMatch() =>
+        new(
+            Code: ProgramErrorCodes.AmbiguousPersonMatch,
+            Message: "Girdiğiniz bilgilerle birden fazla kayıt eşleşti. Lütfen akademi ile iletişime geçiniz."
+        );
+
+    public static Error ProgramNotAvailable() =>
+        new(
+            Code: ProgramErrorCodes.ProgramNotAvailable,
+            Message: "Program bulunamadı veya başvuruya kapalı."
+        );
+
+    public static Error InvalidPhoneFormat() =>
+        new(
+            Code: ProgramErrorCodes.InvalidPhoneFormat,
+            Message: "Telefon numarası geçerli bir formatta değil."
+        );
+
+    public static Error ApplicationNotFound(Guid applicationId) =>
+        new(
+            Code: ProgramErrorCodes.ApplicationNotFound,
+            Message: "Başvuru bulunamadı.",
+            Metadata: new Dictionary<string, object> { ["applicationId"] = applicationId }
+        );
+
+    public static Error ApplicationNotNew() =>
+        new(
+            Code: ProgramErrorCodes.ApplicationNotNew,
+            Message: "Bu başvuru yeni durumunda değil, işlem yapılamaz."
+        );
+
+    public static Error ApplicationAlreadyHasPerson() =>
+        new(
+            Code: ProgramErrorCodes.ApplicationAlreadyHasPerson,
+            Message: "Bu başvuruya zaten bir kişi atanmış."
+        );
+
+    public static Error PersonNotInOrganization(Guid personId) =>
+        new(
+            Code: ProgramErrorCodes.PersonNotInOrganization,
+            Message: "Kişi bu organizasyona ait değil.",
+            Metadata: new Dictionary<string, object> { ["personId"] = personId }
+        );
+
+    public static Error ApplicationCannotBeClosed() =>
+        new(
+            Code: ProgramErrorCodes.ApplicationCannotBeClosed,
+            Message: "Bu başvuru kapatılamaz. Yalnızca 'Yeni' veya 'İletişime Geçildi' durumundaki başvurular kapatılabilir."
         );
 }

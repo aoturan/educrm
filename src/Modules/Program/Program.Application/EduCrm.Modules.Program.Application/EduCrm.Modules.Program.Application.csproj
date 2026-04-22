@@ -7,12 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Helpers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\..\..\Shared\Infrastructure\EduCrm.Infrastructure.csproj" />
       <ProjectReference Include="..\..\Program.Domain\EduCrm.Modules.Program.Domain\EduCrm.Modules.Program.Domain.csproj" />
+      <ProjectReference Include="..\..\..\People\People.Contracts\EduCrm.Modules.People.Contracts\EduCrm.Modules.People.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

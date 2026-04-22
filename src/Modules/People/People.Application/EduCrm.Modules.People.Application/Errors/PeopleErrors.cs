@@ -86,4 +86,34 @@ public static class PeopleErrors
             Message: "Arşivlenmiş kişi güncellenemez.",
             Metadata: new Dictionary<string, object> { ["personId"] = personId }
         );
+
+    public static Error InvalidPhoneFormat() =>
+        new(
+            Code: PeopleErrorCodes.InvalidPhoneFormat,
+            Message: "Telefon numarası geçerli bir formatta değil."
+        );
+
+    public static Error DuplicateContactInfo() =>
+        new(
+            Code: PeopleErrorCodes.DuplicateContactInfo,
+            Message: "Aynı telefon veya eposta ile kayıtlı bir kişi bulunmuştur."
+        );
+
+    public static Error PhoneRequired() =>
+        new(
+            Code: PeopleErrorCodes.PhoneRequired,
+            Message: "Telefon numarası boş olamaz."
+        );
+
+    public static Error EmailRequired() =>
+        new(
+            Code: PeopleErrorCodes.EmailRequired,
+            Message: "E-posta adresi boş olamaz."
+        );
+
+    public static Error ContactInfoRequired() =>
+        new(
+            Code: PeopleErrorCodes.ContactInfoRequired,
+            Message: "Telefon numarası veya e-posta adresinden en az biri girilmelidir."
+        );
 }
