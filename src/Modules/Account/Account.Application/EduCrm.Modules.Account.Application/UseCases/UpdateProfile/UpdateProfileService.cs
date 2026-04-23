@@ -10,27 +10,27 @@ namespace EduCrm.Modules.Account.Application.UseCases.UpdateProfile;
 
 public sealed class UpdateProfileService(
     IUserRepository userRepo,
-    IOrganizationRepository orgRepo,
     IUnitOfWork uow,
-    IAppDbTransaction tx,
     IClock clock) : IUpdateProfileService
 {
     public async Task<Result<UpdateProfileResult>> UpdateProfileAsync(UpdateProfileInput input, CancellationToken ct)
     {
         var now = clock.UtcNow.UtcDateTime;
 
-        // 1) Get user
         var user = await userRepo.GetByIdAsync(input.UserId, ct);
         if (user is null)
         {
             return Result<UpdateProfileResult>.Fail(AccountErrors.NotFound(input.UserId));
         }
 
-        // 2) Check if email changed
+        if (user.OrganizationId != input.OrganizationId)
+        {
+            return Result<UpdateProfileResult>.Fail(AccountErrors.UserNotInOrganization());
+        }
+
         var emailChanged = !string.Equals(user.Email, input.Email, StringComparison.OrdinalIgnoreCase);
         if (emailChanged)
         {
-            // Only admins can change their email through self-service
             if (user.Role != UserRole.Admin)
             {
                 return Result<UpdateProfileResult>.Fail(AccountErrors.EmailChangeNotAllowed());
@@ -43,40 +43,16 @@ public sealed class UpdateProfileService(
             }
         }
 
-        // 3) Get organization
-        var organization = await orgRepo.GetByIdAsync(input.OrganizationId, ct);
-        if (organization is null)
-        {
-            return Result<UpdateProfileResult>.Fail(AccountErrors.NotFound(input.UserId));
-        }
+        user.ChangeEmail(input.Email, now);
+        user.ChangeFullName(input.FullName, now);
 
-        await using var trx = await tx.BeginAsync(ct);
+        await uow.SaveChangesAsync(ct);
 
-        try
-        {
-            // 4) Update User (email and fullName)
-            user.ChangeEmail(input.Email, now);
-            user.ChangeFullName(input.FullName, now);
+        var initials = NameHelper.GetInitials(input.FullName);
 
-            // 5) Update Organization name
-            organization.Rename(input.OrganizationName, now);
-
-            // 6) Save all changes
-            await uow.SaveChangesAsync(ct);
-            await trx.CommitAsync(ct);
-
-            var initials = NameHelper.GetInitials(input.FullName);
-
-            return Result<UpdateProfileResult>.Success(new UpdateProfileResult(
-                input.Email,
-                input.FullName,
-                initials,
-                input.OrganizationName));
-        }
-        catch
-        {
-            await trx.RollbackAsync(ct);
-            throw;
-        }
+        return Result<UpdateProfileResult>.Success(new UpdateProfileResult(
+            input.Email,
+            input.FullName,
+            initials));
     }
 }

@@ -49,6 +49,7 @@ public sealed class UserRepository : IUserRepository
                     u.Id,
                     u.OrganizationId,
                     u.Status,
+                    u.Role,
                     u.PasswordHash,
                     u.Email,
                     u.FullName,
@@ -58,7 +59,7 @@ public sealed class UserRepository : IUserRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
     }
-    
+
     public async Task<UserWithOrganization?> GetByIdWithOrganizationAsync(Guid userId, CancellationToken ct)
     {
         return await (
@@ -69,6 +70,7 @@ public sealed class UserRepository : IUserRepository
                     u.Id,
                     u.OrganizationId,
                     u.Status,
+                    u.Role,
                     u.PasswordHash,
                     u.Email,
                     u.FullName,

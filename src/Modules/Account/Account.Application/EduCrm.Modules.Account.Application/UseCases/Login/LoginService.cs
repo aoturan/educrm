@@ -46,8 +46,9 @@ public sealed class LoginService(
         return Result<LoginResult>.Success(new LoginResult(
             token,
             userWithName.Email,
-            userWithName.FullName, 
-            initials, 
-            userWithName.OrganizationName));
+            userWithName.FullName,
+            initials,
+            userWithName.OrganizationName,
+            userWithName.Role));
     }
 }

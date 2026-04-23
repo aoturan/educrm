@@ -102,7 +102,7 @@ public sealed class AccountController : ControllerBase
         var result = await _login.LoginAsync(input, ct);
 
         return result.ToActionResult(HttpContext, this, r =>
-            Ok(new LoginResponse(r.Token, r.Email, r.FullName, r.Initials, r.OrganizationName)));
+            Ok(new LoginResponse(r.Token, r.Email, r.FullName, r.Initials, r.OrganizationName, r.Role)));
     }
 
     [HttpGet("me")]
@@ -118,7 +118,7 @@ public sealed class AccountController : ControllerBase
         var result = await _getMe.GetMeAsync(userId.Value, ct);
 
         return result.ToActionResult(HttpContext, this, r =>
-            Ok(new MeResponse(r.Email, r.FullName, r.Initials, r.OrganizationName)));
+            Ok(new MeResponse(r.Email, r.FullName, r.Initials, r.Role)));
     }
 
     [HttpPost("change-password")]
@@ -170,13 +170,12 @@ public sealed class AccountController : ControllerBase
             userId.Value,
             orgId.Value,
             req.FullName,
-            req.Email,
-            req.OrganizationName);
+            req.Email);
 
         var result = await _updateProfile.UpdateProfileAsync(input, ct);
 
         return result.ToActionResult(HttpContext, this, r =>
-            Ok(new MeResponse(r.Email, r.FullName, r.Initials, r.OrganizationName)));
+            Ok(new UpdateProfileResponse(r.Email, r.FullName, r.Initials)));
     }
 
     [HttpPost("user")]

@@ -14,9 +14,5 @@ public sealed class UpdateProfileRequestValidator : AbstractValidator<UpdateProf
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("E-posta gereklidir.")
             .EmailAddress().WithMessage("Geçerli bir e-posta adresi giriniz.");
-
-        RuleFor(x => x.OrganizationName)
-            .NotEmpty().WithMessage("Organizasyon adı gereklidir.")
-            .MaximumLength(200).WithMessage("Organizasyon adı en fazla 200 karakter olabilir.");
     }
 }

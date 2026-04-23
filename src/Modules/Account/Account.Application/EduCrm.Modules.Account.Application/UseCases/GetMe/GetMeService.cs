@@ -9,7 +9,7 @@ public sealed class GetMeService(IUserRepository userRepo) : IGetMeService
 {
     public async Task<Result<GetMeResult>> GetMeAsync(Guid userId, CancellationToken ct)
     {
-        var user = await userRepo.GetByIdWithOrganizationAsync(userId, ct);
+        var user = await userRepo.GetByIdAsync(userId, ct);
         if (user is null)
         {
             return Result<GetMeResult>.Fail(AccountErrors.NotFound(userId));
@@ -21,6 +21,6 @@ public sealed class GetMeService(IUserRepository userRepo) : IGetMeService
             user.Email,
             user.FullName,
             initials,
-            user.OrganizationName));
+            user.Role));
     }
 }

@@ -4,6 +4,4 @@ public sealed record UpdateProfileInput(
     Guid UserId,
     Guid OrganizationId,
     string FullName,
-    string Email,
-    string OrganizationName);
-
+    string Email);
