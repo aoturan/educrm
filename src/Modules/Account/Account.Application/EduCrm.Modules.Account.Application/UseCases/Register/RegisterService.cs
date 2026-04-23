@@ -4,6 +4,7 @@ using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Application.Security;
 using EduCrm.Modules.Account.Domain.Entities;
+using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
 
@@ -33,6 +34,10 @@ public sealed class RegisterService(
 
         try
         {
+            var normalizedPhone = PhoneNormalizer.Normalize(input.Phone);
+            if (normalizedPhone is null)
+                return Result<RegisterResult>.Fail(AccountErrors.InvalidPhoneFormat());
+
             var now = clock.UtcNow.UtcDateTime;
             var accountId = Guid.NewGuid();
 
@@ -43,7 +48,7 @@ public sealed class RegisterService(
                 now,
                 input.Name,
                 input.Email,
-                input.ContactPhone);
+                normalizedPhone);
 
             orgRepo.Add(organization);
 
@@ -54,6 +59,7 @@ public sealed class RegisterService(
                 input.Email,
                 input.Name,
                 input.PasswordHash,
+                UserRole.Admin,
                 now);
 
             userRepo.Add(user);

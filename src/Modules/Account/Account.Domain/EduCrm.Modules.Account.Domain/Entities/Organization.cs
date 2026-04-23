@@ -11,19 +11,19 @@ public sealed class Organization
     [Key]
     [Column("id")]
     public Guid Id { get; private set; }
-    
+
     [Required]
     [Column("name")]
     public string Name { get; private set; } = null!;
-    
+
     [Required]
     [Column("created_at_utc")]
     public DateTime CreatedAtUtc { get; private set; }
-    
-    
+
+
     [Column("updated_at_utc")]
     public DateTime? UpdatedAtUtc { get; private set; }
-    
+
     [Column("plan_type")]
     public OrganizationPlanType PlanType { get; private set; }
 
@@ -42,23 +42,29 @@ public sealed class Organization
     [Column("free_program_consumed_at_utc")]
     public DateTime? FreeProgramConsumedAtUtc { get; private set; }
 
+    [Required]
     [Column("contact_name")]
-    public string? ContactName { get; private set; }
+    public string ContactName { get; private set; } = null!;
 
+    [Required]
     [Column("contact_email")]
-    public string? ContactEmail { get; private set; }
+    public string ContactEmail { get; private set; } = null!;
 
+    [Required]
     [Column("contact_phone")]
-    public string? ContactPhone { get; private set; }
+    public string ContactPhone { get; private set; } = null!;
 
     public ICollection<User> Users { get; set; } = new List<User>();
 
     private Organization() { } // EF
 
-    public Organization(Guid id, string name, DateTime createdAtUtc, string? contactName = null, string? contactEmail = null, string? contactPhone = null)
+    public Organization(Guid id, string name, DateTime createdAtUtc, string contactName, string contactEmail, string contactPhone)
     {
         if (id == Guid.Empty) throw new ArgumentException("Organization id is required.", nameof(id));
         if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Organization name is required.", nameof(name));
+        if (string.IsNullOrWhiteSpace(contactName)) throw new ArgumentException("Contact name is required.", nameof(contactName));
+        if (string.IsNullOrWhiteSpace(contactEmail)) throw new ArgumentException("Contact email is required.", nameof(contactEmail));
+        if (string.IsNullOrWhiteSpace(contactPhone)) throw new ArgumentException("Contact phone is required.", nameof(contactPhone));
 
         Id = id;
         Name = name.Trim();
@@ -69,9 +75,9 @@ public sealed class Organization
         SubscriptionStartedAtUtc = null;
         SubscriptionEndsAtUtc = null;
         FreeProgramConsumedAtUtc = null;
-        ContactName = string.IsNullOrWhiteSpace(contactName) ? null : contactName.Trim();
-        ContactEmail = string.IsNullOrWhiteSpace(contactEmail) ? null : contactEmail.Trim();
-        ContactPhone = string.IsNullOrWhiteSpace(contactPhone) ? null : contactPhone.Trim();
+        ContactName = contactName.Trim();
+        ContactEmail = contactEmail.Trim();
+        ContactPhone = contactPhone.Trim();
     }
 
     public void Rename(string name, DateTime utcNow)
@@ -82,11 +88,15 @@ public sealed class Organization
         UpdatedAtUtc = utcNow;
     }
 
-    public void ChangeContactInfo(string? contactName, string? contactEmail, string? contactPhone, DateTime utcNow)
+    public void ChangeContactInfo(string contactName, string contactEmail, string contactPhone, DateTime utcNow)
     {
-        ContactName = string.IsNullOrWhiteSpace(contactName) ? null : contactName.Trim();
-        ContactEmail = string.IsNullOrWhiteSpace(contactEmail) ? null : contactEmail.Trim();
-        ContactPhone = string.IsNullOrWhiteSpace(contactPhone) ? null : contactPhone.Trim();
+        if (string.IsNullOrWhiteSpace(contactName)) throw new ArgumentException("Contact name is required.", nameof(contactName));
+        if (string.IsNullOrWhiteSpace(contactEmail)) throw new ArgumentException("Contact email is required.", nameof(contactEmail));
+        if (string.IsNullOrWhiteSpace(contactPhone)) throw new ArgumentException("Contact phone is required.", nameof(contactPhone));
+
+        ContactName = contactName.Trim();
+        ContactEmail = contactEmail.Trim();
+        ContactPhone = contactPhone.Trim();
         UpdatedAtUtc = utcNow;
     }
 

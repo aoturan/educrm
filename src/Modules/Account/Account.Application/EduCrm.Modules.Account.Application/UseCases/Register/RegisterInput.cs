@@ -5,4 +5,4 @@ public sealed record RegisterInput(
     string Email,
     string OrganizationName,
     string PasswordHash,
-    string? ContactPhone);
+    string Phone);

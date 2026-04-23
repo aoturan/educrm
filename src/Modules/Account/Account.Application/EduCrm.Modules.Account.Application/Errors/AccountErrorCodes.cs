@@ -11,5 +11,7 @@ public static class AccountErrorCodes
     public const string NotFound = "account.not_found";
     public const string InvalidToken = "account.invalid_token";
     public const string UserInactive = "account.user_inactive";
+    public const string InvalidPhoneFormat = "account.invalid_phone_format";
+    public const string UserNotInOrganization = "account.user_not_in_organization";
+    public const string NotAdmin = "account.not_admin";
 }
-

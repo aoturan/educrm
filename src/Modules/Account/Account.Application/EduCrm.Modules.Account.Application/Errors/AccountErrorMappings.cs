@@ -15,6 +15,9 @@ public static class AccountErrorMappings
         { AccountErrorCodes.InvalidOldPassword, ErrorHttpStatusMapper.Status400BadRequest },
         { AccountErrorCodes.NotFound, ErrorHttpStatusMapper.Status404NotFound },
         { AccountErrorCodes.InvalidToken, ErrorHttpStatusMapper.Status401Unauthorized },
-        { AccountErrorCodes.UserInactive, ErrorHttpStatusMapper.Status403Forbidden }
+        { AccountErrorCodes.UserInactive, ErrorHttpStatusMapper.Status403Forbidden },
+        { AccountErrorCodes.InvalidPhoneFormat, ErrorHttpStatusMapper.Status400BadRequest },
+        { AccountErrorCodes.UserNotInOrganization, ErrorHttpStatusMapper.Status403Forbidden },
+        { AccountErrorCodes.NotAdmin, ErrorHttpStatusMapper.Status403Forbidden }
     };
 }

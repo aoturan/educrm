@@ -1,5 +1,6 @@
 using EduCrm.Modules.Account.Application.Security;
 using EduCrm.Modules.Account.Application.UseCases.ChangePassword;
+using EduCrm.Modules.Account.Application.UseCases.CreateUser;
 using EduCrm.Modules.Account.Application.UseCases.GetMe;
 using EduCrm.Modules.Account.Application.UseCases.Login;
 using EduCrm.Modules.Account.Application.UseCases.Register;
@@ -23,20 +24,22 @@ public sealed class AccountController : ControllerBase
     private readonly IGetMeService _getMe;
     private readonly IChangePasswordService _changePassword;
     private readonly IUpdateProfileService _updateProfile;
+    private readonly ICreateUserService _createUser;
     private readonly ICurrentUser _currentUser;
     private readonly IOrgContext _orgContext;
     private readonly IPasswordHasher _hasher;
     private readonly IRequestValidator _validator;
-    
+
     public AccountController(
-        IRegisterService register, 
+        IRegisterService register,
         ILoginService login,
         IGetMeService getMe,
         IChangePasswordService changePassword,
         IUpdateProfileService updateProfile,
+        ICreateUserService createUser,
         ICurrentUser currentUser,
         IOrgContext orgContext,
-        IPasswordHasher hasher, 
+        IPasswordHasher hasher,
         IRequestValidator validator)
     {
         _register = register;
@@ -44,6 +47,7 @@ public sealed class AccountController : ControllerBase
         _getMe = getMe;
         _changePassword = changePassword;
         _updateProfile = updateProfile;
+        _createUser = createUser;
         _currentUser = currentUser;
         _orgContext = orgContext;
         _hasher = hasher;
@@ -58,7 +62,7 @@ public sealed class AccountController : ControllerBase
     {
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
-        
+
         // 1) hash (Phase 1)
         var passwordHash = _hasher.Hash(req.Password);
 
@@ -68,13 +72,13 @@ public sealed class AccountController : ControllerBase
             req.Email,
             req.OrganizationName,
             passwordHash,
-            req.ContactPhone
+            req.Phone
         );
 
         // 3) call
         var result = await _register.RegisterAsync(input, ct);
 
-        return result.ToActionResult(HttpContext, this, r => 
+        return result.ToActionResult(HttpContext, this, r =>
             Ok(new RegisterResponse(r.Token, r.Email, r.FullName, r.Initials, r.OrganizationName)));
     }
 
@@ -93,7 +97,7 @@ public sealed class AccountController : ControllerBase
         // 2) call
         var result = await _login.LoginAsync(input, ct);
 
-        return result.ToActionResult(HttpContext, this, r => 
+        return result.ToActionResult(HttpContext, this, r =>
             Ok(new LoginResponse(r.Token, r.Email, r.FullName, r.Initials, r.OrganizationName)));
     }
 
@@ -109,7 +113,7 @@ public sealed class AccountController : ControllerBase
 
         var result = await _getMe.GetMeAsync(userId.Value, ct);
 
-        return result.ToActionResult(HttpContext, this, r => 
+        return result.ToActionResult(HttpContext, this, r =>
             Ok(new MeResponse(r.Email, r.FullName, r.Initials, r.OrganizationName)));
     }
 
@@ -152,7 +156,7 @@ public sealed class AccountController : ControllerBase
 
         var userId = _currentUser.UserId;
         var orgId = _orgContext.OrganizationId;
-        
+
         if (userId is null || orgId is null)
         {
             return Unauthorized();
@@ -167,7 +171,39 @@ public sealed class AccountController : ControllerBase
 
         var result = await _updateProfile.UpdateProfileAsync(input, ct);
 
-        return result.ToActionResult(HttpContext, this, r => 
+        return result.ToActionResult(HttpContext, this, r =>
             Ok(new MeResponse(r.Email, r.FullName, r.Initials, r.OrganizationName)));
+    }
+
+    [HttpPost("user")]
+    [Authorize]
+    public async Task<IActionResult> CreateUser(
+        [FromBody] CreateUserRequest req,
+        CancellationToken ct)
+    {
+        var validation = await _validator.ValidateAsync(req, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var callerUserId = _currentUser.UserId;
+        var callerOrgId = _orgContext.OrganizationId;
+
+        if (callerUserId is null || callerOrgId is null)
+        {
+            return Unauthorized();
+        }
+
+        var passwordHash = _hasher.Hash(req.Password);
+
+        var input = new CreateUserInput(
+            callerUserId.Value,
+            callerOrgId.Value,
+            req.Name,
+            req.Email,
+            passwordHash);
+
+        var result = await _createUser.CreateAsync(input, ct);
+
+        return result.ToActionResult(HttpContext, this, r =>
+            StatusCode(StatusCodes.Status201Created, new CreateUserResponse(r.UserId, r.Email, r.FullName)));
     }
 }

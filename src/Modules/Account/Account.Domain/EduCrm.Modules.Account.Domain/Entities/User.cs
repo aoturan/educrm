@@ -27,6 +27,10 @@ public sealed class User
     [Column("password_hash")]
     public string PasswordHash { get; private set; } = null!;
 
+    [Required]
+    [Column("role")]
+    public UserRole Role { get; private set; }
+
     // enum -> smallint conversion Fluent ile yapılacak
     [Required]
     [Column("status")]
@@ -47,7 +51,7 @@ public sealed class User
 
     private User() { } // EF
 
-    public User(Guid id, Guid organizationId, string email, string fullName, string passwordHash, DateTime createdAtUtc)
+    public User(Guid id, Guid organizationId, string email, string fullName, string passwordHash, UserRole role, DateTime createdAtUtc)
     {
         if (id == Guid.Empty) throw new ArgumentException("User id is required.", nameof(id));
         if (organizationId == Guid.Empty) throw new ArgumentException("Organization is required.", nameof(organizationId));
@@ -60,7 +64,9 @@ public sealed class User
         Email = email.Trim();
         FullName = fullName.Trim();
         PasswordHash = passwordHash;
+        Role = role;
         Status = UserStatus.WaitingForActivation;
+        
         CreatedAtUtc = createdAtUtc;
     }
 

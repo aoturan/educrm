@@ -50,5 +50,22 @@ public static class AccountErrors
             Code: AccountErrorCodes.UserInactive,
             Message: "Kullanıcı hesabı aktif değil."
         );
-}
 
+    public static Error InvalidPhoneFormat() =>
+        new(
+            Code: AccountErrorCodes.InvalidPhoneFormat,
+            Message: "Geçersiz telefon numarası formatı."
+        );
+
+    public static Error UserNotInOrganization() =>
+        new(
+            Code: AccountErrorCodes.UserNotInOrganization,
+            Message: "Kullanıcı bu organizasyona ait değil."
+        );
+
+    public static Error NotAdmin() =>
+        new(
+            Code: AccountErrorCodes.NotAdmin,
+            Message: "Bu işlem için yönetici yetkisi gereklidir."
+        );
+}

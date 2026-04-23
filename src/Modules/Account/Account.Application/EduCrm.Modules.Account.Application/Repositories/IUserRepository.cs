@@ -8,6 +8,7 @@ public interface IUserRepository
     void Add(User user);
     Task<User?> GetByIdAsync(Guid userId, CancellationToken ct);
     Task<User?> GetByEmailAsync(string email, CancellationToken ct);
+    Task<bool> ExistsByEmailInOrganizationAsync(string email, Guid organizationId, CancellationToken ct);
     Task<UserWithOrganization?> GetByEmailWithOrganizationAsync(string email, CancellationToken ct);
     Task<UserWithOrganization?> GetByIdWithOrganizationAsync(Guid userId, CancellationToken ct);
 }

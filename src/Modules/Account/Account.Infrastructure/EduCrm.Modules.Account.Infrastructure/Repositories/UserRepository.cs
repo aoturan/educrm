@@ -32,6 +32,13 @@ public sealed class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.Email == email, ct);
     }
 
+    public async Task<bool> ExistsByEmailInOrganizationAsync(string email, Guid organizationId, CancellationToken ct)
+    {
+        return await _db.Users
+            .AsNoTracking()
+            .AnyAsync(u => u.Email == email && u.OrganizationId == organizationId, ct);
+    }
+
     public async Task<UserWithOrganization?> GetByEmailWithOrganizationAsync(string email, CancellationToken ct)
     {
         return await (
