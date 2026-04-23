@@ -84,4 +84,10 @@ public static class AccountErrors
             Code: AccountErrorCodes.CannotChangeOwnStatus,
             Message: "Kendi hesabının durumunu değiştiremezsin."
         );
+
+    public static Error EmailChangeNotAllowed() =>
+        new(
+            Code: AccountErrorCodes.EmailChangeNotAllowed,
+            Message: "E-posta adresini yalnızca yöneticiler değiştirebilir."
+        );
 }

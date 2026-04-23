@@ -20,6 +20,7 @@ public static class AccountErrorMappings
         { AccountErrorCodes.UserNotInOrganization, ErrorHttpStatusMapper.Status403Forbidden },
         { AccountErrorCodes.NotAdmin, ErrorHttpStatusMapper.Status403Forbidden },
         { AccountErrorCodes.UserAlreadyInStatus, ErrorHttpStatusMapper.Status409Conflict },
-        { AccountErrorCodes.CannotChangeOwnStatus, ErrorHttpStatusMapper.Status403Forbidden }
+        { AccountErrorCodes.CannotChangeOwnStatus, ErrorHttpStatusMapper.Status403Forbidden },
+        { AccountErrorCodes.EmailChangeNotAllowed, ErrorHttpStatusMapper.Status403Forbidden }
     };
 }

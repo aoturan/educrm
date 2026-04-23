@@ -16,4 +16,5 @@ public static class AccountErrorCodes
     public const string NotAdmin = "account.not_admin";
     public const string UserAlreadyInStatus = "account.user_already_in_status";
     public const string CannotChangeOwnStatus = "account.cannot_change_own_status";
+    public const string EmailChangeNotAllowed = "account.email_change_not_allowed";
 }

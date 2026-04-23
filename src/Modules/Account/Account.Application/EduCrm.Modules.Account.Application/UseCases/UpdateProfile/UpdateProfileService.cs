@@ -2,6 +2,7 @@ using EduCrm.Infrastructure.Persistence;
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
+using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
 
@@ -25,14 +26,21 @@ public sealed class UpdateProfileService(
             return Result<UpdateProfileResult>.Fail(AccountErrors.NotFound(input.UserId));
         }
 
-        // 2) Check if email changed and is already taken by another user
-        if (!string.Equals(user.Email, input.Email, StringComparison.OrdinalIgnoreCase))
+        // 2) Check if email changed
+        var emailChanged = !string.Equals(user.Email, input.Email, StringComparison.OrdinalIgnoreCase);
+        if (emailChanged)
         {
+            // Only admins can change their email through self-service
+            if (user.Role != UserRole.Admin)
+            {
+                return Result<UpdateProfileResult>.Fail(AccountErrors.EmailChangeNotAllowed());
+            }
+
             var existingUser = await userRepo.GetByEmailAsync(input.Email, ct);
             if (existingUser is not null && existingUser.Id != input.UserId)
             {
                 return Result<UpdateProfileResult>.Fail(AccountErrors.EmailTaken(input.Email));
-            } 
+            }
         }
 
         // 3) Get organization
