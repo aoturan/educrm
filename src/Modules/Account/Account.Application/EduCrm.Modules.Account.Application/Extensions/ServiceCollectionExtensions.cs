@@ -1,4 +1,5 @@
 using EduCrm.Modules.Account.Application.UseCases.ChangePassword;
+using EduCrm.Modules.Account.Application.UseCases.ChangeUserStatus;
 using EduCrm.Modules.Account.Application.UseCases.CreateUser;
 using EduCrm.Modules.Account.Application.UseCases.Fail;
 using EduCrm.Modules.Account.Application.UseCases.GetMe;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IChangePasswordService, ChangePasswordService>();
         services.AddScoped<IUpdateProfileService, UpdateProfileService>();
         services.AddScoped<ICreateUserService, CreateUserService>();
+        services.AddScoped<IChangeUserStatusService, ChangeUserStatusService>();
         services.AddScoped<IFailService, FailService>();
         return services;
     }

@@ -68,4 +68,20 @@ public static class AccountErrors
             Code: AccountErrorCodes.NotAdmin,
             Message: "Bu işlem için yönetici yetkisi gereklidir."
         );
+
+    public static Error UserAlreadyInStatus(string currentStatus) =>
+        new(
+            Code: AccountErrorCodes.UserAlreadyInStatus,
+            Message: "Kullanıcı zaten bu durumda.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["currentStatus"] = currentStatus
+            }
+        );
+
+    public static Error CannotChangeOwnStatus() =>
+        new(
+            Code: AccountErrorCodes.CannotChangeOwnStatus,
+            Message: "Kendi hesabının durumunu değiştiremezsin."
+        );
 }

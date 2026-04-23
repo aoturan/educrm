@@ -1,5 +1,6 @@
 using EduCrm.Modules.Account.Application.Security;
 using EduCrm.Modules.Account.Application.UseCases.ChangePassword;
+using EduCrm.Modules.Account.Application.UseCases.ChangeUserStatus;
 using EduCrm.Modules.Account.Application.UseCases.CreateUser;
 using EduCrm.Modules.Account.Application.UseCases.GetMe;
 using EduCrm.Modules.Account.Application.UseCases.Login;
@@ -25,6 +26,7 @@ public sealed class AccountController : ControllerBase
     private readonly IChangePasswordService _changePassword;
     private readonly IUpdateProfileService _updateProfile;
     private readonly ICreateUserService _createUser;
+    private readonly IChangeUserStatusService _changeUserStatus;
     private readonly ICurrentUser _currentUser;
     private readonly IOrgContext _orgContext;
     private readonly IPasswordHasher _hasher;
@@ -37,6 +39,7 @@ public sealed class AccountController : ControllerBase
         IChangePasswordService changePassword,
         IUpdateProfileService updateProfile,
         ICreateUserService createUser,
+        IChangeUserStatusService changeUserStatus,
         ICurrentUser currentUser,
         IOrgContext orgContext,
         IPasswordHasher hasher,
@@ -48,6 +51,7 @@ public sealed class AccountController : ControllerBase
         _changePassword = changePassword;
         _updateProfile = updateProfile;
         _createUser = createUser;
+        _changeUserStatus = changeUserStatus;
         _currentUser = currentUser;
         _orgContext = orgContext;
         _hasher = hasher;
@@ -205,5 +209,34 @@ public sealed class AccountController : ControllerBase
 
         return result.ToActionResult(HttpContext, this, r =>
             StatusCode(StatusCodes.Status201Created, new CreateUserResponse(r.UserId, r.Email, r.FullName)));
+    }
+
+    [HttpPost("user/{userId:guid}/status")]
+    [Authorize]
+    public async Task<IActionResult> ChangeUserStatus(
+        Guid userId,
+        [FromBody] ChangeUserStatusRequest req,
+        CancellationToken ct)
+    {
+        var validation = await _validator.ValidateAsync(req, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var callerUserId = _currentUser.UserId;
+        var callerOrgId = _orgContext.OrganizationId;
+
+        if (callerUserId is null || callerOrgId is null)
+        {
+            return Unauthorized();
+        }
+
+        var input = new ChangeUserStatusInput(
+            callerUserId.Value,
+            callerOrgId.Value,
+            userId,
+            req.Operation);
+
+        var result = await _changeUserStatus.ChangeAsync(input, ct);
+
+        return result.ToActionResult(HttpContext, this);
     }
 }

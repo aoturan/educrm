@@ -18,6 +18,8 @@ public static class AccountErrorMappings
         { AccountErrorCodes.UserInactive, ErrorHttpStatusMapper.Status403Forbidden },
         { AccountErrorCodes.InvalidPhoneFormat, ErrorHttpStatusMapper.Status400BadRequest },
         { AccountErrorCodes.UserNotInOrganization, ErrorHttpStatusMapper.Status403Forbidden },
-        { AccountErrorCodes.NotAdmin, ErrorHttpStatusMapper.Status403Forbidden }
+        { AccountErrorCodes.NotAdmin, ErrorHttpStatusMapper.Status403Forbidden },
+        { AccountErrorCodes.UserAlreadyInStatus, ErrorHttpStatusMapper.Status409Conflict },
+        { AccountErrorCodes.CannotChangeOwnStatus, ErrorHttpStatusMapper.Status403Forbidden }
     };
 }
