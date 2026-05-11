@@ -18,6 +18,11 @@ public sealed class AppDbContext : DbContext, IUnitOfWork
     // DbSet'ler public olmak zorunda değil; ama pratik olsun diye public bırakıyoruz.
     public DbSet<Organization> Organizations => Set<Organization>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<EduCrm.Modules.Account.Domain.Entities.Subscription> Subscriptions => Set<EduCrm.Modules.Account.Domain.Entities.Subscription>();
+    public DbSet<SubscriptionRequest> SubscriptionRequests => Set<SubscriptionRequest>();
+    public DbSet<SubscriptionHistory> SubscriptionHistories => Set<SubscriptionHistory>();
+    public DbSet<SubscriptionPaymentNotification> SubscriptionPaymentNotifications => Set<SubscriptionPaymentNotification>();
+    public DbSet<OrganizationBillingDetail> OrganizationBillingDetails => Set<OrganizationBillingDetail>();
     public DbSet<Person> Persons => Set<Person>();
     public DbSet<FollowUp> FollowUps => Set<FollowUp>();
     

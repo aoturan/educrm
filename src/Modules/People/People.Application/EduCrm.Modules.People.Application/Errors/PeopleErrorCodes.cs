@@ -19,4 +19,9 @@ public static class PeopleErrorCodes
     public const string PhoneRequired = "people.phone_required";
     public const string EmailRequired = "people.email_required";
     public const string ContactInfoRequired = "people.contact_info_required";
+    public const string PlanActivePersonLimitReached = "people.plan_active_person_limit_reached";
+    public const string PlanOpenFollowUpLimitReached = "people.plan_open_followup_limit_reached";
+    public const string ExportNotAllowedOnPlan = "people.export_not_allowed_on_plan";
+    public const string ExportRateLimited = "people.export_rate_limited";
+    public const string ExportRowLimitExceeded = "people.export_row_limit_exceeded";
 }

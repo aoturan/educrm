@@ -1,5 +1,6 @@
 using EduCrm.Infrastructure.Persistence;
-    using EduCrm.Modules.People.Application.Errors;
+using EduCrm.Modules.Account.Contracts.Abstractions;
+using EduCrm.Modules.People.Application.Errors;
 using EduCrm.Modules.People.Application.Repositories;
 using EduCrm.Modules.People.Domain.Entities;
 using EduCrm.Modules.Program.Contracts.Abstractions;
@@ -13,6 +14,7 @@ public sealed class CreateFollowUpService(
     IFollowUpRepository followUpRepo,
     IPersonRepository personRepo,
     IProgramReader programReader,
+    IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock,
     IOrgContext orgContext,
@@ -37,6 +39,14 @@ public sealed class CreateFollowUpService(
             var program = await programReader.GetProgramByIdAsync(input.ProgramId.Value, orgId, ct);
             if (program is null)
                 return Result<CreateFollowUpResult>.Fail(PeopleErrors.ProgramNotFound(input.ProgramId.Value));
+        }
+
+        var limits = await planLimitsResolver.ResolveAsync(orgId, ct);
+        if (limits.OpenFollowUps is int cap)
+        {
+            var currentOpen = await followUpRepo.CountOpenByOrganizationAsync(orgId, ct);
+            if (currentOpen >= cap)
+                return Result<CreateFollowUpResult>.Fail(PeopleErrors.PlanOpenFollowUpLimitReached(cap));
         }
 
         var now = clock.UtcNow.UtcDateTime;

@@ -35,4 +35,11 @@ public sealed class PersonReader(AppDbContext db) : IPersonReader
             .Select(p => new PersonContactMatch(p.Id, p.FullName, p.Email, p.Phone))
             .FirstOrDefaultAsync(ct);
     }
+
+    public Task<int> CountActiveByOrganizationAsync(Guid organizationId, CancellationToken ct)
+    {
+        return db.Persons
+            .AsNoTracking()
+            .CountAsync(p => p.OrganizationId == organizationId && !p.IsArchived, ct);
+    }
 }

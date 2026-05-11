@@ -17,13 +17,18 @@ internal sealed class JwtService : IJwtService
         _options = options.Value;
     }
 
-    public string GenerateToken(Guid userId)
+    public const string ApplicationAdminClaim = "app_admin";
+
+    public string GenerateToken(Guid userId, bool isApplicationAdmin)
     {
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        if (isApplicationAdmin)
+            claims.Add(new Claim(ApplicationAdminClaim, "true"));
 
         var keyBytes = Encoding.UTF8.GetBytes(_options.SigningKey);
         var signingKey = new SymmetricSecurityKey(keyBytes);

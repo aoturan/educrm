@@ -2,6 +2,7 @@ using EduCrm.Modules.People.Application.UseCases.ArchivePerson;
 using EduCrm.Modules.People.Application.UseCases.ChangeFollowUpStatus;
 using EduCrm.Modules.People.Application.Usecases.Create;
 using EduCrm.Modules.People.Application.UseCases.Create;
+using EduCrm.Modules.People.Application.UseCases.ExportPersons;
 using EduCrm.Modules.People.Application.UseCases.SnoozeFollowUp;
 using EduCrm.Modules.People.Application.UseCases.RescheduleDueDate;
 using EduCrm.Modules.People.Application.UseCases.CreateFollowUp;
@@ -31,6 +32,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUpdateFollowUpService, UpdateFollowUpService>();
         services.AddScoped<IListPersonsService, ListPersonsService>();
         services.AddScoped<IListFollowUpsService, ListFollowUpsService>();
+        services.AddScoped<IExportPersonsService, ExportPersonsService>();
         return services;
     }   
 }

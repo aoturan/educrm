@@ -46,7 +46,26 @@ public sealed class User
     
     [Column("last_login_at_utc")]
     public DateTime? LastLoginAtUtc { get; private set; }
-    
+
+    [Column("last_exported_at_utc")]
+    public DateTime? LastExportedAtUtc { get; private set; }
+
+    [Column("password_reset_token_hash")]
+    public string? PasswordResetTokenHash { get; private set; }
+
+    [Column("password_reset_token_expires_at")]
+    public DateTime? PasswordResetTokenExpiresAt { get; private set; }
+
+    [Column("password_reset_requested_at")]
+    public DateTime? PasswordResetRequestedAt { get; private set; }
+
+    [Column("password_changed_at")]
+    public DateTime? PasswordChangedAt { get; private set; }
+
+    [Required]
+    [Column("is_application_admin")]
+    public bool IsApplicationAdmin { get; private set; }
+
     public Organization Organization { get; set; } = null!;
 
     private User() { } // EF
@@ -109,6 +128,35 @@ public sealed class User
         if (string.IsNullOrWhiteSpace(passwordHash)) throw new ArgumentException("PasswordHash is required.", nameof(passwordHash));
 
         PasswordHash = passwordHash;
+        UpdatedAtUtc = utcNow;
+    }
+
+    public void ChangeRole(UserRole role, DateTime utcNow)
+    {
+        Role = role;
+        UpdatedAtUtc = utcNow;
+    }
+
+    public void RequestPasswordReset(string tokenHash, DateTime expiresAtUtc, DateTime utcNow)
+    {
+        if (string.IsNullOrWhiteSpace(tokenHash)) throw new ArgumentException("TokenHash is required.", nameof(tokenHash));
+        if (expiresAtUtc <= utcNow) throw new ArgumentException("ExpiresAt must be in the future.", nameof(expiresAtUtc));
+
+        PasswordResetTokenHash = tokenHash;
+        PasswordResetTokenExpiresAt = expiresAtUtc;
+        PasswordResetRequestedAt = utcNow;
+        UpdatedAtUtc = utcNow;
+    }
+
+    public void CompletePasswordReset(string newPasswordHash, DateTime utcNow)
+    {
+        if (string.IsNullOrWhiteSpace(newPasswordHash)) throw new ArgumentException("PasswordHash is required.", nameof(newPasswordHash));
+
+        PasswordHash = newPasswordHash;
+        PasswordChangedAt = utcNow;
+        PasswordResetTokenHash = null;
+        PasswordResetTokenExpiresAt = null;
+        PasswordResetRequestedAt = null;
         UpdatedAtUtc = utcNow;
     }
 }

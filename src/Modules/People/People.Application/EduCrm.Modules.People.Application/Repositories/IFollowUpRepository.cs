@@ -48,4 +48,6 @@ public interface IFollowUpRepository
         Guid? personId = null,
         Guid? programId = null,
         bool onlyOverDue = false);
+
+    Task<int> CountOpenByOrganizationAsync(Guid organizationId, CancellationToken ct);
 }

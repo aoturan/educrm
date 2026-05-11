@@ -1,6 +1,7 @@
 using EduCrm.Infrastructure.Persistence;
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Repositories;
+using EduCrm.Modules.Account.Contracts.Abstractions;
 using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
@@ -9,6 +10,7 @@ namespace EduCrm.Modules.Account.Application.UseCases.ChangeUserStatus;
 
 public sealed class ChangeUserStatusService(
     IUserRepository userRepo,
+    IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock)
     : IChangeUserStatusService
@@ -31,6 +33,9 @@ public sealed class ChangeUserStatusService(
         if (input.TargetUserId == caller.Id)
             return Result.Fail(AccountErrors.CannotChangeOwnStatus());
 
+        if (input.TargetStatus != UserStatus.Active && input.TargetStatus != UserStatus.Disabled)
+            return Result.Fail(AccountErrors.UserAlreadyInStatus(input.TargetStatus.ToString()));
+
         var target = await userRepo.GetByIdAsync(input.TargetUserId, ct);
         if (target is null)
             return Result.Fail(AccountErrors.NotFound(input.TargetUserId));
@@ -38,19 +43,24 @@ public sealed class ChangeUserStatusService(
         if (target.OrganizationId != caller.OrganizationId)
             return Result.Fail(AccountErrors.UserNotInOrganization());
 
-        var requiredCurrentStatus = input.Operation == UserStatusOperation.Activate
-            ? UserStatus.Disabled
-            : UserStatus.Active;
-
-        if (target.Status != requiredCurrentStatus)
+        if (target.Status == input.TargetStatus)
             return Result.Fail(AccountErrors.UserAlreadyInStatus(target.Status.ToString()));
 
         var now = clock.UtcNow.UtcDateTime;
 
-        if (input.Operation == UserStatusOperation.Activate)
+        if (input.TargetStatus == UserStatus.Active)
+        {
+            var limits = await planLimitsResolver.ResolveAsync(caller.OrganizationId, ct);
+            var currentActive = await userRepo.CountActiveByOrganizationAsync(caller.OrganizationId, ct);
+            if (currentActive >= limits.Users)
+                return Result.Fail(AccountErrors.PlanUserLimitReached(limits.Users));
+
             target.Enable(now);
+        }
         else
+        {
             target.Disable(now);
+        }
 
         await uow.SaveChangesAsync(ct);
 

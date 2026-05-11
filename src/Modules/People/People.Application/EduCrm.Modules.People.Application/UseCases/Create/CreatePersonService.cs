@@ -1,4 +1,5 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.Account.Contracts.Abstractions;
 using EduCrm.Modules.People.Application.Errors;
 using EduCrm.Modules.People.Application.Helpers;
 using EduCrm.Modules.People.Application.Repositories;
@@ -12,6 +13,7 @@ namespace EduCrm.Modules.People.Application.Usecases.Create;
 
 public sealed class CreatePersonService(
     IPersonRepository personRepo,
+    IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock,
     IOrgContext orgContext) : ICreatePersonService
@@ -41,6 +43,11 @@ public sealed class CreatePersonService(
             if (duplicate)
                 return Result<CreateResult>.Fail(PeopleErrors.DuplicateContactInfo());
         }
+
+        var limits = await planLimitsResolver.ResolveAsync(organizationId, ct);
+        var currentActive = await personRepo.CountActiveByOrganizationAsync(organizationId, ct);
+        if (currentActive >= limits.ActivePersons)
+            return Result<CreateResult>.Fail(PeopleErrors.PlanActivePersonLimitReached(limits.ActivePersons));
 
         var now = clock.UtcNow.UtcDateTime;
 

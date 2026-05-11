@@ -1,3 +1,5 @@
+using EduCrm.Modules.Account.Domain.Enums;
+
 namespace EduCrm.Modules.Account.Application.UseCases.Register;
 
 public sealed record RegisterInput(
@@ -5,4 +7,5 @@ public sealed record RegisterInput(
     string Email,
     string OrganizationName,
     string PasswordHash,
-    string Phone);
+    string Phone,
+    PlanCode PlanCode);

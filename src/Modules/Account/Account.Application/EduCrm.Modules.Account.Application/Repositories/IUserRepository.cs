@@ -11,4 +11,15 @@ public interface IUserRepository
     Task<bool> ExistsByEmailInOrganizationAsync(string email, Guid organizationId, CancellationToken ct);
     Task<UserWithOrganization?> GetByEmailWithOrganizationAsync(string email, CancellationToken ct);
     Task<UserWithOrganization?> GetByIdWithOrganizationAsync(Guid userId, CancellationToken ct);
+
+    Task<UserPagedListQueryResult> GetPagedListByOrganizationAsync(
+        Guid organizationId,
+        int page,
+        int pageSize,
+        CancellationToken ct,
+        IReadOnlyCollection<Domain.Enums.UserStatus>? statuses = null);
+
+    Task<int> CountActiveByOrganizationAsync(Guid organizationId, CancellationToken ct);
+
+    Task<OrganizationOwnerData?> GetOrganizationOwnerAsync(Guid organizationId, CancellationToken ct);
 }

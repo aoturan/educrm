@@ -1,5 +1,3 @@
-using EduCrm.Modules.Account.Domain.Enums;
-
 namespace EduCrm.WebApi.Contracts.Account;
 
 public sealed record LoginResponse(
@@ -8,4 +6,4 @@ public sealed record LoginResponse(
     string FullName,
     string Initials,
     string OrganizationName,
-    UserRole Role);
+    string Role);

@@ -1,4 +1,5 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.Account.Contracts.Abstractions;
 using EduCrm.Modules.Program.Application.Errors;
 using EduCrm.Modules.Program.Application.Repositories;
 using EduCrm.SharedKernel.Abstractions;
@@ -9,6 +10,7 @@ namespace EduCrm.Modules.Program.Application.UseCases.ArchiveProgram;
 
 public sealed class ArchiveProgramService(
     IProgramRepository programRepo,
+    IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock,
     IOrgContext orgContext,
@@ -42,6 +44,14 @@ public sealed class ArchiveProgramService(
         {
             if (!program.IsArchived)
                 return Result<ArchiveProgramResult>.Fail(ProgramErrors.ProgramNotArchived(input.ProgramId));
+
+            var limits = await planLimitsResolver.ResolveAsync(orgContext.OrganizationId.Value, ct);
+            if (limits.ActivePrograms is int cap)
+            {
+                var currentActive = await programRepo.CountActiveByOrganizationAsync(orgContext.OrganizationId.Value, ct);
+                if (currentActive >= cap)
+                    return Result<ArchiveProgramResult>.Fail(ProgramErrors.PlanActiveProgramLimitReached(cap));
+            }
 
             program.Unarchive(now);
         }

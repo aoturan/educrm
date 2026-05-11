@@ -1,0 +1,3 @@
+namespace EduCrm.Modules.Account.Application.UseCases.DownloadPaymentNotificationReceipt;
+
+public sealed record DownloadPaymentNotificationReceiptInput(Guid SubscriptionRequestId);

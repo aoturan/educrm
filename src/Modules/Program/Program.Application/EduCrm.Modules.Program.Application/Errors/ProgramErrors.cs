@@ -4,30 +4,6 @@ namespace EduCrm.Modules.Program.Application.Errors;
 
 public static class ProgramErrors
 {
-    public static Error SubscriptionRequired() =>
-        new(
-            Code: ProgramErrorCodes.SubscriptionRequired,
-            Message: "Program kaydı için abonelik gereklidir."
-        );
-
-    public static Error SubscriptionInactive() =>
-        new(
-            Code: ProgramErrorCodes.SubscriptionInactive,
-            Message: "Abonelik aktif değil."
-        );
-
-    public static Error SubscriptionExpired() =>
-        new(
-            Code: ProgramErrorCodes.SubscriptionExpired,
-            Message: "Abonelik süresi dolmuş."
-        );
-
-    public static Error SubscriptionInvalid() =>
-        new(
-            Code: ProgramErrorCodes.SubscriptionInvalid,
-            Message: "Abonelik geçersiz."
-        );
-
     public static Error OrganizationNotFound(Guid organizationId) =>
         new(
             Code: ProgramErrorCodes.OrganizationNotFound,
@@ -195,5 +171,51 @@ public static class ProgramErrors
         new(
             Code: ProgramErrorCodes.ApplicationCannotBeClosed,
             Message: "Bu başvuru kapatılamaz. Yalnızca 'Yeni' veya 'İletişime Geçildi' durumundaki başvurular kapatılabilir."
+        );
+
+    public static Error PlanActiveProgramLimitReached(int limit) =>
+        new(
+            Code: ProgramErrorCodes.PlanActiveProgramLimitReached,
+            Message: "Aktif program limitine ulaşıldı. Paketinizi yükseltmeniz gerekir.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["limit"] = limit
+            }
+        );
+
+    public static Error PlanActivePersonLimitReached(int limit) =>
+        new(
+            Code: ProgramErrorCodes.PlanActivePersonLimitReached,
+            Message: "Aktif kişi limitine ulaşıldı. Paketinizi yükseltmeniz gerekir.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["limit"] = limit
+            }
+        );
+
+    public static Error ExportNotAllowedOnPlan() =>
+        new(
+            Code: ProgramErrorCodes.ExportNotAllowedOnPlan,
+            Message: "Dışa aktarma özelliği yalnızca Plus ve Pro paketlerde kullanılabilir."
+        );
+
+    public static Error ExportRateLimited(int retryAfterSeconds) =>
+        new(
+            Code: ProgramErrorCodes.ExportRateLimited,
+            Message: $"Çok sık dışa aktarma talep ettiniz. Lütfen {retryAfterSeconds} saniye sonra tekrar deneyin.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["retryAfterSeconds"] = retryAfterSeconds
+            }
+        );
+
+    public static Error ExportRowLimitExceeded(int maxRows) =>
+        new(
+            Code: ProgramErrorCodes.ExportRowLimitExceeded,
+            Message: $"Dışa aktarma sonucu {maxRows} satırı aşıyor. Lütfen filtrelerinizi daraltın.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["maxRows"] = maxRows
+            }
         );
 }

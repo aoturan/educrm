@@ -19,5 +19,10 @@ public static class PeopleErrorMappings
         { PeopleErrorCodes.PhoneRequired, ErrorHttpStatusMapper.Status400BadRequest },
         { PeopleErrorCodes.EmailRequired, ErrorHttpStatusMapper.Status400BadRequest },
         { PeopleErrorCodes.ContactInfoRequired, ErrorHttpStatusMapper.Status400BadRequest },
+        { PeopleErrorCodes.PlanActivePersonLimitReached, ErrorHttpStatusMapper.Status403Forbidden },
+        { PeopleErrorCodes.PlanOpenFollowUpLimitReached, ErrorHttpStatusMapper.Status403Forbidden },
+        { PeopleErrorCodes.ExportNotAllowedOnPlan, ErrorHttpStatusMapper.Status403Forbidden },
+        { PeopleErrorCodes.ExportRateLimited, ErrorHttpStatusMapper.Status429TooManyRequests },
+        { PeopleErrorCodes.ExportRowLimitExceeded, ErrorHttpStatusMapper.Status422UnprocessableEntity },
     };
 }

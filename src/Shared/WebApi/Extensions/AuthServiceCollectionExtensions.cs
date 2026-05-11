@@ -82,7 +82,12 @@ public static class AuthServiceCollectionExtensions
                 };
             });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("ApplicationAdmin", policy =>
+                policy.RequireAuthenticatedUser()
+                      .RequireClaim("app_admin", "true"));
+        });
 
         return services;
     }

@@ -1,0 +1,3 @@
+namespace EduCrm.Modules.Account.Application.UseCases.MarkSubscriptionRequestInvoiced;
+
+public sealed record MarkSubscriptionRequestInvoicedInput(Guid SubscriptionRequestId);

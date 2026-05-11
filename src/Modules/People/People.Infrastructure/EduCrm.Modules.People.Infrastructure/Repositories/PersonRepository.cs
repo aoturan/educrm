@@ -29,6 +29,13 @@ public sealed class PersonRepository : IPersonRepository
                             || (phone != string.Empty && p.Phone == phone)), ct);
     }
 
+    public Task<int> CountActiveByOrganizationAsync(Guid organizationId, CancellationToken ct)
+    {
+        return _db.Persons
+            .AsNoTracking()
+            .CountAsync(p => p.OrganizationId == organizationId && !p.IsArchived, ct);
+    }
+
     public Task<bool> ExistsByContactExcludingAsync(Guid organizationId, string email, string phone, Guid excludePersonId, CancellationToken ct)
     {
         return _db.Persons
@@ -150,5 +157,37 @@ public sealed class PersonRepository : IPersonRepository
             .ToListAsync(ct);
 
         return (items, totalCount, enrolledCount, notEnrolledCount);
+    }
+
+    public async Task<IReadOnlyList<PersonExportItemData>> GetExportListAsync(
+        Guid organizationId,
+        int limit,
+        CancellationToken ct,
+        string? searchTerm = null,
+        string? preFilter = null,
+        bool showArchived = false)
+    {
+        var query = _db.Persons
+            .AsNoTracking()
+            .Where(p => p.OrganizationId == organizationId
+                && (showArchived || !p.IsArchived)
+                && (searchTerm == null
+                    || EF.Functions.ILike(p.FullName, $"%{searchTerm}%")
+                    || (p.Email != null && EF.Functions.ILike(p.Email, $"%{searchTerm}%"))
+                    || (p.Phone != null && EF.Functions.ILike(p.Phone, $"%{searchTerm}%"))))
+            .Where(p => preFilter == null
+                || (preFilter == "enrolled"
+                    && _db.Enrollments.Any(e => e.PersonId == p.Id && e.OrganizationId == organizationId))
+                || (preFilter == "not-enrolled"
+                    && !_db.Enrollments.Any(e => e.PersonId == p.Id && e.OrganizationId == organizationId)));
+
+        return await query
+            .OrderByDescending(p => p.CreatedAtUtc)
+            .Take(limit)
+            .Select(p => new PersonExportItemData(
+                p.FullName,
+                p.Email,
+                p.Phone))
+            .ToListAsync(ct);
     }
 }

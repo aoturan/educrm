@@ -2,7 +2,6 @@ using EduCrm.Infrastructure.Persistence;
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
-using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
 
@@ -28,31 +27,15 @@ public sealed class UpdateProfileService(
             return Result<UpdateProfileResult>.Fail(AccountErrors.UserNotInOrganization());
         }
 
-        var emailChanged = !string.Equals(user.Email, input.Email, StringComparison.OrdinalIgnoreCase);
-        if (emailChanged)
-        {
-            if (user.Role != UserRole.Admin)
-            {
-                return Result<UpdateProfileResult>.Fail(AccountErrors.EmailChangeNotAllowed());
-            }
-
-            var existingUser = await userRepo.GetByEmailAsync(input.Email, ct);
-            if (existingUser is not null && existingUser.Id != input.UserId)
-            {
-                return Result<UpdateProfileResult>.Fail(AccountErrors.EmailTaken(input.Email));
-            }
-        }
-
-        user.ChangeEmail(input.Email, now);
         user.ChangeFullName(input.FullName, now);
 
         await uow.SaveChangesAsync(ct);
 
-        var initials = NameHelper.GetInitials(input.FullName);
+        var initials = NameHelper.GetInitials(user.FullName);
 
         return Result<UpdateProfileResult>.Success(new UpdateProfileResult(
-            input.Email,
-            input.FullName,
+            user.Email,
+            user.FullName,
             initials));
     }
 }

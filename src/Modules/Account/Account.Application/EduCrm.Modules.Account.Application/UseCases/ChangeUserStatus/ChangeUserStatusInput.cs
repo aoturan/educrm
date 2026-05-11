@@ -6,4 +6,4 @@ public sealed record ChangeUserStatusInput(
     Guid CallerUserId,
     Guid CallerOrganizationId,
     Guid TargetUserId,
-    UserStatusOperation Operation);
+    UserStatus TargetStatus);

@@ -5,4 +5,6 @@ public record ProgramSummary(Guid Id, Guid OrganizationId, string Name);
 public interface IProgramReader
 {
     Task<ProgramSummary?> GetProgramByIdAsync(Guid programId, Guid organizationId, CancellationToken ct);
+
+    Task<int> CountActiveByOrganizationAsync(Guid organizationId, CancellationToken ct);
 }

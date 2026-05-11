@@ -3,6 +3,7 @@ using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Application.Security;
+using EduCrm.Modules.Account.Application.SubscriptionRequests;
 using EduCrm.Modules.Account.Domain.Entities;
 using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.SharedKernel.Abstractions;
@@ -13,12 +14,18 @@ namespace EduCrm.Modules.Account.Application.UseCases.Register;
 public sealed class RegisterService(
     IOrganizationRepository orgRepo,
     IUserRepository userRepo,
+    ISubscriptionRepository subscriptionRepo,
+    ISubscriptionRequestRepository subscriptionRequestRepo,
+    IPlanPricingResolver planPricingResolver,
+    IPaymentReferenceCodeGenerator referenceCodeGenerator,
     IUnitOfWork uow,
     IAppDbTransaction tx,
     IClock clock,
     IJwtService jwtService)
     : IRegisterService
 {
+    private static readonly TimeSpan SubscriptionRequestLifetime = TimeSpan.FromDays(7);
+
     public async Task<Result<RegisterResult>> RegisterAsync(
         RegisterInput input,
         CancellationToken ct)
@@ -64,21 +71,61 @@ public sealed class RegisterService(
 
             userRepo.Add(user);
 
+            // Registration auto-logs the user in (redirects to dashboard)
+            user.Enable(now);
+            user.SetLastLogin(now);
+
+            // 3) Subscription. Paid signups start on Free; the SubscriptionRequest
+            //    below tracks the chosen plan and gets approved on payment.
+            var isPaidPlan = input.PlanCode is PlanCode.Plus or PlanCode.Pro;
+
+            var subscription = new Subscription(
+                Guid.NewGuid(),
+                accountId,
+                isPaidPlan ? PlanCode.Free : input.PlanCode,
+                now,
+                endsAtUtc: null,
+                now);
+
+            subscriptionRepo.Add(subscription);
+
+            // 4) Pending payment request mirrors the upgrade-from-dashboard flow.
+            if (isPaidPlan)
+            {
+                var amount = planPricingResolver.GetPrice(input.PlanCode);
+                var referenceCode = await referenceCodeGenerator.GenerateAsync(ct);
+
+                var request = new SubscriptionRequest(
+                    Guid.NewGuid(),
+                    accountId,
+                    input.PlanCode,
+                    RequestStatus.PendingPayment,
+                    PaymentMethod.BankTransfer,
+                    amount,
+                    referenceCode,
+                    now,
+                    now.Add(SubscriptionRequestLifetime),
+                    now);
+
+                subscriptionRequestRepo.Add(request);
+            }
+
             // single commit
             await uow.SaveChangesAsync(ct);
             await trx.CommitAsync(ct);
 
-            // 3) Generate JWT token
-            var token = jwtService.GenerateToken(user.Id);
+            // Generate JWT token
+            var token = jwtService.GenerateToken(user.Id, user.IsApplicationAdmin);
 
             var initials = NameHelper.GetInitials(input.Name);
 
             return Result<RegisterResult>.Success(new RegisterResult(
                 token,
                 input.Email,
-                input.Name, 
-                initials, 
-                input.OrganizationName));
+                input.Name,
+                initials,
+                input.OrganizationName,
+                RoleLabel.Resolve(user)));
         }
         catch
         {
@@ -86,4 +133,5 @@ public sealed class RegisterService(
             throw;
         }
     }
+
 }

@@ -1,11 +1,14 @@
+using EduCrm.Modules.People.Application.Repositories;
 using EduCrm.Modules.People.Application.UseCases.ArchivePerson;
 using EduCrm.Modules.People.Application.UseCases.Create;
+using EduCrm.Modules.People.Application.UseCases.ExportPersons;
 using EduCrm.Modules.People.Application.UseCases.GetById;
 using EduCrm.Modules.People.Application.UseCases.ListPersons;
 using EduCrm.Modules.People.Application.UseCases.UpdatePerson;
 using EduCrm.Modules.People.Domain.Enums;
 using EduCrm.WebApi.Contracts.Person;
 using EduCrm.WebApi.Extensions;
+using EduCrm.WebApi.Helpers;
 using EduCrm.WebApi.Validations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +24,7 @@ public class PersonController : ControllerBase
     private readonly IGetPersonByIdService _getById;
     private readonly IListPersonsService _list;
     private readonly IUpdatePersonService _update;
+    private readonly IExportPersonsService _export;
     private readonly IRequestValidator _validator;
 
     public PersonController(
@@ -29,6 +33,7 @@ public class PersonController : ControllerBase
         IGetPersonByIdService getById,
         IListPersonsService list,
         IUpdatePersonService update,
+        IExportPersonsService export,
         IRequestValidator validator)
     {
         _archive = archive;
@@ -36,6 +41,7 @@ public class PersonController : ControllerBase
         _getById = getById;
         _list = list;
         _update = update;
+        _export = export;
         _validator = validator;
     }
 
@@ -93,6 +99,37 @@ public class PersonController : ControllerBase
                 r.TotalCount,
                 r.EnrolledCount,
                 r.NotEnrolledCount)));
+    }
+
+    [HttpGet("export")]
+    [Authorize]
+    public async Task<IActionResult> Export(
+        [FromQuery] string? q = null,
+        [FromQuery] string? preFilter = null,
+        [FromQuery] bool showArchived = false,
+        CancellationToken ct = default)
+    {
+        var input = new ExportPersonsInput(q, preFilter, showArchived);
+        var result = await _export.ExportAsync(input, ct);
+
+        if (result.IsFailure)
+            return result.ToActionResult(HttpContext, this, _ => NoContent());
+
+        var generatedAt = result.Value.GeneratedAtUtc;
+        var fileName = $"persons-{generatedAt:yyyyMMdd-HHmmss}.csv";
+
+        var columns = new List<(string Header, Func<PersonExportItemData, string?> Selector)>
+        {
+            ("Ad Soyad", p => p.FullName),
+            ("E-posta",  p => p.Email),
+            ("Telefon",  p => p.Phone is null ? null : CsvWriter.AsExcelText(p.Phone)),
+        };
+
+        Response.Headers["Content-Disposition"] = $"attachment; filename=\"{fileName}\"";
+        Response.ContentType = "text/csv; charset=utf-8";
+
+        await CsvWriter.WriteAsync(Response.Body, result.Value.Rows, columns, ct);
+        return new EmptyResult();
     }
 
     [HttpGet("{id:guid}")]

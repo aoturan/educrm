@@ -1,0 +1,3 @@
+namespace EduCrm.Modules.Account.Application.UseCases.GetSubscriptionRequestDetail;
+
+public sealed record GetSubscriptionRequestDetailInput(Guid SubscriptionRequestId);

@@ -1,4 +1,5 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.Account.Contracts.Abstractions;
 using EduCrm.Modules.People.Contracts.Abstractions;
 using EduCrm.Modules.Program.Application.Errors;
 using EduCrm.Modules.Program.Application.Repositories;
@@ -12,6 +13,7 @@ public sealed class FindPersonsForApplicationService(
     IApplicationRepository applicationRepo,
     IPersonReader personReader,
     IPersonWriter personWriter,
+    IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IOrgContext orgContext,
     IClock clock) : IFindPersonsForApplicationService
@@ -54,6 +56,12 @@ public sealed class FindPersonsForApplicationService(
 
             return Result<FindPersonsForApplicationResult>.Success(new FindPersonsForApplicationResult(matches));
         }
+
+        // No person found — about to create one. Enforce active person plan limit.
+        var limits = await planLimitsResolver.ResolveAsync(organizationId, ct);
+        var currentActive = await personReader.CountActiveByOrganizationAsync(organizationId, ct);
+        if (currentActive >= limits.ActivePersons)
+            return Result<FindPersonsForApplicationResult>.Fail(ProgramErrors.PlanActivePersonLimitReached(limits.ActivePersons));
 
         // No person found — create one from application data
         var personId = personWriter.AddFromApplication(

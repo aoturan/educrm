@@ -12,6 +12,11 @@ public record PersonListItemData(
     bool HasActiveEnrollment,
     bool IsArchived);
 
+public record PersonExportItemData(
+    string FullName,
+    string? Email,
+    string? Phone);
+
 public record PersonEnrolledProgramData(
     Guid Id,
     string Name,
@@ -57,4 +62,14 @@ public interface IPersonRepository
         string? searchTerm = null,
         string? preFilter = null,
         bool showArchived = false);
+
+    Task<IReadOnlyList<PersonExportItemData>> GetExportListAsync(
+        Guid organizationId,
+        int limit,
+        CancellationToken ct,
+        string? searchTerm = null,
+        string? preFilter = null,
+        bool showArchived = false);
+
+    Task<int> CountActiveByOrganizationAsync(Guid organizationId, CancellationToken ct);
 }

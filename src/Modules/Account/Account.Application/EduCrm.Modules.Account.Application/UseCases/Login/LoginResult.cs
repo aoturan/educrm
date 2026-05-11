@@ -1,5 +1,3 @@
-using EduCrm.Modules.Account.Domain.Enums;
-
 namespace EduCrm.Modules.Account.Application.UseCases.Login;
 
 public sealed record LoginResult(
@@ -8,4 +6,4 @@ public sealed record LoginResult(
     string FullName,
     string Initials,
     string OrganizationName,
-    UserRole Role);
+    string Role);

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using EduCrm.Modules.Account.Contracts.Enums;
 
 namespace EduCrm.Modules.Account.Domain.Entities;
 
@@ -23,24 +22,6 @@ public sealed class Organization
 
     [Column("updated_at_utc")]
     public DateTime? UpdatedAtUtc { get; private set; }
-
-    [Column("plan_type")]
-    public OrganizationPlanType PlanType { get; private set; }
-
-    [Column("subscription_billing_cycle")]
-    public SubscriptionBillingCycle SubscriptionBillingCycle { get; private set; }
-
-    [Column("subscription_status")]
-    public SubscriptionStatus SubscriptionStatus { get; private set; }
-
-    [Column("subscription_started_at_utc")]
-    public DateTime? SubscriptionStartedAtUtc { get; private set; }
-
-    [Column("subscription_ends_at_utc")]
-    public DateTime? SubscriptionEndsAtUtc { get; private set; }
-
-    [Column("free_program_consumed_at_utc")]
-    public DateTime? FreeProgramConsumedAtUtc { get; private set; }
 
     [Required]
     [Column("contact_name")]
@@ -69,12 +50,6 @@ public sealed class Organization
         Id = id;
         Name = name.Trim();
         CreatedAtUtc = createdAtUtc;
-        PlanType = OrganizationPlanType.Free;
-        SubscriptionBillingCycle = SubscriptionBillingCycle.None;
-        SubscriptionStatus = SubscriptionStatus.None;
-        SubscriptionStartedAtUtc = null;
-        SubscriptionEndsAtUtc = null;
-        FreeProgramConsumedAtUtc = null;
         ContactName = contactName.Trim();
         ContactEmail = contactEmail.Trim();
         ContactPhone = contactPhone.Trim();
@@ -97,14 +72,6 @@ public sealed class Organization
         ContactName = contactName.Trim();
         ContactEmail = contactEmail.Trim();
         ContactPhone = contactPhone.Trim();
-        UpdatedAtUtc = utcNow;
-    }
-
-    public void MarkFreeProgramConsumed(DateTime utcNow)
-    {
-        if (utcNow == default) throw new ArgumentException("Current UTC time is required.", nameof(utcNow));
-
-        FreeProgramConsumedAtUtc = utcNow;
         UpdatedAtUtc = utcNow;
     }
 }

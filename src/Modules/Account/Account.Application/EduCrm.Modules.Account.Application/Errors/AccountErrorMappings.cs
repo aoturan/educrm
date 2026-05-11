@@ -21,6 +21,21 @@ public static class AccountErrorMappings
         { AccountErrorCodes.NotAdmin, ErrorHttpStatusMapper.Status403Forbidden },
         { AccountErrorCodes.UserAlreadyInStatus, ErrorHttpStatusMapper.Status409Conflict },
         { AccountErrorCodes.CannotChangeOwnStatus, ErrorHttpStatusMapper.Status403Forbidden },
-        { AccountErrorCodes.EmailChangeNotAllowed, ErrorHttpStatusMapper.Status403Forbidden }
+        { AccountErrorCodes.EmailChangeNotAllowed, ErrorHttpStatusMapper.Status403Forbidden },
+        { AccountErrorCodes.CannotTransferRoleToSelf, ErrorHttpStatusMapper.Status403Forbidden },
+        { AccountErrorCodes.UserAlreadyAdmin, ErrorHttpStatusMapper.Status409Conflict },
+        { AccountErrorCodes.PlanUserLimitReached, ErrorHttpStatusMapper.Status403Forbidden },
+        { AccountErrorCodes.BillingDetailsNotConfigured, ErrorHttpStatusMapper.Status404NotFound },
+        { AccountErrorCodes.SubscriptionPlanNotEligible, ErrorHttpStatusMapper.Status400BadRequest },
+        { AccountErrorCodes.NoActiveSubscriptionRequest, ErrorHttpStatusMapper.Status400BadRequest },
+        { AccountErrorCodes.PaymentNotificationAlreadyExists, ErrorHttpStatusMapper.Status400BadRequest },
+        { AccountErrorCodes.InvalidOrExpiredPasswordReset, ErrorHttpStatusMapper.Status400BadRequest },
+        { AccountErrorCodes.OrganizationNotFound, ErrorHttpStatusMapper.Status404NotFound },
+        { AccountErrorCodes.SubscriptionRequestNotFound, ErrorHttpStatusMapper.Status404NotFound },
+        { AccountErrorCodes.PaymentNotificationReceiptNotFound, ErrorHttpStatusMapper.Status404NotFound },
+        { AccountErrorCodes.SubscriptionRequestAlreadyTerminal, ErrorHttpStatusMapper.Status409Conflict },
+        { AccountErrorCodes.SubscriptionNotFound, ErrorHttpStatusMapper.Status404NotFound },
+        { AccountErrorCodes.SubscriptionRequestNotApproved, ErrorHttpStatusMapper.Status409Conflict },
+        { AccountErrorCodes.InvalidSubscriptionPeriod, ErrorHttpStatusMapper.Status400BadRequest }
     };
 }

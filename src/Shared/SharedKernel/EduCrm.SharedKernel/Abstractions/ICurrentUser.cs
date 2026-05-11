@@ -4,4 +4,5 @@ public interface ICurrentUser
 {
     bool IsAuthenticated { get; }
     Guid? UserId { get; }
+    bool IsApplicationAdmin { get; }
 }

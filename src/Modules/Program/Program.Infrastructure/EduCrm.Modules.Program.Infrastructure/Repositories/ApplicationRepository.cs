@@ -113,4 +113,37 @@ public sealed class ApplicationRepository(AppDbContext db) : IApplicationReposit
         return db.Applications
             .CountAsync(a => a.OrganizationId == organizationId && a.Status == ApplicationStatus.New, ct);
     }
+
+    public async Task<IReadOnlyList<ApplicationExportItem>> GetExportListAsync(
+        Guid organizationId,
+        int limit,
+        CancellationToken ct,
+        IReadOnlyList<ApplicationStatus>? statuses = null,
+        Guid? programId = null)
+    {
+        var baseQuery = db.Applications
+            .AsNoTracking()
+            .Where(a => a.OrganizationId == organizationId);
+
+        if (programId.HasValue)
+            baseQuery = baseQuery.Where(a => a.ProgramId == programId.Value);
+
+        if (statuses is { Count: > 0 })
+            baseQuery = baseQuery.Where(a => statuses.Contains(a.Status));
+
+        return await (
+            from a in baseQuery
+            join p in db.Programs on a.ProgramId equals p.Id
+            orderby a.LastSubmittedAtUtc descending
+            select new ApplicationExportItem(
+                p.Name,
+                a.SubmittedFullName,
+                a.SubmittedPhone,
+                a.SubmittedEmail,
+                a.Status,
+                a.LastSubmittedAtUtc,
+                a.SubmissionCount))
+            .Take(limit)
+            .ToListAsync(ct);
+    }
 }

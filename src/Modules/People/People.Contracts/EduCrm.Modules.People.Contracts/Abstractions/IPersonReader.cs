@@ -17,4 +17,6 @@ public interface IPersonReader
     Task<PersonContactMatch?> GetByIdAsync(Guid personId, Guid organizationId, CancellationToken ct);
 
     Task<bool> ExistsInOrganizationAsync(Guid personId, Guid organizationId, CancellationToken ct);
+
+    Task<int> CountActiveByOrganizationAsync(Guid organizationId, CancellationToken ct);
 }

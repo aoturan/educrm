@@ -2,10 +2,6 @@ namespace EduCrm.Modules.Program.Application.Errors;
 
 public static class ProgramErrorCodes
 {
-    public const string SubscriptionRequired = "program.subscription_required";
-    public const string SubscriptionInactive = "program.subscription_inactive";
-    public const string SubscriptionExpired = "program.subscription_expired";
-    public const string SubscriptionInvalid = "program.subscription_invalid";
     public const string OrganizationNotFound = "program.organization_not_found";
     public const string InvalidModalityConfiguration = "program.invalid_modality_configuration";
     public const string EnrollmentNotFound = "program.enrollment_not_found";
@@ -30,4 +26,9 @@ public static class ProgramErrorCodes
     public const string ApplicationAlreadyHasPerson = "program.application_already_has_person";
     public const string PersonNotInOrganization = "program.person_not_in_organization";
     public const string ApplicationCannotBeClosed = "program.application_cannot_be_closed";
+    public const string PlanActiveProgramLimitReached = "program.plan_active_program_limit_reached";
+    public const string PlanActivePersonLimitReached = "program.plan_active_person_limit_reached";
+    public const string ExportNotAllowedOnPlan = "program.export_not_allowed_on_plan";
+    public const string ExportRateLimited = "program.export_rate_limited";
+    public const string ExportRowLimitExceeded = "program.export_row_limit_exceeded";
 }

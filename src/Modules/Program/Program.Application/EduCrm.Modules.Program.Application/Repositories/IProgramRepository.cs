@@ -98,4 +98,6 @@ public interface IProgramRepository
     Task<PublicProgramData?> GetPublicBySlugAsync(string slug, CancellationToken ct);
 
     Task<int> CountActiveStartingInNext7DaysAsync(Guid organizationId, CancellationToken ct);
+
+    Task<int> CountActiveByOrganizationAsync(Guid organizationId, CancellationToken ct);
 }

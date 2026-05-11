@@ -10,9 +10,5 @@ public sealed class UpdateProfileRequestValidator : AbstractValidator<UpdateProf
         RuleFor(x => x.FullName)
             .NotEmpty().WithMessage("Ad soyad gereklidir.")
             .MaximumLength(100).WithMessage("Ad soyad en fazla 100 karakter olabilir.");
-
-        RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("E-posta gereklidir.")
-            .EmailAddress().WithMessage("Geçerli bir e-posta adresi giriniz.");
     }
 }

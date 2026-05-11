@@ -7,6 +7,7 @@ using EduCrm.Modules.Program.Application.UseCases.ContactApplication;
 using EduCrm.Modules.Program.Application.UseCases.ConvertApplication;
 using EduCrm.Modules.Program.Application.UseCases.Create;
 using EduCrm.Modules.Program.Application.UseCases.CreateApplication;
+using EduCrm.Modules.Program.Application.UseCases.ExportApplications;
 using EduCrm.Modules.Program.Application.UseCases.ListApplications;
 using EduCrm.Modules.Program.Application.UseCases.CreateEnrollment;
 using EduCrm.Modules.Program.Application.UseCases.ChangeStatus;
@@ -41,6 +42,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IContactApplicationService, ContactApplicationService>();
         services.AddScoped<IFindPersonsForApplicationService, FindPersonsForApplicationService>();
         services.AddScoped<IListApplicationsService, ListApplicationsService>();
+        services.AddScoped<IExportApplicationsService, ExportApplicationsService>();
         services.AddScoped<ICreateEnrollmentService, CreateEnrollmentService>();
         services.AddScoped<IDeleteEnrollmentService, DeleteEnrollmentService>();
         services.AddScoped<IGetEnrollmentCandidatesService, GetEnrollmentCandidatesService>();

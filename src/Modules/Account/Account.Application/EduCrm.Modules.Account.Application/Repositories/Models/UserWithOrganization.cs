@@ -7,6 +7,7 @@ public sealed record UserWithOrganization(
     Guid OrganizationId,
     UserStatus Status,
     UserRole Role,
+    bool IsApplicationAdmin,
     string PasswordHash,
     string Email,
     string FullName,

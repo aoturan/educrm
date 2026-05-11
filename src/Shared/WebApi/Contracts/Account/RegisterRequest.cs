@@ -1,3 +1,5 @@
+using EduCrm.Modules.Account.Domain.Enums;
+
 namespace EduCrm.WebApi.Contracts.Account;
 
 public sealed record RegisterRequest(
@@ -5,4 +7,5 @@ public sealed record RegisterRequest(
     string Email,
     string OrganizationName,
     string Password,
-    string Phone);
+    string Phone,
+    PlanCode PlanCode);

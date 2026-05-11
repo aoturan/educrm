@@ -1,6 +1,7 @@
 using EduCrm.Infrastructure.Persistence;
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Repositories;
+using EduCrm.Modules.Account.Contracts.Abstractions;
 using EduCrm.Modules.Account.Domain.Entities;
 using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.SharedKernel.Abstractions;
@@ -10,6 +11,7 @@ namespace EduCrm.Modules.Account.Application.UseCases.CreateUser;
 
 public sealed class CreateUserService(
     IUserRepository userRepo,
+    IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock)
     : ICreateUserService
@@ -37,6 +39,11 @@ public sealed class CreateUserService(
         if (emailTaken)
             return Result<CreateUserResult>.Fail(AccountErrors.EmailTaken(normalizedEmail));
 
+        var limits = await planLimitsResolver.ResolveAsync(caller.OrganizationId, ct);
+        var currentActive = await userRepo.CountActiveByOrganizationAsync(caller.OrganizationId, ct);
+        if (currentActive >= limits.Users)
+            return Result<CreateUserResult>.Fail(AccountErrors.PlanUserLimitReached(limits.Users));
+
         var now = clock.UtcNow.UtcDateTime;
         var fullName = input.Name.Trim();
 
@@ -57,6 +64,9 @@ public sealed class CreateUserService(
         return Result<CreateUserResult>.Success(new CreateUserResult(
             user.Id,
             user.Email,
-            user.FullName));
+            user.FullName,
+            user.Role,
+            user.Status,
+            user.LastLoginAtUtc));
     }
 }

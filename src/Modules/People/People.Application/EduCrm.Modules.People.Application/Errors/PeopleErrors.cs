@@ -116,4 +116,50 @@ public static class PeopleErrors
             Code: PeopleErrorCodes.ContactInfoRequired,
             Message: "Telefon numarası veya e-posta adresinden en az biri girilmelidir."
         );
+
+    public static Error PlanActivePersonLimitReached(int limit) =>
+        new(
+            Code: PeopleErrorCodes.PlanActivePersonLimitReached,
+            Message: "Aktif kişi limitine ulaşıldı. Paketinizi yükseltmeniz gerekir.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["limit"] = limit
+            }
+        );
+
+    public static Error PlanOpenFollowUpLimitReached(int limit) =>
+        new(
+            Code: PeopleErrorCodes.PlanOpenFollowUpLimitReached,
+            Message: "Açık takip limitine ulaşıldı. Paketinizi yükseltmeniz gerekir.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["limit"] = limit
+            }
+        );
+
+    public static Error ExportNotAllowedOnPlan() =>
+        new(
+            Code: PeopleErrorCodes.ExportNotAllowedOnPlan,
+            Message: "Dışa aktarma özelliği yalnızca Plus ve Pro paketlerde kullanılabilir."
+        );
+
+    public static Error ExportRateLimited(int retryAfterSeconds) =>
+        new(
+            Code: PeopleErrorCodes.ExportRateLimited,
+            Message: $"Çok sık dışa aktarma talep ettiniz. Lütfen {retryAfterSeconds} saniye sonra tekrar deneyin.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["retryAfterSeconds"] = retryAfterSeconds
+            }
+        );
+
+    public static Error ExportRowLimitExceeded(int maxRows) =>
+        new(
+            Code: PeopleErrorCodes.ExportRowLimitExceeded,
+            Message: $"Dışa aktarma sonucu {maxRows} satırı aşıyor. Lütfen filtrelerinizi daraltın.",
+            Metadata: new Dictionary<string, object>
+            {
+                ["maxRows"] = maxRows
+            }
+        );
 }

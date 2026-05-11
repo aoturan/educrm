@@ -10,10 +10,6 @@ public static class ProgramErrorMappings
 {
     public static IReadOnlyDictionary<string, int> Mappings { get; } = new Dictionary<string, int>
     {
-        { ProgramErrorCodes.SubscriptionRequired, ErrorHttpStatusMapper.Status400BadRequest },
-        { ProgramErrorCodes.SubscriptionInactive, ErrorHttpStatusMapper.Status400BadRequest },
-        { ProgramErrorCodes.SubscriptionExpired, ErrorHttpStatusMapper.Status400BadRequest },
-        { ProgramErrorCodes.SubscriptionInvalid, ErrorHttpStatusMapper.Status400BadRequest },
         { ProgramErrorCodes.OrganizationNotFound, ErrorHttpStatusMapper.Status404NotFound },
         { ProgramErrorCodes.InvalidModalityConfiguration, ErrorHttpStatusMapper.Status400BadRequest },
         { ProgramErrorCodes.EnrollmentNotFound, ErrorHttpStatusMapper.Status404NotFound },
@@ -36,6 +32,11 @@ public static class ProgramErrorMappings
         { ProgramErrorCodes.ApplicationNotFound, ErrorHttpStatusMapper.Status404NotFound },
         { ProgramErrorCodes.ApplicationNotNew, ErrorHttpStatusMapper.Status400BadRequest },
         { ProgramErrorCodes.ApplicationAlreadyHasPerson, ErrorHttpStatusMapper.Status400BadRequest },
-        { ProgramErrorCodes.PersonNotInOrganization, ErrorHttpStatusMapper.Status400BadRequest }
+        { ProgramErrorCodes.PersonNotInOrganization, ErrorHttpStatusMapper.Status400BadRequest },
+        { ProgramErrorCodes.PlanActiveProgramLimitReached, ErrorHttpStatusMapper.Status403Forbidden },
+        { ProgramErrorCodes.PlanActivePersonLimitReached, ErrorHttpStatusMapper.Status403Forbidden },
+        { ProgramErrorCodes.ExportNotAllowedOnPlan, ErrorHttpStatusMapper.Status403Forbidden },
+        { ProgramErrorCodes.ExportRateLimited, ErrorHttpStatusMapper.Status429TooManyRequests },
+        { ProgramErrorCodes.ExportRowLimitExceeded, ErrorHttpStatusMapper.Status422UnprocessableEntity }
     };
 }

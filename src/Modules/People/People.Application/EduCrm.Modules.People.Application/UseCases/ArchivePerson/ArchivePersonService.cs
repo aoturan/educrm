@@ -1,4 +1,5 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.Account.Contracts.Abstractions;
 using EduCrm.Modules.People.Application.Errors;
 using EduCrm.Modules.People.Application.Repositories;
 using EduCrm.SharedKernel.Abstractions;
@@ -9,6 +10,7 @@ namespace EduCrm.Modules.People.Application.UseCases.ArchivePerson;
 
 public sealed class ArchivePersonService(
     IPersonRepository personRepo,
+    IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock,
     IOrgContext orgContext,
@@ -39,6 +41,11 @@ public sealed class ArchivePersonService(
         {
             if (!person.IsArchived)
                 return Result<ArchivePersonResult>.Fail(PeopleErrors.PersonNotArchived(input.PersonId));
+
+            var limits = await planLimitsResolver.ResolveAsync(orgContext.OrganizationId.Value, ct);
+            var currentActive = await personRepo.CountActiveByOrganizationAsync(orgContext.OrganizationId.Value, ct);
+            if (currentActive >= limits.ActivePersons)
+                return Result<ArchivePersonResult>.Fail(PeopleErrors.PlanActivePersonLimitReached(limits.ActivePersons));
 
             person.Unarchive(now);
         }

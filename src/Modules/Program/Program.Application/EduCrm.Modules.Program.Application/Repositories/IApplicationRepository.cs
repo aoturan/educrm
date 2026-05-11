@@ -26,12 +26,22 @@ public record ApplicationPagedListResult(
     IReadOnlyList<ApplicationListItem> Items,
     int TotalCount);
 
+public sealed record ApplicationExportItem(
+    string ProgramName,
+    string SubmittedFullName,
+    string? SubmittedPhone,
+    string? SubmittedEmail,
+    ApplicationStatus Status,
+    DateTime LastSubmittedAtUtc,
+    int SubmissionCount);
+
 public interface IApplicationRepository
 {
     void Add(ApplicationEntity application);
     Task<IReadOnlyList<ApplicationEntity>> GetActiveApplicationsByContactAsync(Guid programId, Guid organizationId, string normalizedEmail, string normalizedPhone, CancellationToken ct);
     Task<ApplicationDetail?> GetDetailAsync(Guid applicationId, Guid organizationId, CancellationToken ct);
     Task<ApplicationPagedListResult> GetPagedListAsync(Guid organizationId, int page, int pageSize, CancellationToken ct, IReadOnlyList<ApplicationStatus>? statuses = null, Guid? programId = null);
+    Task<IReadOnlyList<ApplicationExportItem>> GetExportListAsync(Guid organizationId, int limit, CancellationToken ct, IReadOnlyList<ApplicationStatus>? statuses = null, Guid? programId = null);
     Task<ApplicationEntity?> GetTrackedByIdAsync(Guid applicationId, Guid organizationId, CancellationToken ct);
     Task<int> CountNewAsync(Guid organizationId, CancellationToken ct);
 }

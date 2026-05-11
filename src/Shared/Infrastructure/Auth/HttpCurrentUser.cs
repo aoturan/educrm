@@ -30,4 +30,7 @@ public sealed class HttpCurrentUser : ICurrentUser
             return Guid.TryParse(raw, out var id) ? id : null;
         }
     }
+
+    public bool IsApplicationAdmin =>
+        string.Equals(_http.HttpContext?.User.FindFirstValue("app_admin"), "true", StringComparison.OrdinalIgnoreCase);
 }

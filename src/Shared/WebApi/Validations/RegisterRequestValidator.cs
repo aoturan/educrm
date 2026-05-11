@@ -29,5 +29,9 @@ public sealed class RegisterRequestValidator : AbstractValidator<RegisterRequest
             .NotEmpty()
             .Matches(@"^\+?\d{10,12}$")
             .WithMessage("Lütfen geçerli bir telefon numarası giriniz. (örn: +905XXXXXXXXX)");
+
+        RuleFor(x => x.PlanCode)
+            .IsInEnum()
+            .WithMessage("Geçerli bir plan kodu belirtiniz.");
     }
 }

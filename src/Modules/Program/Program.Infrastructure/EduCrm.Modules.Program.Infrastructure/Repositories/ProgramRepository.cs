@@ -229,4 +229,12 @@ public class ProgramRepository: IProgramRepository
                           && p.StartDate >= today
                           && p.StartDate < in7Days, ct);
     }
+
+    public Task<int> CountActiveByOrganizationAsync(Guid organizationId, CancellationToken ct)
+    {
+        return _db.Programs
+            .CountAsync(p => p.OrganizationId == organizationId
+                          && !p.IsArchived
+                          && p.Status == ProgramStatus.Active, ct);
+    }
 }

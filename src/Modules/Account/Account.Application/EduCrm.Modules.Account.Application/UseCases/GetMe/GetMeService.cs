@@ -21,6 +21,6 @@ public sealed class GetMeService(IUserRepository userRepo) : IGetMeService
             user.Email,
             user.FullName,
             initials,
-            user.Role));
+            RoleLabel.Resolve(user)));
     }
 }

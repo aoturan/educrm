@@ -96,4 +96,12 @@ public sealed class FollowUpRepository : IFollowUpRepository
 
         return (items, totalCount);
     }
+
+    public Task<int> CountOpenByOrganizationAsync(Guid organizationId, CancellationToken ct)
+    {
+        return _db.FollowUps
+            .AsNoTracking()
+            .CountAsync(f => f.OrganizationId == organizationId
+                          && (f.Status == FollowUpStatus.Open || f.Status == FollowUpStatus.Snoozed), ct);
+    }
 }

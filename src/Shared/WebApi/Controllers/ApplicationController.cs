@@ -1,14 +1,17 @@
+using EduCrm.Modules.Program.Application.Repositories;
 using EduCrm.Modules.Program.Application.UseCases.AssignPersonToApplication;
 using EduCrm.Modules.Program.Application.UseCases.CloseApplication;
 using EduCrm.Modules.Program.Application.UseCases.ContactApplication;
 using EduCrm.Modules.Program.Application.UseCases.ConvertApplication;
 using EduCrm.Modules.Program.Application.UseCases.CreateApplication;
+using EduCrm.Modules.Program.Application.UseCases.ExportApplications;
 using EduCrm.Modules.Program.Application.UseCases.FindPersonsForApplication;
 using EduCrm.Modules.Program.Application.UseCases.GetApplicationById;
 using EduCrm.Modules.Program.Application.UseCases.ListApplications;
 using EduCrm.Modules.Program.Domain.Enums;
 using EduCrm.WebApi.Contracts.Application;
 using EduCrm.WebApi.Extensions;
+using EduCrm.WebApi.Helpers;
 using EduCrm.WebApi.Validations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +30,7 @@ public class ApplicationController : ControllerBase
     private readonly IFindPersonsForApplicationService _findPersons;
     private readonly IGetApplicationByIdService _getById;
     private readonly IListApplicationsService _list;
+    private readonly IExportApplicationsService _export;
     private readonly IRequestValidator _validator;
 
     public ApplicationController(
@@ -38,6 +42,7 @@ public class ApplicationController : ControllerBase
         IFindPersonsForApplicationService findPersons,
         IGetApplicationByIdService getById,
         IListApplicationsService list,
+        IExportApplicationsService export,
         IRequestValidator validator)
     {
         _assignPerson = assignPerson;
@@ -48,6 +53,7 @@ public class ApplicationController : ControllerBase
         _findPersons = findPersons;
         _getById = getById;
         _list = list;
+        _export = export;
         _validator = validator;
     }
 
@@ -113,6 +119,47 @@ public class ApplicationController : ControllerBase
                 r.TotalCount)));
     }
 
+    [HttpGet("export")]
+    [Authorize]
+    public async Task<IActionResult> Export(
+        [FromQuery] string? preFilter = null,
+        [FromQuery] Guid? programId = null,
+        CancellationToken ct = default)
+    {
+        var statuses = preFilter?
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(s => Enum.TryParse<ApplicationStatus>(s, ignoreCase: true, out var status) ? status : (ApplicationStatus?)null)
+            .Where(s => s.HasValue)
+            .Select(s => s!.Value)
+            .ToList();
+
+        var input = new ExportApplicationsInput(statuses?.Count > 0 ? statuses : null, programId);
+        var result = await _export.ExportAsync(input, ct);
+
+        if (result.IsFailure)
+            return result.ToActionResult(HttpContext, this, _ => NoContent());
+
+        var generatedAt = result.Value.GeneratedAtUtc;
+        var fileName = $"applications-{generatedAt:yyyyMMdd-HHmmss}.csv";
+
+        var columns = new List<(string Header, Func<ApplicationExportItem, string?> Selector)>
+        {
+            ("Program",            a => a.ProgramName),
+            ("Ad Soyad",           a => a.SubmittedFullName),
+            ("Telefon",            a => a.SubmittedPhone is null ? null : CsvWriter.AsExcelText(a.SubmittedPhone)),
+            ("E-posta",            a => a.SubmittedEmail),
+            ("Durum",              a => a.Status.ToString()),
+            ("Son Başvuru Tarihi", a => a.LastSubmittedAtUtc.ToString("yyyy-MM-dd HH:mm:ss")),
+            ("Başvuru Sayısı",     a => a.SubmissionCount.ToString()),
+        };
+
+        Response.Headers["Content-Disposition"] = $"attachment; filename=\"{fileName}\"";
+        Response.ContentType = "text/csv; charset=utf-8";
+
+        await CsvWriter.WriteAsync(Response.Body, result.Value.Rows, columns, ct);
+        return new EmptyResult();
+    }
+
     [HttpGet("{applicationId:guid}")]
     [Authorize]
     public async Task<IActionResult> GetById(Guid applicationId, CancellationToken ct)
@@ -136,21 +183,21 @@ public class ApplicationController : ControllerBase
                 r.Program is null ? null : new ApplicationProgramInfoResponse(r.Program.ProgramId, r.Program.Name))));
     }
 
-    [HttpPost("{applicationId:guid}/assign-person")]
-    [Authorize]
-    public async Task<IActionResult> AssignPerson(Guid applicationId, CancellationToken ct)
-    {
-        var result = await _assignPerson.AssignAsync(new AssignPersonInput(applicationId), ct);
-
-        return result.ToActionResult(HttpContext, this, r =>
-            Ok(new AssignPersonResponse(
-                r.IsAmbiguous,
-                r.Candidates.Select(c => new PersonCandidateResponse(
-                    c.PersonId,
-                    c.FullName,
-                    c.Email,
-                    c.Phone)).ToList())));
-    }
+    // [HttpPost("{applicationId:guid}/assign-person")]
+    // [Authorize]
+    // public async Task<IActionResult> AssignPerson(Guid applicationId, CancellationToken ct)
+    // {
+    //     var result = await _assignPerson.AssignAsync(new AssignPersonInput(applicationId), ct);
+    //
+    //     return result.ToActionResult(HttpContext, this, r =>
+    //         Ok(new AssignPersonResponse(
+    //             r.IsAmbiguous,
+    //             r.Candidates.Select(c => new PersonCandidateResponse(
+    //                 c.PersonId,
+    //                 c.FullName,
+    //                 c.Email,
+    //                 c.Phone)).ToList())));
+    // }
 
     [HttpGet("{applicationId:guid}/persons")]
     [Authorize]

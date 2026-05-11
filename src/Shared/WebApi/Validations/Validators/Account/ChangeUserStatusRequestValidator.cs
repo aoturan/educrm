@@ -1,3 +1,4 @@
+using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.WebApi.Contracts.Account;
 using FluentValidation;
 
@@ -7,7 +8,8 @@ public sealed class ChangeUserStatusRequestValidator : AbstractValidator<ChangeU
 {
     public ChangeUserStatusRequestValidator()
     {
-        RuleFor(x => x.Operation)
-            .IsInEnum().WithMessage("Geçerli bir işlem belirtiniz (Activate veya Disable).");
+        RuleFor(x => x.Status)
+            .Must(s => s == UserStatus.Active || s == UserStatus.Disabled)
+            .WithMessage("Geçerli bir durum belirtiniz (Active veya Disabled).");
     }
 }
