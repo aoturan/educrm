@@ -1,0 +1,3 @@
+namespace EduCrm.Modules.Support.Application.UseCases.CreateSupportContactMessage;
+
+public sealed record CreateSupportContactMessageResult(Guid SupportContactMessageId);

@@ -1,0 +1,3 @@
+namespace EduCrm.Modules.Support.Application.UseCases.MarkSupportContactMessageHandled;
+
+public sealed record MarkSupportContactMessageHandledInput(Guid SupportContactMessageId);

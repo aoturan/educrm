@@ -10,6 +10,7 @@
       <ProjectReference Include="..\..\..\..\Shared\Infrastructure\EduCrm.Infrastructure.csproj" />
       <ProjectReference Include="..\..\..\People\People.Application\EduCrm.Modules.People.Application\EduCrm.Modules.People.Application.csproj" />
       <ProjectReference Include="..\..\Account.Domain\EduCrm.Modules.Account.Domain\EduCrm.Modules.Account.Domain.csproj" />
+      <ProjectReference Include="..\..\..\Support\Support.Contracts\EduCrm.Modules.Support.Contracts\EduCrm.Modules.Support.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

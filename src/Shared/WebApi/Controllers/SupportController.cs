@@ -1,3 +1,4 @@
+using EduCrm.Modules.Support.Application.UseCases.CreateSupportContactMessage;
 using EduCrm.Modules.Support.Application.UseCases.CreateSupportRequest;
 using EduCrm.WebApi.Contracts.Support;
 using EduCrm.WebApi.Extensions;
@@ -12,13 +13,16 @@ namespace EduCrm.WebApi.Controllers;
 public class SupportController : ControllerBase
 {
     private readonly ICreateSupportRequestService _create;
+    private readonly ICreateSupportContactMessageService _createContactMessage;
     private readonly IRequestValidator _validator;
 
     public SupportController(
         ICreateSupportRequestService create,
+        ICreateSupportContactMessageService createContactMessage,
         IRequestValidator validator)
     {
         _create = create;
+        _createContactMessage = createContactMessage;
         _validator = validator;
     }
 
@@ -36,5 +40,21 @@ public class SupportController : ControllerBase
 
         return result.ToActionResult(HttpContext, this, r =>
             StatusCode(StatusCodes.Status201Created, new CreateSupportRequestResponse(r.SupportRequestId)));
+    }
+
+    [HttpPost("contact-messages")]
+    [AllowAnonymous]
+    public async Task<IActionResult> CreateContactMessage(
+        [FromBody] CreateSupportContactMessageRequest req,
+        CancellationToken ct)
+    {
+        var validation = await _validator.ValidateAsync(req, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var input = new CreateSupportContactMessageInput(req.FullName, req.Email, req.Subject, req.Message);
+        var result = await _createContactMessage.CreateAsync(input, ct);
+
+        return result.ToActionResult(HttpContext, this, r =>
+            StatusCode(StatusCodes.Status201Created, new CreateSupportContactMessageResponse(r.SupportContactMessageId)));
     }
 }

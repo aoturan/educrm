@@ -7,6 +7,10 @@ using EduCrm.Modules.Account.Application.UseCases.MarkSubscriptionRequestInvoice
 using EduCrm.Modules.Account.Application.UseCases.OverrideOrganizationSubscription;
 using EduCrm.Modules.Account.Application.UseCases.ListOrganizations;
 using EduCrm.Modules.Account.Application.UseCases.ListSubscriptionRequests;
+using EduCrm.Modules.Support.Application.UseCases.ListSupportContactMessages;
+using EduCrm.Modules.Support.Application.UseCases.ListSupportRequests;
+using EduCrm.Modules.Support.Application.UseCases.MarkSupportContactMessageHandled;
+using EduCrm.Modules.Support.Application.UseCases.MarkSupportRequestHandled;
 using EduCrm.WebApi.Contracts.Admin;
 using EduCrm.WebApi.Extensions;
 using EduCrm.WebApi.Validations;
@@ -29,6 +33,10 @@ public sealed class AdminController : ControllerBase
     private readonly IMarkSubscriptionRequestInvoicedService _markInvoiced;
     private readonly IOverrideOrganizationSubscriptionService _overrideSubscription;
     private readonly IListSubscriptionRequestsService _listSubscriptionRequests;
+    private readonly IListSupportContactMessagesService _listSupportContactMessages;
+    private readonly IMarkSupportContactMessageHandledService _markSupportContactMessageHandled;
+    private readonly IListSupportRequestsService _listSupportRequests;
+    private readonly IMarkSupportRequestHandledService _markSupportRequestHandled;
     private readonly IRequestValidator _validator;
 
     public AdminController(
@@ -41,6 +49,10 @@ public sealed class AdminController : ControllerBase
         IMarkSubscriptionRequestInvoicedService markInvoiced,
         IOverrideOrganizationSubscriptionService overrideSubscription,
         IListSubscriptionRequestsService listSubscriptionRequests,
+        IListSupportContactMessagesService listSupportContactMessages,
+        IMarkSupportContactMessageHandledService markSupportContactMessageHandled,
+        IListSupportRequestsService listSupportRequests,
+        IMarkSupportRequestHandledService markSupportRequestHandled,
         IRequestValidator validator)
     {
         _getDashboard = getDashboard;
@@ -52,6 +64,10 @@ public sealed class AdminController : ControllerBase
         _markInvoiced = markInvoiced;
         _overrideSubscription = overrideSubscription;
         _listSubscriptionRequests = listSubscriptionRequests;
+        _listSupportContactMessages = listSupportContactMessages;
+        _markSupportContactMessageHandled = markSupportContactMessageHandled;
+        _listSupportRequests = listSupportRequests;
+        _markSupportRequestHandled = markSupportRequestHandled;
         _validator = validator;
     }
 
@@ -66,7 +82,9 @@ public sealed class AdminController : ControllerBase
                     r.Counts.PendingPaymentRequests,
                     r.Counts.NewOrganizationsThisWeek,
                     r.Counts.ActivePaidOrganizations,
-                    r.Counts.FreeOrganizations),
+                    r.Counts.FreeOrganizations,
+                    r.Counts.NewSupportContactMessages,
+                    r.Counts.NewSupportRequests),
                 r.PendingPaymentRequests
                     .Select(p => new AdminPendingPaymentRequestResponse(
                         p.SubscriptionRequestId,
@@ -311,5 +329,95 @@ public sealed class AdminController : ControllerBase
                         r.PaymentNotification.ReceiptSizeBytes,
                         r.PaymentNotification.CreatedAtUtc,
                         r.PaymentNotification.UpdatedAtUtc))));
+    }
+
+    [HttpGet("support-contact-messages")]
+    public async Task<IActionResult> ListSupportContactMessages(
+        [FromQuery] ListSupportContactMessagesQuery query,
+        CancellationToken ct)
+    {
+        var validation = await _validator.ValidateAsync(query, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var page = query.Page < 1 ? 1 : query.Page;
+        var pageSize = query.PageSize is < 1 or > 100 ? 10 : query.PageSize;
+
+        var input = new ListSupportContactMessagesInput(page, pageSize, query.PreFilter);
+        var result = await _listSupportContactMessages.ListAsync(input, ct);
+
+        return result.ToActionResult(HttpContext, this, r =>
+            Ok(new SupportContactMessageListPagedResponse(
+                r.Items.Select(x => new SupportContactMessageListItemResponse(
+                    x.Id,
+                    x.FullName,
+                    x.Email,
+                    x.Subject,
+                    x.Message,
+                    x.Status,
+                    x.CreatedAt,
+                    x.ReviewedAt)).ToList(),
+                r.Page,
+                r.PageSize,
+                r.TotalCount)));
+    }
+
+    [HttpPost("support-contact-messages/{supportContactMessageId:guid}/handle")]
+    public async Task<IActionResult> MarkSupportContactMessageHandled(
+        Guid supportContactMessageId,
+        CancellationToken ct)
+    {
+        var result = await _markSupportContactMessageHandled.MarkAsync(
+            new MarkSupportContactMessageHandledInput(supportContactMessageId), ct);
+
+        return result.ToActionResult(HttpContext, this, r =>
+            Ok(new MarkSupportContactMessageHandledResponse(
+                r.SupportContactMessageId,
+                r.Status,
+                r.ReviewedAt)));
+    }
+
+    [HttpGet("support-requests")]
+    public async Task<IActionResult> ListSupportRequests(
+        [FromQuery] ListSupportRequestsQuery query,
+        CancellationToken ct)
+    {
+        var validation = await _validator.ValidateAsync(query, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var page = query.Page < 1 ? 1 : query.Page;
+        var pageSize = query.PageSize is < 1 or > 100 ? 10 : query.PageSize;
+
+        var input = new ListSupportRequestsInput(page, pageSize, query.PreFilter);
+        var result = await _listSupportRequests.ListAsync(input, ct);
+
+        return result.ToActionResult(HttpContext, this, r =>
+            Ok(new SupportRequestListPagedResponse(
+                r.Items.Select(x => new SupportRequestListItemResponse(
+                    x.Id,
+                    x.OrganizationId,
+                    x.OrganizationName,
+                    x.PageUrl,
+                    x.Subject,
+                    x.Message,
+                    x.Status,
+                    x.CreatedAtUtc)).ToList(),
+                r.Page,
+                r.PageSize,
+                r.TotalCount)));
+    }
+
+    [HttpPost("support-requests/{supportRequestId:guid}/handle")]
+    public async Task<IActionResult> MarkSupportRequestHandled(
+        Guid supportRequestId,
+        CancellationToken ct)
+    {
+        var result = await _markSupportRequestHandled.MarkAsync(
+            new MarkSupportRequestHandledInput(supportRequestId), ct);
+
+        return result.ToActionResult(HttpContext, this, r =>
+            Ok(new MarkSupportRequestHandledResponse(
+                r.SupportRequestId,
+                r.Status,
+                r.HandledAtUtc)));
     }
 }

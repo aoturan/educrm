@@ -3,13 +3,13 @@ using EduCrm.Modules.Support.Domain.Entities;
 
 namespace EduCrm.Modules.Support.Application.Repositories;
 
-public interface ISupportRequestRepository
+public interface ISupportContactMessageRepository
 {
-    void Add(SupportRequest supportRequest);
+    void Add(SupportContactMessage supportContactMessage);
 
-    Task<SupportRequest?> GetTrackedByIdAsync(Guid id, CancellationToken ct);
+    Task<SupportContactMessage?> GetTrackedByIdAsync(Guid id, CancellationToken ct);
 
-    Task<SupportRequestPagedListQueryResult> GetPagedListAsync(
+    Task<SupportContactMessagePagedListQueryResult> GetPagedListAsync(
         int page,
         int pageSize,
         CancellationToken ct,

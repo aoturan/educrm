@@ -82,4 +82,10 @@ public sealed class SupportRequest
         CreatedAtUtc = createdAtUtc;
         HandledAtUtc = null;
     }
+
+    public void MarkHandled(DateTime handledAtUtc)
+    {
+        Status = SupportRequestStatus.Handled;
+        HandledAtUtc = handledAtUtc;
+    }
 }

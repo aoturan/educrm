@@ -30,6 +30,7 @@ public sealed class AppDbContext : DbContext, IUnitOfWork
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();
     public DbSet<Application> Applications => Set<Application>();
     public DbSet<SupportRequest> SupportRequests => Set<SupportRequest>();
+    public DbSet<SupportContactMessage> SupportContactMessages => Set<SupportContactMessage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

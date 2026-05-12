@@ -8,7 +8,9 @@ public sealed record AdminDashboardCountsResult(
     int PendingPaymentRequests,
     int NewOrganizationsThisWeek,
     int ActivePaidOrganizations,
-    int FreeOrganizations);
+    int FreeOrganizations,
+    int NewSupportContactMessages,
+    int NewSupportRequests);
 
 public sealed record AdminPendingPaymentRequestItem(
     Guid SubscriptionRequestId,

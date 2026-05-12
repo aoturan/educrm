@@ -1,4 +1,5 @@
 using EduCrm.Modules.Account.Application.Repositories;
+using EduCrm.Modules.Support.Contracts.Abstractions;
 using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
 
@@ -8,6 +9,7 @@ public sealed class GetAdminDashboardService(
     IOrganizationRepository organizationRepo,
     ISubscriptionRepository subscriptionRepo,
     ISubscriptionRequestRepository subscriptionRequestRepo,
+    ISupportDashboardCountsProvider supportCounts,
     IClock clock) : IGetAdminDashboardService
 {
     private const int PendingListTake = 20;
@@ -22,6 +24,8 @@ public sealed class GetAdminDashboardService(
         var newOrgsCount = await organizationRepo.CountCreatedSinceAsync(weekAgo, ct);
         var activePaidCount = await subscriptionRepo.CountActivePaidAsync(now, ct);
         var freeCount = await subscriptionRepo.CountFreeOrExpiredAsync(now, ct);
+        var newContactMessages = await supportCounts.CountNewContactMessagesAsync(ct);
+        var newSupportRequests = await supportCounts.CountNewRequestsAsync(ct);
 
         var pendingItems = await subscriptionRequestRepo.GetOldestPendingAsync(PendingListTake, ct);
 
@@ -43,7 +47,9 @@ public sealed class GetAdminDashboardService(
                 pendingCount,
                 newOrgsCount,
                 activePaidCount,
-                freeCount),
+                freeCount,
+                newContactMessages,
+                newSupportRequests),
             items));
     }
 }
