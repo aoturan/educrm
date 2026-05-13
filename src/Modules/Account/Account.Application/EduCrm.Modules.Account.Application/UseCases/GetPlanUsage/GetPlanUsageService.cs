@@ -25,9 +25,6 @@ public sealed class GetPlanUsageService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<GetPlanUsageResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<GetPlanUsageResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<GetPlanUsageResult>.Fail(AccountErrors.NotAdmin());
 

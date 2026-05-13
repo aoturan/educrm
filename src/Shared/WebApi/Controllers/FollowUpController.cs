@@ -48,7 +48,7 @@ public class FollowUpController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Create(
         [FromBody] CreateFollowUpRequest req,
         CancellationToken ct)
@@ -71,7 +71,7 @@ public class FollowUpController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var result = await _getById.GetAsync(id, ct);
@@ -93,7 +93,7 @@ public class FollowUpController : ControllerBase
     }
 
     [HttpPost("{id:guid}/update")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Update(
         Guid id,
         [FromBody] UpdateFollowUpRequest req,
@@ -118,7 +118,7 @@ public class FollowUpController : ControllerBase
     }
 
     [HttpPost("{id:guid}/complete")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Complete(Guid id, CancellationToken ct)
     {
         var input = new ChangeFollowUpStatusInput(id, FollowUpStatus.Completed);
@@ -129,7 +129,7 @@ public class FollowUpController : ControllerBase
     }
 
     [HttpPost("{id:guid}/cancel")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Cancel(Guid id, CancellationToken ct)
     {
         var input = new ChangeFollowUpStatusInput(id, FollowUpStatus.Cancelled);
@@ -140,7 +140,7 @@ public class FollowUpController : ControllerBase
     }
 
     [HttpPost("{id:guid}/snooze")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Snooze(
         Guid id,
         [FromBody] SnoozeFollowUpRequest req,
@@ -156,7 +156,7 @@ public class FollowUpController : ControllerBase
     }
 
     [HttpPost("{id:guid}/reschedule")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Reschedule(
         Guid id,
         [FromBody] RescheduleDueDateRequest req,
@@ -172,7 +172,7 @@ public class FollowUpController : ControllerBase
     }
 
     [HttpGet("list")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> List(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,

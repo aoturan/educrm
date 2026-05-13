@@ -28,9 +28,6 @@ public sealed class CreatePaymentNotificationService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<CreatePaymentNotificationResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<CreatePaymentNotificationResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<CreatePaymentNotificationResult>.Fail(AccountErrors.NotAdmin());
 

@@ -27,8 +27,11 @@ public sealed class RequestPasswordResetService(
         var email = input.Email.Trim();
         var user = await userRepo.GetByEmailAsync(email, ct);
 
-        if (user is null || user.Status != UserStatus.Active)
+        if (user is null ||
+            (user.Status != UserStatus.Active && user.Status != UserStatus.WaitingForActivation))
+        {
             return Result.Success();
+        }
 
         var opts = options.Value;
         var now = clock.UtcNow.UtcDateTime;

@@ -36,6 +36,8 @@ public static class AccountErrorMappings
         { AccountErrorCodes.SubscriptionRequestAlreadyTerminal, ErrorHttpStatusMapper.Status409Conflict },
         { AccountErrorCodes.SubscriptionNotFound, ErrorHttpStatusMapper.Status404NotFound },
         { AccountErrorCodes.SubscriptionRequestNotApproved, ErrorHttpStatusMapper.Status409Conflict },
-        { AccountErrorCodes.InvalidSubscriptionPeriod, ErrorHttpStatusMapper.Status400BadRequest }
+        { AccountErrorCodes.InvalidSubscriptionPeriod, ErrorHttpStatusMapper.Status400BadRequest },
+        { AccountErrorCodes.InvalidOrExpiredEmailVerification, ErrorHttpStatusMapper.Status400BadRequest },
+        { AccountErrorCodes.EmailAlreadyVerified, ErrorHttpStatusMapper.Status409Conflict }
     };
 }

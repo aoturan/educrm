@@ -30,9 +30,6 @@ public sealed class CreateSubscriptionRequestService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<CreateSubscriptionRequestResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<CreateSubscriptionRequestResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<CreateSubscriptionRequestResult>.Fail(AccountErrors.NotAdmin());
 

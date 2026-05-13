@@ -27,9 +27,6 @@ public sealed class CreateUserService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<CreateUserResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<CreateUserResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<CreateUserResult>.Fail(AccountErrors.NotAdmin());
 

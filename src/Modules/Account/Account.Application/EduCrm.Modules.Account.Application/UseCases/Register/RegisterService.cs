@@ -1,4 +1,6 @@
 using EduCrm.Infrastructure.Persistence;
+using EduCrm.Modules.Account.Application.Email;
+using EduCrm.Modules.Account.Application.EmailVerification;
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
 using EduCrm.Modules.Account.Application.Repositories;
@@ -8,6 +10,7 @@ using EduCrm.Modules.Account.Domain.Entities;
 using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
+using Microsoft.Extensions.Options;
 
 namespace EduCrm.Modules.Account.Application.UseCases.Register;
 
@@ -21,7 +24,8 @@ public sealed class RegisterService(
     IUnitOfWork uow,
     IAppDbTransaction tx,
     IClock clock,
-    IJwtService jwtService)
+    IEmailSender emailSender,
+    IOptions<EmailVerificationOptions> verificationOptions)
     : IRegisterService
 {
     private static readonly TimeSpan SubscriptionRequestLifetime = TimeSpan.FromDays(7);
@@ -71,9 +75,11 @@ public sealed class RegisterService(
 
             userRepo.Add(user);
 
-            // Registration auto-logs the user in (redirects to dashboard)
-            user.Enable(now);
-            user.SetLastLogin(now);
+            var verificationOpts = verificationOptions.Value;
+            var plainVerificationToken = VerificationTokenGenerator.GenerateToken();
+            var verificationTokenHash = VerificationTokenGenerator.HashToken(plainVerificationToken);
+            var verificationExpiresAt = now.AddMinutes(verificationOpts.TokenLifetimeMinutes);
+            user.IssueEmailVerification(verificationTokenHash, verificationExpiresAt, now);
 
             // 3) Subscription. Paid signups start on Free; the SubscriptionRequest
             //    below tracks the chosen plan and gets approved on payment.
@@ -114,18 +120,28 @@ public sealed class RegisterService(
             await uow.SaveChangesAsync(ct);
             await trx.CommitAsync(ct);
 
-            // Generate JWT token
-            var token = jwtService.GenerateToken(user.Id, user.IsApplicationAdmin);
+            try
+            {
+                var verificationLink = EmailVerificationEmailBuilder.BuildLink(
+                    verificationOpts.VerificationUrl, user.Email, plainVerificationToken);
+                var verificationMessage = EmailVerificationEmailBuilder.Build(
+                    user.Email, user.FullName, verificationLink, verificationOpts.TokenLifetimeMinutes);
+                await emailSender.SendAsync(verificationMessage, ct);
+            }
+            catch
+            {
+                // Swallow: delivery failure should not block registration; user can request resend.
+            }
 
-            var initials = NameHelper.GetInitials(input.Name);
-
+            // No JWT is issued at registration; the user must verify their email and then log in.
             return Result<RegisterResult>.Success(new RegisterResult(
-                token,
-                input.Email,
-                input.Name,
-                initials,
-                input.OrganizationName,
-                RoleLabel.Resolve(user)));
+                Email: user.Email,
+                Status: user.Status,
+                Token: null,
+                FullName: null,
+                Initials: null,
+                OrganizationName: null,
+                Role: null));
         }
         catch
         {

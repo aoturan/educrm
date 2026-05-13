@@ -46,7 +46,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Create(
         [FromBody] CreatePersonRequest req,
         CancellationToken ct)
@@ -69,7 +69,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet("list")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> List(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5,
@@ -102,7 +102,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet("export")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Export(
         [FromQuery] string? q = null,
         [FromQuery] string? preFilter = null,
@@ -133,7 +133,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var result = await _getById.GetAsync(id, ct);
@@ -164,7 +164,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpPost("{id:guid}/archive")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Archive(Guid id, CancellationToken ct)
     {
         var result = await _archive.ArchiveAsync(new ArchivePersonInput(id, ShouldArchive: true), ct);
@@ -174,7 +174,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpPost("{id:guid}/unarchive")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Unarchive(Guid id, CancellationToken ct)
     {
         var result = await _archive.ArchiveAsync(new ArchivePersonInput(id, ShouldArchive: false), ct);
@@ -184,7 +184,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpPost("{id:guid}/update")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Update(
         Guid id,
         [FromBody] UpdatePersonRequest req,

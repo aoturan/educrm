@@ -208,4 +208,16 @@ public static class AccountErrors
             Code: AccountErrorCodes.InvalidSubscriptionPeriod,
             Message: "Bitiş tarihi başlangıç tarihinden sonra olmalı."
         );
+
+    public static Error InvalidOrExpiredEmailVerification() =>
+        new(
+            Code: AccountErrorCodes.InvalidOrExpiredEmailVerification,
+            Message: "Geçersiz ya da süresi dolmuş doğrulama bağlantısı."
+        );
+
+    public static Error EmailAlreadyVerified() =>
+        new(
+            Code: AccountErrorCodes.EmailAlreadyVerified,
+            Message: "Bu e-posta adresi zaten doğrulanmış."
+        );
 }

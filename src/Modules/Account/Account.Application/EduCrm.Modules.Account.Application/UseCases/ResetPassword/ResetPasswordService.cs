@@ -29,8 +29,11 @@ public sealed class ResetPasswordService(
         }
 
         var user = await userRepo.GetByEmailAsync(input.Email.Trim(), ct);
-        if (user is null || user.Status != UserStatus.Active)
+        if (user is null ||
+            (user.Status != UserStatus.Active && user.Status != UserStatus.WaitingForActivation))
+        {
             return Result.Fail(AccountErrors.InvalidOrExpiredPasswordReset());
+        }
 
         if (user.PasswordResetTokenHash is null || user.PasswordResetTokenExpiresAt is null)
             return Result.Fail(AccountErrors.InvalidOrExpiredPasswordReset());

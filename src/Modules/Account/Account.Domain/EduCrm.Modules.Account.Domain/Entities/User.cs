@@ -62,6 +62,15 @@ public sealed class User
     [Column("password_changed_at")]
     public DateTime? PasswordChangedAt { get; private set; }
 
+    [Column("email_verification_token_hash")]
+    public string? EmailVerificationTokenHash { get; private set; }
+
+    [Column("email_verification_token_expires_at")]
+    public DateTime? EmailVerificationTokenExpiresAt { get; private set; }
+
+    [Column("email_verification_sent_at")]
+    public DateTime? EmailVerificationSentAt { get; private set; }
+
     [Required]
     [Column("is_application_admin")]
     public bool IsApplicationAdmin { get; private set; }
@@ -98,6 +107,9 @@ public sealed class User
     public void Enable(DateTime utcNow)
     {
         Status = UserStatus.Active;
+        EmailVerificationTokenHash = null;
+        EmailVerificationTokenExpiresAt = null;
+        EmailVerificationSentAt = null;
         UpdatedAtUtc = utcNow;
     }
 
@@ -157,6 +169,26 @@ public sealed class User
         PasswordResetTokenHash = null;
         PasswordResetTokenExpiresAt = null;
         PasswordResetRequestedAt = null;
+        UpdatedAtUtc = utcNow;
+    }
+
+    public void IssueEmailVerification(string tokenHash, DateTime expiresAtUtc, DateTime utcNow)
+    {
+        if (string.IsNullOrWhiteSpace(tokenHash)) throw new ArgumentException("TokenHash is required.", nameof(tokenHash));
+        if (expiresAtUtc <= utcNow) throw new ArgumentException("ExpiresAt must be in the future.", nameof(expiresAtUtc));
+
+        EmailVerificationTokenHash = tokenHash;
+        EmailVerificationTokenExpiresAt = expiresAtUtc;
+        EmailVerificationSentAt = utcNow;
+        UpdatedAtUtc = utcNow;
+    }
+
+    public void CompleteEmailVerification(DateTime utcNow)
+    {
+        Status = UserStatus.Active;
+        EmailVerificationTokenHash = null;
+        EmailVerificationTokenExpiresAt = null;
+        EmailVerificationSentAt = null;
         UpdatedAtUtc = utcNow;
     }
 }

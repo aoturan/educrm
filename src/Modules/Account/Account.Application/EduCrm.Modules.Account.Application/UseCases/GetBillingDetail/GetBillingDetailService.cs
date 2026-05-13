@@ -19,9 +19,6 @@ public sealed class GetBillingDetailService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<GetBillingDetailResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<GetBillingDetailResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<GetBillingDetailResult>.Fail(AccountErrors.NotAdmin());
 

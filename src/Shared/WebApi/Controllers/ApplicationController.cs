@@ -80,7 +80,7 @@ public class ApplicationController : ControllerBase
     }
 
     [HttpGet("list")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> List(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
@@ -120,7 +120,7 @@ public class ApplicationController : ControllerBase
     }
 
     [HttpGet("export")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Export(
         [FromQuery] string? preFilter = null,
         [FromQuery] Guid? programId = null,
@@ -161,7 +161,7 @@ public class ApplicationController : ControllerBase
     }
 
     [HttpGet("{applicationId:guid}")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> GetById(Guid applicationId, CancellationToken ct)
     {
         var result = await _getById.GetAsync(applicationId, ct);
@@ -200,7 +200,7 @@ public class ApplicationController : ControllerBase
     // }
 
     [HttpGet("{applicationId:guid}/persons")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> FindPersons(Guid applicationId, CancellationToken ct)
     {
         var result = await _findPersons.ResolveAsync(new FindPersonsForApplicationInput(applicationId), ct);
@@ -214,7 +214,7 @@ public class ApplicationController : ControllerBase
     }   
 
     [HttpPost("{applicationId:guid}/contact")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Contact(
         Guid applicationId,
         [FromBody] ContactApplicationRequest req,
@@ -227,7 +227,7 @@ public class ApplicationController : ControllerBase
     }
 
     [HttpPost("{applicationId:guid}/close")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Close(
         Guid applicationId,
         [FromBody] CloseApplicationRequest req,
@@ -243,7 +243,7 @@ public class ApplicationController : ControllerBase
     }
 
     [HttpPost("{applicationId:guid}/convert")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Convert(
         Guid applicationId,
         [FromBody] ConvertApplicationRequest req,

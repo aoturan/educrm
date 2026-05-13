@@ -22,6 +22,7 @@ namespace EduCrm.WebApi.Controllers;
 [ApiController]
 [Route("api/admin")]
 [Authorize(Policy = "ApplicationAdmin")]
+[Authorize(Policy = "ActiveUser")]
 public sealed class AdminController : ControllerBase
 {
     private readonly IGetAdminDashboardService _getDashboard;

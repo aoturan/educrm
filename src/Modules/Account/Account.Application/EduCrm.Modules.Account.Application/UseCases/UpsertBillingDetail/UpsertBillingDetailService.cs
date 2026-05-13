@@ -24,9 +24,6 @@ public sealed class UpsertBillingDetailService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<UpsertBillingDetailResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<UpsertBillingDetailResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<UpsertBillingDetailResult>.Fail(AccountErrors.NotAdmin());
 

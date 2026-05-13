@@ -34,8 +34,22 @@ public sealed class LoginService(
             return Result<LoginResult>.Fail(AccountErrors.InvalidCredentials());
         }
 
-        // 3) Check user status - only Active and WaitingForActivation can login
-        if (userWithName.Status != UserStatus.Active && userWithName.Status != UserStatus.WaitingForActivation)
+        // 3) Check user status
+        if (userWithName.Status == UserStatus.WaitingForActivation)
+        {
+            // Email not yet verified: signal the frontend to route to the verify-email screen.
+            // No JWT is issued and LastLogin is not updated until activation completes.
+            return Result<LoginResult>.Success(new LoginResult(
+                Email: userWithName.Email,
+                Status: UserStatus.WaitingForActivation,
+                Token: null,
+                FullName: null,
+                Initials: null,
+                OrganizationName: null,
+                Role: null));
+        }
+
+        if (userWithName.Status != UserStatus.Active)
         {
             return Result<LoginResult>.Fail(AccountErrors.UserInactive());
         }
@@ -60,11 +74,12 @@ public sealed class LoginService(
             : userWithName.Role.ToString();
 
         return Result<LoginResult>.Success(new LoginResult(
-            token,
-            userWithName.Email,
-            userWithName.FullName,
-            initials,
-            userWithName.OrganizationName,
-            roleLabel));
+            Email: userWithName.Email,
+            Status: userWithName.Status,
+            Token: token,
+            FullName: userWithName.FullName,
+            Initials: initials,
+            OrganizationName: userWithName.OrganizationName,
+            Role: roleLabel));
     }
 }

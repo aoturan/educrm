@@ -1,9 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.SharedKernel.Errors;
 using EduCrm.SharedKernel.Options;
+using EduCrm.WebApi.Authorization;
 using EduCrm.WebApi.Conventions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EduCrm.WebApi.Extensions;
@@ -71,8 +74,11 @@ public static class AuthServiceCollectionExtensions
                     },
                     OnForbidden = async context =>
                     {
-                        var errors = new[] { CommonErrors.Forbidden() };
-                        var problem = ProblemDetailsFactory.Create(context.HttpContext, errors);
+                        var error = context.HttpContext.Items.ContainsKey(ActiveUserHandler.FailureFlagKey)
+                            ? AccountErrors.UserInactive()
+                            : CommonErrors.Forbidden();
+
+                        var problem = ProblemDetailsFactory.Create(context.HttpContext, new[] { error });
 
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.ContentType = "application/problem+json";
@@ -82,11 +88,17 @@ public static class AuthServiceCollectionExtensions
                 };
             });
 
+        services.AddScoped<IAuthorizationHandler, ActiveUserHandler>();
+
         services.AddAuthorization(options =>
         {
             options.AddPolicy("ApplicationAdmin", policy =>
                 policy.RequireAuthenticatedUser()
                       .RequireClaim("app_admin", "true"));
+
+            options.AddPolicy("ActiveUser", policy =>
+                policy.RequireAuthenticatedUser()
+                      .AddRequirements(new ActiveUserRequirement()));
         });
 
         return services;

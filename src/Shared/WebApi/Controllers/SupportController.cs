@@ -27,7 +27,7 @@ public class SupportController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Create(
         [FromBody] CreateSupportRequestRequest req,
         CancellationToken ct)

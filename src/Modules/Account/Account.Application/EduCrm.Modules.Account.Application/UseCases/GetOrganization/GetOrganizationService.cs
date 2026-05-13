@@ -19,9 +19,6 @@ public sealed class GetOrganizationService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<GetOrganizationResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<GetOrganizationResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<GetOrganizationResult>.Fail(AccountErrors.NotAdmin());
 

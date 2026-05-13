@@ -1,5 +1,6 @@
 using EduCrm.Infrastructure.Extensions;
 using EduCrm.Modules.Account.Application.Email;
+using EduCrm.Modules.Account.Application.EmailVerification;
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.PasswordReset;
 using EduCrm.Modules.Account.Application.Extensions;
@@ -37,6 +38,7 @@ builder.Services.Configure<PlanPricingOptions>(builder.Configuration.GetSection(
 builder.Services.Configure<DigitalOceanSpacesOptions>(builder.Configuration.GetSection("DigitalOceanSpaces"));
 builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
 builder.Services.Configure<PasswordResetOptions>(builder.Configuration.GetSection("Account:PasswordReset"));
+builder.Services.Configure<EmailVerificationOptions>(builder.Configuration.GetSection("Account:EmailVerification"));
 
 builder.Services.AddAccountInfra();
 builder.Services.AddAccountApplication();

@@ -15,7 +15,10 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         // Enum -> smallint
         b.Property(x => x.Status)
             .HasConversion<short>();
-        
+
+        b.Property(x => x.EmailVerificationTokenHash)
+            .HasMaxLength(64);
+
         b.HasOne(u => u.Organization)
             .WithMany(o => o.Users)
             .HasForeignKey(u => u.OrganizationId)

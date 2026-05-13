@@ -18,9 +18,6 @@ public sealed class ListUsersService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<ListUsersPagedResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<ListUsersPagedResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<ListUsersPagedResult>.Fail(AccountErrors.NotAdmin());
 

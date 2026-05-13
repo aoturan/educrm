@@ -25,8 +25,10 @@ using EduCrm.Modules.Account.Application.UseCases.MarkSubscriptionRequestInvoice
 using EduCrm.Modules.Account.Application.UseCases.OverrideOrganizationSubscription;
 using EduCrm.Modules.Account.Application.UseCases.Register;
 using EduCrm.Modules.Account.Application.UseCases.RequestPasswordReset;
+using EduCrm.Modules.Account.Application.UseCases.ResendEmailVerification;
 using EduCrm.Modules.Account.Application.UseCases.ResetPassword;
 using EduCrm.Modules.Account.Application.UseCases.TransferAdminRole;
+using EduCrm.Modules.Account.Application.UseCases.VerifyEmail;
 using EduCrm.Modules.Account.Application.UseCases.UpdateOrganization;
 using EduCrm.Modules.Account.Application.UseCases.UpdateProfile;
 using EduCrm.Modules.Account.Application.UseCases.UpdateUserByAdmin;
@@ -50,6 +52,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IChangePasswordService, ChangePasswordService>();
         services.AddScoped<IRequestPasswordResetService, RequestPasswordResetService>();
         services.AddScoped<IResetPasswordService, ResetPasswordService>();
+        services.AddScoped<IVerifyEmailService, VerifyEmailService>();
+        services.AddScoped<IResendEmailVerificationService, ResendEmailVerificationService>();
         services.AddScoped<IUpdateProfileService, UpdateProfileService>();
         services.AddScoped<ICreateUserService, CreateUserService>();
         services.AddScoped<IChangeUserStatusService, ChangeUserStatusService>();

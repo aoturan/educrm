@@ -79,7 +79,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpGet("dashboard/counts")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> GetDashboardCounts(CancellationToken ct)
     {
         var result = await _getDashboardCounts.GetAsync(ct);
@@ -93,7 +93,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpPost("{id:guid}/status")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> ChangeStatus(
         Guid id,
         [FromBody] ChangeProgramStatusRequest req,
@@ -110,7 +110,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpPost("enrollment/create")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> CreateEnrollment(
         [FromBody] CreateEnrollmentRequest req,
         CancellationToken ct)
@@ -126,7 +126,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpGet("enrollments/candidates")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> GetEnrollmentCandidates(
         [FromQuery] Guid programId,
         [FromQuery] string? search,
@@ -152,7 +152,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpDelete("enrollment/{enrollmentId:guid}")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> DeleteEnrollment(Guid enrollmentId, CancellationToken ct)
     {
         var result = await _deleteEnrollment.DeleteAsync(enrollmentId, ct);
@@ -188,7 +188,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)    {
         var result = await _getById.GetAsync(id, ct);
 
@@ -235,7 +235,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpGet("list")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> List(
         [FromQuery] ListProgramsQuery query,
         CancellationToken ct)
@@ -260,7 +260,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpGet("search")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Search([FromQuery] string q, CancellationToken ct)
     {
         var result = await _search.SearchAsync(q, ct);
@@ -272,7 +272,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpGet("active")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> ListActive(CancellationToken ct)
     {
         var result = await _listActive.ListAsync(ct);
@@ -282,7 +282,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Create(
         [FromBody] CreateProgramRequest req,
         CancellationToken ct)
@@ -306,7 +306,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpPost("{id:guid}/update")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Update(
         Guid id,
         [FromBody] UpdateProgramRequest req,
@@ -342,7 +342,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpPost("{id:guid}/publish")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Publish(Guid id, CancellationToken ct)
     {
         var result = await _publish.PublishAsync(new PublishProgramInput(id), ct);
@@ -352,7 +352,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpPost("{id:guid}/unpublish")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Unpublish(Guid id, CancellationToken ct)
     {
         var result = await _unpublish.UnpublishAsync(new UnpublishProgramInput(id), ct);
@@ -361,7 +361,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpPost("{id:guid}/archive")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Archive(Guid id, CancellationToken ct)    {
         var result = await _archive.ArchiveAsync(new ArchiveProgramInput(id, ShouldArchive: true), ct);
 
@@ -370,7 +370,7 @@ public class ProgramController : ControllerBase
     }
 
     [HttpPost("{id:guid}/unarchive")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Unarchive(Guid id, CancellationToken ct)
     {
         var result = await _archive.ArchiveAsync(new ArchiveProgramInput(id, ShouldArchive: false), ct);

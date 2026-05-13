@@ -22,9 +22,6 @@ public sealed class TransferAdminRoleService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result.Fail(AccountErrors.NotAdmin());
 

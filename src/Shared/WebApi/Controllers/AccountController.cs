@@ -16,8 +16,10 @@ using EduCrm.Modules.Account.Application.UseCases.ListUsers;
 using EduCrm.Modules.Account.Application.UseCases.Login;
 using EduCrm.Modules.Account.Application.UseCases.Register;
 using EduCrm.Modules.Account.Application.UseCases.RequestPasswordReset;
+using EduCrm.Modules.Account.Application.UseCases.ResendEmailVerification;
 using EduCrm.Modules.Account.Application.UseCases.ResetPassword;
 using EduCrm.Modules.Account.Application.UseCases.TransferAdminRole;
+using EduCrm.Modules.Account.Application.UseCases.VerifyEmail;
 using EduCrm.Modules.Account.Domain.Enums;
 using EduCrm.Modules.Account.Application.UseCases.UpdateOrganization;
 using EduCrm.Modules.Account.Application.UseCases.UpdateProfile;
@@ -46,6 +48,8 @@ public sealed class AccountController : ControllerBase
     private readonly IChangePasswordService _changePassword;
     private readonly IRequestPasswordResetService _requestPasswordReset;
     private readonly IResetPasswordService _resetPassword;
+    private readonly IVerifyEmailService _verifyEmail;
+    private readonly IResendEmailVerificationService _resendEmailVerification;
     private readonly IUpdateProfileService _updateProfile;
     private readonly ICreateUserService _createUser;
     private readonly IChangeUserStatusService _changeUserStatus;
@@ -75,6 +79,8 @@ public sealed class AccountController : ControllerBase
         IChangePasswordService changePassword,
         IRequestPasswordResetService requestPasswordReset,
         IResetPasswordService resetPassword,
+        IVerifyEmailService verifyEmail,
+        IResendEmailVerificationService resendEmailVerification,
         IUpdateProfileService updateProfile,
         ICreateUserService createUser,
         IChangeUserStatusService changeUserStatus,
@@ -103,6 +109,8 @@ public sealed class AccountController : ControllerBase
         _changePassword = changePassword;
         _requestPasswordReset = requestPasswordReset;
         _resetPassword = resetPassword;
+        _verifyEmail = verifyEmail;
+        _resendEmailVerification = resendEmailVerification;
         _updateProfile = updateProfile;
         _createUser = createUser;
         _changeUserStatus = changeUserStatus;
@@ -149,7 +157,7 @@ public sealed class AccountController : ControllerBase
         var result = await _register.RegisterAsync(input, ct);
 
         return result.ToActionResult(HttpContext, this, r =>
-            Ok(new RegisterResponse(r.Token, r.Email, r.FullName, r.Initials, r.OrganizationName, r.Role)));
+            Ok(new RegisterResponse(r.Email, r.Status, r.Token, r.FullName, r.Initials, r.OrganizationName, r.Role)));
     }
 
     [HttpPost("login")]
@@ -168,7 +176,7 @@ public sealed class AccountController : ControllerBase
         var result = await _login.LoginAsync(input, ct);
 
         return result.ToActionResult(HttpContext, this, r =>
-            Ok(new LoginResponse(r.Token, r.Email, r.FullName, r.Initials, r.OrganizationName, r.Role)));
+            Ok(new LoginResponse(r.Email, r.Status, r.Token, r.FullName, r.Initials, r.OrganizationName, r.Role)));
     }
 
     [HttpPost("password-reset/request")]
@@ -198,6 +206,38 @@ public sealed class AccountController : ControllerBase
         return Ok(new ResetPasswordResponse("Şifreniz başarıyla güncellendi."));
     }
 
+    [HttpPost("verify-email")]
+    [AllowAnonymous]
+    public async Task<IActionResult> VerifyEmail(
+        [FromBody] VerifyEmailRequest req,
+        CancellationToken ct)
+    {
+        var validation = await _validator.ValidateAsync(req, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var result = await _verifyEmail.VerifyAsync(new VerifyEmailInput(req.Email, req.Token), ct);
+
+        if (result.IsFailure)
+            return result.ToActionResult(HttpContext, this);
+
+        return Ok(new VerifyEmailResponse("E-Posta adresiniz doğrulandı."));
+    }
+
+    [HttpPost("verify-email/resend")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResendEmailVerification(
+        [FromBody] ResendEmailVerificationRequest req,
+        CancellationToken ct)
+    {
+        var validation = await _validator.ValidateAsync(req, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        await _resendEmailVerification.ResendAsync(new ResendEmailVerificationInput(req.Email), ct);
+
+        return Ok(new ResendEmailVerificationResponse(
+            "E-Posta adresiniz mevcut ise doğrulama bağlantısı gönderilmiştir. Lütfen spam/istenmeyen kutunuzu da kontrol ediniz."));
+    }
+
     [HttpGet("me")]
     [Authorize]
     public async Task<IActionResult> Me(CancellationToken ct)
@@ -215,7 +255,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("notifications")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Notifications(CancellationToken ct)
     {
         var orgId = _orgContext.OrganizationId;
@@ -232,7 +272,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("organization")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Organization(CancellationToken ct)
     {
         var userId = _currentUser.UserId;
@@ -257,7 +297,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("plan-usage")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> PlanUsage(CancellationToken ct)
     {
         var userId = _currentUser.UserId;
@@ -308,7 +348,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("bank-accounts")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> BankAccounts(CancellationToken ct)
     {
         var result = await _getBankAccounts.GetAsync(ct);
@@ -320,7 +360,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("billing")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Billing(CancellationToken ct)
     {
         var userId = _currentUser.UserId;
@@ -345,7 +385,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("billing")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> SaveBilling(
         [FromBody] UpsertBillingDetailRequest req,
         CancellationToken ct)
@@ -384,7 +424,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("subscription-payment-notification")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     [RequestSizeLimit(6 * 1024 * 1024)]
     [RequestFormLimits(MultipartBodyLengthLimit = 6 * 1024 * 1024)]
     public async Task<IActionResult> SubmitPaymentNotification(
@@ -434,7 +474,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("subscription-request")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> CreateSubscriptionRequest(
         [FromBody] CreateSubscriptionRequestRequest req,
         CancellationToken ct)
@@ -470,7 +510,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("organization")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> UpdateOrganization(
         [FromBody] UpdateOrganizationRequest req,
         CancellationToken ct)
@@ -506,7 +546,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("change-password")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> ChangePassword(
         [FromBody] ChangePasswordRequest req,
         CancellationToken ct)
@@ -534,7 +574,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("profile")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> UpdateProfile(
         [FromBody] UpdateProfileRequest req,
         CancellationToken ct)
@@ -562,7 +602,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("user")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> CreateUser(
         [FromBody] CreateUserRequest req,
         CancellationToken ct)
@@ -600,7 +640,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpGet("user/list")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> ListUsers(
         [FromQuery] ListUsersQuery query,
         CancellationToken ct)
@@ -655,7 +695,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("user/update")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> UpdateUserByAdmin(
         [FromBody] UpdateUserByAdminRequest req,
         CancellationToken ct)
@@ -690,7 +730,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("user/change-password")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> ChangeUserPasswordByAdmin(
         [FromBody] ChangeUserPasswordByAdminRequest req,
         CancellationToken ct)
@@ -720,7 +760,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("user/transfer-admin")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> TransferAdminRole(
         [FromBody] TransferAdminRoleRequest req,
         CancellationToken ct)
@@ -747,7 +787,7 @@ public sealed class AccountController : ControllerBase
     }
 
     [HttpPost("user/{userId:guid}/status")]
-    [Authorize]
+    [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> ChangeUserStatus(
         Guid userId,
         [FromBody] ChangeUserStatusRequest req,

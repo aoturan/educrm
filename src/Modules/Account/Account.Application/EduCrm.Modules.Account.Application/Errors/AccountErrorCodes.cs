@@ -32,4 +32,6 @@ public static class AccountErrorCodes
     public const string SubscriptionNotFound = "account.subscription_not_found";
     public const string SubscriptionRequestNotApproved = "account.subscription_request_not_approved";
     public const string InvalidSubscriptionPeriod = "account.invalid_subscription_period";
+    public const string InvalidOrExpiredEmailVerification = "account.email_verification.invalid_or_expired";
+    public const string EmailAlreadyVerified = "account.email_verification.already_verified";
 }

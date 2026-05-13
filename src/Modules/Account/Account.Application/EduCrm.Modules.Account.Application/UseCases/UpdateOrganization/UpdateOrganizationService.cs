@@ -23,9 +23,6 @@ public sealed class UpdateOrganizationService(
         if (caller.OrganizationId != input.CallerOrganizationId)
             return Result<UpdateOrganizationResult>.Fail(AccountErrors.UserNotInOrganization());
 
-        if (caller.Status != UserStatus.Active)
-            return Result<UpdateOrganizationResult>.Fail(AccountErrors.UserInactive());
-
         if (caller.Role != UserRole.Admin)
             return Result<UpdateOrganizationResult>.Fail(AccountErrors.NotAdmin());
 
