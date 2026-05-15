@@ -11,18 +11,11 @@ public sealed class UnpublishProgramService(
     IProgramRepository programRepo,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : IUnpublishProgramService
+    ICurrentUserSnapshot user) : IUnpublishProgramService
 {
     public async Task<Result<UnpublishProgramResult>> UnpublishAsync(UnpublishProgramInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<UnpublishProgramResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<UnpublishProgramResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var program = await programRepo.GetTrackedByIdAsync(input.ProgramId, orgContext.OrganizationId.Value, ct);
+        var program = await programRepo.GetTrackedByIdAsync(input.ProgramId, user.OrganizationId, ct);
         if (program is null)
             return Result<UnpublishProgramResult>.Fail(ProgramErrors.ProgramNotFound(input.ProgramId));
 

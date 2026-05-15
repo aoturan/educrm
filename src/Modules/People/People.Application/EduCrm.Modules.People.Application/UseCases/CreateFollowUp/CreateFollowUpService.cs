@@ -17,18 +17,11 @@ public sealed class CreateFollowUpService(
     IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : ICreateFollowUpService
+    ICurrentUserSnapshot user) : ICreateFollowUpService
 {
     public async Task<Result<CreateFollowUpResult>> CreateAsync(CreateFollowUpInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<CreateFollowUpResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<CreateFollowUpResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var orgId = orgContext.OrganizationId.Value;
+        var orgId = user.OrganizationId;
 
         var person = await personRepo.GetByIdAsync(input.PersonId, orgId, ct);
         if (person is null)
@@ -54,7 +47,7 @@ public sealed class CreateFollowUpService(
         var followUp = new FollowUp(
             orgId,
             input.PersonId,
-            currentUser.UserId.Value,
+            user.UserId,
             input.Type,
             input.Title,
             input.DueAtUtc,

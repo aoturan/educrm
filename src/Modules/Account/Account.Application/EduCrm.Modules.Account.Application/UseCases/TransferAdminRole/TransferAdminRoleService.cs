@@ -10,29 +10,23 @@ namespace EduCrm.Modules.Account.Application.UseCases.TransferAdminRole;
 public sealed class TransferAdminRoleService(
     IUserRepository userRepo,
     IUnitOfWork uow,
-    IClock clock)
+    IClock clock,
+    ICurrentUserSnapshot currentUser)
     : ITransferAdminRoleService
 {
     public async Task<Result> TransferAsync(TransferAdminRoleInput input, CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (currentUser.Role != UserRole.Admin)
             return Result.Fail(AccountErrors.NotAdmin());
 
-        if (input.TargetUserId == caller.Id)
+        if (input.TargetUserId == currentUser.UserId)
             return Result.Fail(AccountErrors.CannotTransferRoleToSelf());
 
         var target = await userRepo.GetByIdAsync(input.TargetUserId, ct);
         if (target is null)
             return Result.Fail(AccountErrors.NotFound(input.TargetUserId));
 
-        if (target.OrganizationId != caller.OrganizationId)
+        if (target.OrganizationId != currentUser.OrganizationId)
             return Result.Fail(AccountErrors.UserNotInOrganization());
 
         if (target.Status != UserStatus.Active)
@@ -40,6 +34,10 @@ public sealed class TransferAdminRoleService(
 
         if (target.Role == UserRole.Admin)
             return Result.Fail(AccountErrors.UserAlreadyAdmin());
+
+        var caller = await userRepo.GetByIdAsync(currentUser.UserId, ct);
+        if (caller is null)
+            return Result.Fail(AccountErrors.NotFound(currentUser.UserId));
 
         var now = clock.UtcNow.UtcDateTime;
 

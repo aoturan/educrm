@@ -10,26 +10,20 @@ namespace EduCrm.Modules.Account.Application.UseCases.UpdateUserByAdmin;
 public sealed class UpdateUserByAdminService(
     IUserRepository userRepo,
     IUnitOfWork uow,
-    IClock clock)
+    IClock clock,
+    ICurrentUserSnapshot currentUser)
     : IUpdateUserByAdminService
 {
     public async Task<Result<UpdateUserByAdminResult>> UpdateAsync(UpdateUserByAdminInput input, CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<UpdateUserByAdminResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<UpdateUserByAdminResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (currentUser.Role != UserRole.Admin)
             return Result<UpdateUserByAdminResult>.Fail(AccountErrors.NotAdmin());
 
         var target = await userRepo.GetByIdAsync(input.TargetUserId, ct);
         if (target is null)
             return Result<UpdateUserByAdminResult>.Fail(AccountErrors.NotFound(input.TargetUserId));
 
-        if (target.OrganizationId != caller.OrganizationId)
+        if (target.OrganizationId != currentUser.OrganizationId)
             return Result<UpdateUserByAdminResult>.Fail(AccountErrors.UserNotInOrganization());
 
         if (target.Status != UserStatus.Active)

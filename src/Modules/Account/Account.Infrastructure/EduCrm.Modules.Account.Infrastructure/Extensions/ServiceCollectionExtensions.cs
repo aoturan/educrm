@@ -26,7 +26,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISubscriptionHistoryRepository, SubscriptionHistoryRepository>();
         services.AddScoped<ISubscriptionPaymentNotificationRepository, SubscriptionPaymentNotificationRepository>();
         services.AddScoped<IOrganizationBillingDetailRepository, OrganizationBillingDetailRepository>();
-        services.AddScoped<IUserOrganizationResolver, UserOrganizationResolver>();
         services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IPlanLimitsResolver, PlanLimitsResolver>();

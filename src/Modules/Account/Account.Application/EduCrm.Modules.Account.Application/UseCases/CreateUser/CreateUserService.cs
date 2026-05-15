@@ -13,57 +13,51 @@ public sealed class CreateUserService(
     IUserRepository userRepo,
     IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
-    IClock clock)
+    IClock clock,
+    ICurrentUserSnapshot user)
     : ICreateUserService
 {
     public async Task<Result<CreateUserResult>> CreateAsync(
         CreateUserInput input,
         CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<CreateUserResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<CreateUserResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (user.Role != UserRole.Admin)
             return Result<CreateUserResult>.Fail(AccountErrors.NotAdmin());
 
         var normalizedEmail = input.Email.Trim().ToLowerInvariant();
 
-        var emailTaken = await userRepo.ExistsByEmailInOrganizationAsync(normalizedEmail, caller.OrganizationId, ct);
+        var emailTaken = await userRepo.ExistsByEmailInOrganizationAsync(normalizedEmail, user.OrganizationId, ct);
         if (emailTaken)
             return Result<CreateUserResult>.Fail(AccountErrors.EmailTaken(normalizedEmail));
 
-        var limits = await planLimitsResolver.ResolveAsync(caller.OrganizationId, ct);
-        var currentActive = await userRepo.CountActiveByOrganizationAsync(caller.OrganizationId, ct);
+        var limits = await planLimitsResolver.ResolveAsync(user.OrganizationId, ct);
+        var currentActive = await userRepo.CountActiveByOrganizationAsync(user.OrganizationId, ct);
         if (currentActive >= limits.Users)
             return Result<CreateUserResult>.Fail(AccountErrors.PlanUserLimitReached(limits.Users));
 
         var now = clock.UtcNow.UtcDateTime;
         var fullName = input.Name.Trim();
 
-        var user = new User(
+        var newUser = new User(
             Guid.NewGuid(),
-            caller.OrganizationId,
+            user.OrganizationId,
             normalizedEmail,
             fullName,
             input.PasswordHash,
             UserRole.Member,
             now);
 
-        user.Enable(now);
+        newUser.Enable(now);
 
-        userRepo.Add(user);
+        userRepo.Add(newUser);
         await uow.SaveChangesAsync(ct);
 
         return Result<CreateUserResult>.Success(new CreateUserResult(
-            user.Id,
-            user.Email,
-            user.FullName,
-            user.Role,
-            user.Status,
-            user.LastLoginAtUtc));
+            newUser.Id,
+            newUser.Email,
+            newUser.FullName,
+            newUser.Role,
+            newUser.Status,
+            newUser.LastLoginAtUtc));
     }
 }

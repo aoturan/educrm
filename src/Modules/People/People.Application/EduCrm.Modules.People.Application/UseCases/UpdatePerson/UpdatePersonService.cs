@@ -12,18 +12,11 @@ public sealed class UpdatePersonService(
     IPersonRepository personRepo,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : IUpdatePersonService
+    ICurrentUserSnapshot user) : IUpdatePersonService
 {
     public async Task<Result<UpdatePersonResult>> UpdateAsync(UpdatePersonInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<UpdatePersonResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<UpdatePersonResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var organizationId = orgContext.OrganizationId.Value;
+        var organizationId = user.OrganizationId;
 
         var person = await personRepo.GetTrackedByIdAsync(input.PersonId, organizationId, ct);
         if (person is null)

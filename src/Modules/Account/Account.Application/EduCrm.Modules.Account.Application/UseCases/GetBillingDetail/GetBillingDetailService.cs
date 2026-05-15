@@ -1,28 +1,22 @@
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Domain.Enums;
+using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.GetBillingDetail;
 
 public sealed class GetBillingDetailService(
-    IUserRepository userRepo,
-    IOrganizationBillingDetailRepository billingRepo)
+    IOrganizationBillingDetailRepository billingRepo,
+    ICurrentUserSnapshot user)
     : IGetBillingDetailService
 {
-    public async Task<Result<GetBillingDetailResult>> GetAsync(GetBillingDetailInput input, CancellationToken ct)
+    public async Task<Result<GetBillingDetailResult>> GetAsync(CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<GetBillingDetailResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<GetBillingDetailResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (user.Role != UserRole.Admin)
             return Result<GetBillingDetailResult>.Fail(AccountErrors.NotAdmin());
 
-        var billing = await billingRepo.GetByOrganizationIdAsync(caller.OrganizationId, ct);
+        var billing = await billingRepo.GetByOrganizationIdAsync(user.OrganizationId, ct);
         if (billing is null)
             return Result<GetBillingDetailResult>.Fail(AccountErrors.BillingDetailsNotConfigured());
 

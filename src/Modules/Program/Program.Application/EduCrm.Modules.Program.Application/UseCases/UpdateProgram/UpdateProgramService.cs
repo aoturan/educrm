@@ -11,18 +11,11 @@ public class UpdateProgramService(
     IProgramRepository programRepo,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : IUpdateProgramService
+    ICurrentUserSnapshot user) : IUpdateProgramService
 {
     public async Task<Result<UpdateProgramResult>> UpdateAsync(UpdateProgramInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<UpdateProgramResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<UpdateProgramResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var program = await programRepo.GetTrackedByIdAsync(input.ProgramId, orgContext.OrganizationId.Value, ct);
+        var program = await programRepo.GetTrackedByIdAsync(input.ProgramId, user.OrganizationId, ct);
         if (program is null)
             return Result<UpdateProgramResult>.Fail(ProgramErrors.ProgramNotFound(input.ProgramId));
 

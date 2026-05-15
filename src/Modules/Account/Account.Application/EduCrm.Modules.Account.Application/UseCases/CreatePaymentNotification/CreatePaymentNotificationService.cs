@@ -9,29 +9,22 @@ using EduCrm.SharedKernel.Results;
 namespace EduCrm.Modules.Account.Application.UseCases.CreatePaymentNotification;
 
 public sealed class CreatePaymentNotificationService(
-    IUserRepository userRepo,
     ISubscriptionRequestRepository subscriptionRequestRepo,
     ISubscriptionPaymentNotificationRepository notificationRepo,
     IReceiptStorage receiptStorage,
     IUnitOfWork uow,
-    IClock clock)
+    IClock clock,
+    ICurrentUserSnapshot user)
     : ICreatePaymentNotificationService
 {
     public async Task<Result<CreatePaymentNotificationResult>> CreateAsync(
         CreatePaymentNotificationInput input,
         CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<CreatePaymentNotificationResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<CreatePaymentNotificationResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (user.Role != UserRole.Admin)
             return Result<CreatePaymentNotificationResult>.Fail(AccountErrors.NotAdmin());
 
-        var activeRequest = await subscriptionRequestRepo.GetActiveByOrganizationAsync(caller.OrganizationId, ct);
+        var activeRequest = await subscriptionRequestRepo.GetActiveByOrganizationAsync(user.OrganizationId, ct);
         if (activeRequest is null)
             return Result<CreatePaymentNotificationResult>.Fail(AccountErrors.NoActiveSubscriptionRequest());
 
@@ -41,7 +34,7 @@ public sealed class CreatePaymentNotificationService(
 
         var notificationId = Guid.NewGuid();
         var extension = Path.GetExtension(input.FileName).ToLowerInvariant();
-        var objectKey = $"{caller.OrganizationId}/payment-notifications/{notificationId}{extension}";
+        var objectKey = $"{user.OrganizationId}/payment-notifications/{notificationId}{extension}";
 
         await receiptStorage.UploadAsync(objectKey, input.FileContent, input.ContentType, ct);
 
@@ -49,7 +42,7 @@ public sealed class CreatePaymentNotificationService(
         var notification = new SubscriptionPaymentNotification(
             notificationId,
             activeRequest.Id,
-            caller.OrganizationId,
+            user.OrganizationId,
             input.SenderName.Trim(),
             input.PaymentDate,
             input.Amount,

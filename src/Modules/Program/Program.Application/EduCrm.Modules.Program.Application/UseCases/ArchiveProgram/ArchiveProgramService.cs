@@ -13,18 +13,11 @@ public sealed class ArchiveProgramService(
     IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : IArchiveProgramService
+    ICurrentUserSnapshot user) : IArchiveProgramService
 {
     public async Task<Result<ArchiveProgramResult>> ArchiveAsync(ArchiveProgramInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<ArchiveProgramResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<ArchiveProgramResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var program = await programRepo.GetTrackedByIdAsync(input.ProgramId, orgContext.OrganizationId.Value, ct);
+        var program = await programRepo.GetTrackedByIdAsync(input.ProgramId, user.OrganizationId, ct);
         if (program is null)
             return Result<ArchiveProgramResult>.Fail(ProgramErrors.ProgramNotFound(input.ProgramId));
 
@@ -45,10 +38,10 @@ public sealed class ArchiveProgramService(
             if (!program.IsArchived)
                 return Result<ArchiveProgramResult>.Fail(ProgramErrors.ProgramNotArchived(input.ProgramId));
 
-            var limits = await planLimitsResolver.ResolveAsync(orgContext.OrganizationId.Value, ct);
+            var limits = await planLimitsResolver.ResolveAsync(user.OrganizationId, ct);
             if (limits.ActivePrograms is int cap)
             {
-                var currentActive = await programRepo.CountActiveByOrganizationAsync(orgContext.OrganizationId.Value, ct);
+                var currentActive = await programRepo.CountActiveByOrganizationAsync(user.OrganizationId, ct);
                 if (currentActive >= cap)
                     return Result<ArchiveProgramResult>.Fail(ProgramErrors.PlanActiveProgramLimitReached(cap));
             }

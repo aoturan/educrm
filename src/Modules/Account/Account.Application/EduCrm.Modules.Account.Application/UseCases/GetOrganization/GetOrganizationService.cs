@@ -1,28 +1,22 @@
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Domain.Enums;
+using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.GetOrganization;
 
 public sealed class GetOrganizationService(
-    IUserRepository userRepo,
-    IOrganizationRepository organizationRepo)
+    IOrganizationRepository organizationRepo,
+    ICurrentUserSnapshot user)
     : IGetOrganizationService
 {
-    public async Task<Result<GetOrganizationResult>> GetAsync(GetOrganizationInput input, CancellationToken ct)
+    public async Task<Result<GetOrganizationResult>> GetAsync(CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<GetOrganizationResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<GetOrganizationResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (user.Role != UserRole.Admin)
             return Result<GetOrganizationResult>.Fail(AccountErrors.NotAdmin());
 
-        var organization = await organizationRepo.GetByIdAsync(input.CallerOrganizationId, ct);
+        var organization = await organizationRepo.GetByIdAsync(user.OrganizationId, ct);
         if (organization is null)
             return Result<GetOrganizationResult>.Fail(AccountErrors.UserNotInOrganization());
 

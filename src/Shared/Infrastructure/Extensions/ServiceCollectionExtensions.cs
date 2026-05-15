@@ -21,8 +21,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrgContext>(sp => sp.GetRequiredService<OrgContext>());
         services.AddScoped<IOrgContextWriter>(sp => sp.GetRequiredService<OrgContext>());
 
-        services.AddScoped<ICurrentUser, HttpCurrentUser>();
-        
+        // Request-scoped user snapshot — populated once by CurrentUserSnapshotMiddleware
+        services.AddScoped<CurrentUserSnapshot>();
+        services.AddScoped<ICurrentUserSnapshot>(sp => sp.GetRequiredService<CurrentUserSnapshot>());
+
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
         services.AddScoped<IAppDbTransaction, AppDbTransaction>();
 

@@ -11,20 +11,13 @@ public sealed class CreateSupportRequestService(
     ISupportRequestRepository supportRequestRepo,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : ICreateSupportRequestService
+    ICurrentUserSnapshot user) : ICreateSupportRequestService
 {
     public async Task<Result<CreateSupportRequestResult>> CreateAsync(CreateSupportRequestInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<CreateSupportRequestResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<CreateSupportRequestResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
         var supportRequest = new SupportRequest(
-            orgContext.OrganizationId.Value,
-            currentUser.UserId.Value,
+            user.OrganizationId,
+            user.UserId,
             input.Subject,
             input.Message,
             clock.UtcNow.UtcDateTime,

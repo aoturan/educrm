@@ -9,22 +9,15 @@ using EduCrm.SharedKernel.Results;
 namespace EduCrm.Modules.Account.Application.UseCases.UpsertBillingDetail;
 
 public sealed class UpsertBillingDetailService(
-    IUserRepository userRepo,
     IOrganizationBillingDetailRepository billingRepo,
     IUnitOfWork uow,
-    IClock clock)
+    IClock clock,
+    ICurrentUserSnapshot user)
     : IUpsertBillingDetailService
 {
     public async Task<Result<UpsertBillingDetailResult>> UpsertAsync(UpsertBillingDetailInput input, CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<UpsertBillingDetailResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<UpsertBillingDetailResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (user.Role != UserRole.Admin)
             return Result<UpsertBillingDetailResult>.Fail(AccountErrors.NotAdmin());
 
         // For Individual billing the TaxOffice is irrelevant — drop it so we don't persist UI noise.
@@ -32,14 +25,14 @@ public sealed class UpsertBillingDetailService(
 
         var now = clock.UtcNow.UtcDateTime;
 
-        var existing = await billingRepo.GetTrackedByOrganizationIdAsync(caller.OrganizationId, ct);
+        var existing = await billingRepo.GetTrackedByOrganizationIdAsync(user.OrganizationId, ct);
         OrganizationBillingDetail target;
 
         if (existing is null)
         {
             target = new OrganizationBillingDetail(
                 Guid.NewGuid(),
-                caller.OrganizationId,
+                user.OrganizationId,
                 input.BillingType,
                 input.BillingName,
                 input.TaxNumber,

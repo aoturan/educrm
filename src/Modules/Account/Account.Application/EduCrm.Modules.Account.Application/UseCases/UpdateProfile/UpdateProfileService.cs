@@ -10,21 +10,17 @@ namespace EduCrm.Modules.Account.Application.UseCases.UpdateProfile;
 public sealed class UpdateProfileService(
     IUserRepository userRepo,
     IUnitOfWork uow,
-    IClock clock) : IUpdateProfileService
+    IClock clock,
+    ICurrentUserSnapshot currentUser) : IUpdateProfileService
 {
     public async Task<Result<UpdateProfileResult>> UpdateProfileAsync(UpdateProfileInput input, CancellationToken ct)
     {
         var now = clock.UtcNow.UtcDateTime;
 
-        var user = await userRepo.GetByIdAsync(input.UserId, ct);
+        var user = await userRepo.GetByIdAsync(currentUser.UserId, ct);
         if (user is null)
         {
-            return Result<UpdateProfileResult>.Fail(AccountErrors.NotFound(input.UserId));
-        }
-
-        if (user.OrganizationId != input.OrganizationId)
-        {
-            return Result<UpdateProfileResult>.Fail(AccountErrors.UserNotInOrganization());
+            return Result<UpdateProfileResult>.Fail(AccountErrors.NotFound(currentUser.UserId));
         }
 
         user.ChangeFullName(input.FullName, now);

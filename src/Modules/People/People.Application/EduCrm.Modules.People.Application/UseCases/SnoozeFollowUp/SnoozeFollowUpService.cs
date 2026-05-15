@@ -12,18 +12,11 @@ public sealed class SnoozeFollowUpService(
     IFollowUpRepository followUpRepo,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : ISnoozeFollowUpService
+    ICurrentUserSnapshot user) : ISnoozeFollowUpService
 {
     public async Task<Result<SnoozeFollowUpResult>> SnoozeAsync(SnoozeFollowUpInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<SnoozeFollowUpResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<SnoozeFollowUpResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var followUp = await followUpRepo.GetTrackedByIdAsync(input.FollowUpId, orgContext.OrganizationId.Value, ct);
+        var followUp = await followUpRepo.GetTrackedByIdAsync(input.FollowUpId, user.OrganizationId, ct);
         if (followUp is null)
             return Result<SnoozeFollowUpResult>.Fail(PeopleErrors.FollowUpNotFound(input.FollowUpId));
 

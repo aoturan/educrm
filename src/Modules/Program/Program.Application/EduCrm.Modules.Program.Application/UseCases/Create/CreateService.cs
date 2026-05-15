@@ -12,21 +12,10 @@ public class CreateService(
     IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : ICreateService
+    ICurrentUserSnapshot user) : ICreateService
 {
     public async Task<Result<CreateResult>> CreateAsync(CreateInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-        {
-            return Result<CreateResult>.Fail(CommonErrors.Unauthorized());
-        }
-
-        if (orgContext.OrganizationId is null)
-        {
-            return Result<CreateResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-        }
-
         var now = clock.UtcNow.UtcDateTime;
         var today = DateOnly.FromDateTime(now);
 
@@ -51,10 +40,10 @@ public class CreateService(
             onlineParticipationInfo = null;
         }
 
-        var limits = await planLimitsResolver.ResolveAsync(orgContext.OrganizationId.Value, ct);
+        var limits = await planLimitsResolver.ResolveAsync(user.OrganizationId, ct);
         if (limits.ActivePrograms is int cap)
         {
-            var currentActive = await programRepo.CountActiveByOrganizationAsync(orgContext.OrganizationId.Value, ct);
+            var currentActive = await programRepo.CountActiveByOrganizationAsync(user.OrganizationId, ct);
             if (currentActive >= cap)
                 return Result<CreateResult>.Fail(Errors.ProgramErrors.PlanActiveProgramLimitReached(cap));
         }
@@ -62,8 +51,8 @@ public class CreateService(
         var isPaid = input.PriceType == Domain.Enums.ProgramPriceType.Paid;
 
         var program = new Domain.Entities.Program(
-            orgContext.OrganizationId.Value,
-            currentUser.UserId.Value,
+            user.OrganizationId,
+            user.UserId,
             input.Name,
             input.StartDate,
             input.EndDate,

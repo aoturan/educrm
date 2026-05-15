@@ -12,18 +12,11 @@ public sealed class PublishProgramService(
     IProgramRepository programRepo,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : IPublishProgramService
+    ICurrentUserSnapshot user) : IPublishProgramService
 {
     public async Task<Result<PublishProgramResult>> PublishAsync(PublishProgramInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<PublishProgramResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<PublishProgramResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var program = await programRepo.GetTrackedByIdAsync(input.ProgramId, orgContext.OrganizationId.Value, ct);
+        var program = await programRepo.GetTrackedByIdAsync(input.ProgramId, user.OrganizationId, ct);
         if (program is null)
             return Result<PublishProgramResult>.Fail(ProgramErrors.ProgramNotFound(input.ProgramId));
 

@@ -10,34 +10,27 @@ using EduCrm.SharedKernel.Results;
 namespace EduCrm.Modules.Account.Application.UseCases.CreateSubscriptionRequest;
 
 public sealed class CreateSubscriptionRequestService(
-    IUserRepository userRepo,
     ISubscriptionRepository subscriptionRepo,
     ISubscriptionRequestRepository subscriptionRequestRepo,
     IPlanPricingResolver planPricingResolver,
     IPaymentReferenceCodeGenerator referenceCodeGenerator,
     IUnitOfWork uow,
-    IClock clock)
+    IClock clock,
+    ICurrentUserSnapshot user)
     : ICreateSubscriptionRequestService
 {
     public async Task<Result<CreateSubscriptionRequestResult>> CreateAsync(
         CreateSubscriptionRequestInput input,
-        CancellationToken ct)   
+        CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<CreateSubscriptionRequestResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<CreateSubscriptionRequestResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (user.Role != UserRole.Admin)
             return Result<CreateSubscriptionRequestResult>.Fail(AccountErrors.NotAdmin());
 
-        var existingActive = await subscriptionRequestRepo.GetActiveByOrganizationAsync(caller.OrganizationId, ct);
+        var existingActive = await subscriptionRequestRepo.GetActiveByOrganizationAsync(user.OrganizationId, ct);
         if (existingActive is not null && existingActive.RequestedPlanCode == input.RequestedPlanCode)
             return Result<CreateSubscriptionRequestResult>.Success(ToResult(existingActive));
 
-        var currentSubscription = await subscriptionRepo.GetCurrentByOrganizationAsync(caller.OrganizationId, ct);
+        var currentSubscription = await subscriptionRepo.GetCurrentByOrganizationAsync(user.OrganizationId, ct);
         if (currentSubscription is not null && !IsEligibleUpgrade(currentSubscription.PlanCode, input.RequestedPlanCode))
             return Result<CreateSubscriptionRequestResult>.Fail(AccountErrors.SubscriptionPlanNotEligible());
 
@@ -53,7 +46,7 @@ public sealed class CreateSubscriptionRequestService(
 
         var request = new SubscriptionRequest(
             Guid.NewGuid(),
-            caller.OrganizationId,
+            user.OrganizationId,
             input.RequestedPlanCode,
             RequestStatus.PendingPayment,
             PaymentMethod.BankTransfer,

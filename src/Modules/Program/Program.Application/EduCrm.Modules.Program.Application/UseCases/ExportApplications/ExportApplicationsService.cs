@@ -12,8 +12,7 @@ public sealed class ExportApplicationsService(
     IProgramRepository programRepo,
     IPlanLimitsResolver planLimits,
     IExportRateLimiter rateLimiter,
-    IOrgContext orgContext,
-    ICurrentUser currentUser,
+    ICurrentUserSnapshot user,
     IClock clock) : IExportApplicationsService
 {
     private const int MaxRows = 1000;
@@ -21,13 +20,7 @@ public sealed class ExportApplicationsService(
 
     public async Task<Result<ExportApplicationsResult>> ExportAsync(ExportApplicationsInput input, CancellationToken ct)
     {
-        if (orgContext.OrganizationId is null)
-            return Result<ExportApplicationsResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        if (currentUser.UserId is null)
-            return Result<ExportApplicationsResult>.Fail(CommonErrors.Forbidden("Authenticated user is required."));
-
-        var organizationId = orgContext.OrganizationId.Value;
+        var organizationId = user.OrganizationId;
 
         if (input.ProgramId.HasValue)
         {
@@ -40,7 +33,7 @@ public sealed class ExportApplicationsService(
         if (!limits.ExportEnabled)
             return Result<ExportApplicationsResult>.Fail(ProgramErrors.ExportNotAllowedOnPlan());
 
-        var reserved = await rateLimiter.TryReserveSlotAsync(currentUser.UserId.Value, ct);
+        var reserved = await rateLimiter.TryReserveSlotAsync(user.UserId, ct);
         if (!reserved)
             return Result<ExportApplicationsResult>.Fail(ProgramErrors.ExportRateLimited(RateLimitSeconds));
 

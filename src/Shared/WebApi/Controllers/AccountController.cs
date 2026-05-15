@@ -64,7 +64,6 @@ public sealed class AccountController : ControllerBase
     private readonly IUpsertBillingDetailService _upsertBillingDetail;
     private readonly ICreateSubscriptionRequestService _createSubscriptionRequest;
     private readonly ICreatePaymentNotificationService _createPaymentNotification;
-    private readonly ICurrentUser _currentUser;
     private readonly IOrgContext _orgContext;
     private readonly IPasswordHasher _hasher;
     private readonly IRequestValidator _validator;
@@ -95,7 +94,6 @@ public sealed class AccountController : ControllerBase
         IUpsertBillingDetailService upsertBillingDetail,
         ICreateSubscriptionRequestService createSubscriptionRequest,
         ICreatePaymentNotificationService createPaymentNotification,
-        ICurrentUser currentUser,
         IOrgContext orgContext,
         IPasswordHasher hasher,
         IRequestValidator validator)
@@ -125,7 +123,6 @@ public sealed class AccountController : ControllerBase
         _upsertBillingDetail = upsertBillingDetail;
         _createSubscriptionRequest = createSubscriptionRequest;
         _createPaymentNotification = createPaymentNotification;
-        _currentUser = currentUser;
         _orgContext = orgContext;
         _hasher = hasher;
         _validator = validator;
@@ -242,13 +239,7 @@ public sealed class AccountController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Me(CancellationToken ct)
     {
-        var userId = _currentUser.UserId;
-        if (userId is null)
-        {
-            return Unauthorized();
-        }
-
-        var result = await _getMe.GetMeAsync(userId.Value, ct);
+        var result = await _getMe.GetMeAsync(ct);
 
         return result.ToActionResult(HttpContext, this, r =>
             Ok(new MeResponse(r.Email, r.FullName, r.Initials, r.Role)));
@@ -275,17 +266,7 @@ public sealed class AccountController : ControllerBase
     [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Organization(CancellationToken ct)
     {
-        var userId = _currentUser.UserId;
-        var orgId = _orgContext.OrganizationId;
-
-        if (userId is null || orgId is null)
-        {
-            return Unauthorized();
-        }
-
-        var input = new GetOrganizationInput(userId.Value, orgId.Value);
-
-        var result = await _getOrganization.GetAsync(input, ct);
+        var result = await _getOrganization.GetAsync(ct);
 
         return result.ToActionResult(HttpContext, this, r =>
             Ok(new OrganizationResponse(
@@ -300,16 +281,7 @@ public sealed class AccountController : ControllerBase
     [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> PlanUsage(CancellationToken ct)
     {
-        var userId = _currentUser.UserId;
-        var orgId = _orgContext.OrganizationId;
-
-        if (userId is null || orgId is null)
-        {
-            return Unauthorized();
-        }
-
-        var input = new GetPlanUsageInput(userId.Value, orgId.Value);
-        var result = await _getPlanUsage.GetAsync(input, ct);
+        var result = await _getPlanUsage.GetAsync(ct);
 
         return result.ToActionResult(HttpContext, this, r =>
             Ok(new PlanUsageResponse(
@@ -363,16 +335,7 @@ public sealed class AccountController : ControllerBase
     [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Billing(CancellationToken ct)
     {
-        var userId = _currentUser.UserId;
-        var orgId = _orgContext.OrganizationId;
-
-        if (userId is null || orgId is null)
-        {
-            return Unauthorized();
-        }
-
-        var input = new GetBillingDetailInput(userId.Value, orgId.Value);
-        var result = await _getBillingDetail.GetAsync(input, ct);
+        var result = await _getBillingDetail.GetAsync(ct);
 
         return result.ToActionResult(HttpContext, this, r =>
             Ok(new BillingDetailResponse(
@@ -393,17 +356,7 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var userId = _currentUser.UserId;
-        var orgId = _orgContext.OrganizationId;
-
-        if (userId is null || orgId is null)
-        {
-            return Unauthorized();
-        }
-
         var input = new UpsertBillingDetailInput(
-            userId.Value,
-            orgId.Value,
             req.BillingType,
             req.BillingName,
             req.TaxNumber,
@@ -434,20 +387,10 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var userId = _currentUser.UserId;
-        var orgId = _orgContext.OrganizationId;
-
-        if (userId is null || orgId is null)
-        {
-            return Unauthorized();
-        }
-
         var receipt = req.Receipt!;
         await using var stream = receipt.OpenReadStream();
 
         var input = new CreatePaymentNotificationInput(
-            userId.Value,
-            orgId.Value,
             req.SenderName,
             req.PaymentDate,
             req.Amount,
@@ -482,18 +425,7 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var userId = _currentUser.UserId;
-        var orgId = _orgContext.OrganizationId;
-
-        if (userId is null || orgId is null)
-        {
-            return Unauthorized();
-        }
-
-        var input = new CreateSubscriptionRequestInput(
-            userId.Value,
-            orgId.Value,
-            req.RequestedPlanCode);
+        var input = new CreateSubscriptionRequestInput(req.RequestedPlanCode);
 
         var result = await _createSubscriptionRequest.CreateAsync(input, ct);
 
@@ -518,17 +450,7 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var userId = _currentUser.UserId;
-        var orgId = _orgContext.OrganizationId;
-
-        if (userId is null || orgId is null)
-        {
-            return Unauthorized();
-        }
-
         var input = new UpdateOrganizationInput(
-            userId.Value,
-            orgId.Value,
             req.OrganizationName,
             req.ContactName,
             req.ContactEmail,
@@ -554,17 +476,9 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var userId = _currentUser.UserId;
-        if (userId is null)
-        {
-            return Unauthorized();
-        }
-
-        // Hash new password
         var newPasswordHash = _hasher.Hash(req.NewPassword);
 
         var input = new ChangePasswordInput(
-            userId.Value,
             req.OldPassword,
             newPasswordHash);
 
@@ -582,18 +496,7 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var userId = _currentUser.UserId;
-        var orgId = _orgContext.OrganizationId;
-
-        if (userId is null || orgId is null)
-        {
-            return Unauthorized();
-        }
-
-        var input = new UpdateProfileInput(
-            userId.Value,
-            orgId.Value,
-            req.FullName);
+        var input = new UpdateProfileInput(req.FullName);
 
         var result = await _updateProfile.UpdateProfileAsync(input, ct);
 
@@ -610,19 +513,9 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var callerUserId = _currentUser.UserId;
-        var callerOrgId = _orgContext.OrganizationId;
-
-        if (callerUserId is null || callerOrgId is null)
-        {
-            return Unauthorized();
-        }
-
         var passwordHash = _hasher.Hash(req.Password);
 
         var input = new CreateUserInput(
-            callerUserId.Value,
-            callerOrgId.Value,
             req.Name,
             req.Email,
             passwordHash);
@@ -648,19 +541,9 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(query, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var callerUserId = _currentUser.UserId;
-        var callerOrgId = _orgContext.OrganizationId;
-
-        if (callerUserId is null || callerOrgId is null)
-        {
-            return Unauthorized();
-        }
-
         var statuses = ParseStatuses(query.Status);
 
         var input = new ListUsersInput(
-            callerUserId.Value,
-            callerOrgId.Value,
             query.Page,
             query.PageSize,
             statuses);
@@ -703,17 +586,7 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var callerUserId = _currentUser.UserId;
-        var callerOrgId = _orgContext.OrganizationId;
-
-        if (callerUserId is null || callerOrgId is null)
-        {
-            return Unauthorized();
-        }
-
         var input = new UpdateUserByAdminInput(
-            callerUserId.Value,
-            callerOrgId.Value,
             req.UserId,
             req.FullName);
 
@@ -738,19 +611,9 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var callerUserId = _currentUser.UserId;
-        var callerOrgId = _orgContext.OrganizationId;
-
-        if (callerUserId is null || callerOrgId is null)
-        {
-            return Unauthorized();
-        }
-
         var newPasswordHash = _hasher.Hash(req.Password);
 
         var input = new ChangeUserPasswordByAdminInput(
-            callerUserId.Value,
-            callerOrgId.Value,
             req.UserId,
             newPasswordHash);
 
@@ -768,18 +631,7 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var callerUserId = _currentUser.UserId;
-        var callerOrgId = _orgContext.OrganizationId;
-
-        if (callerUserId is null || callerOrgId is null)
-        {
-            return Unauthorized();
-        }
-
-        var input = new TransferAdminRoleInput(
-            callerUserId.Value,
-            callerOrgId.Value,
-            req.UserId);
+        var input = new TransferAdminRoleInput(req.UserId);
 
         var result = await _transferAdminRole.TransferAsync(input, ct);
 
@@ -796,17 +648,7 @@ public sealed class AccountController : ControllerBase
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
-        var callerUserId = _currentUser.UserId;
-        var callerOrgId = _orgContext.OrganizationId;
-
-        if (callerUserId is null || callerOrgId is null)
-        {
-            return Unauthorized();
-        }
-
         var input = new ChangeUserStatusInput(
-            callerUserId.Value,
-            callerOrgId.Value,
             userId,
             req.Status);
 

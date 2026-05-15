@@ -1,26 +1,23 @@
-using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Helpers;
-using EduCrm.Modules.Account.Application.Repositories;
+using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.GetMe;
 
-public sealed class GetMeService(IUserRepository userRepo) : IGetMeService
+public sealed class GetMeService(ICurrentUserSnapshot currentUser) : IGetMeService
 {
-    public async Task<Result<GetMeResult>> GetMeAsync(Guid userId, CancellationToken ct)
+    public Task<Result<GetMeResult>> GetMeAsync(CancellationToken ct)
     {
-        var user = await userRepo.GetByIdAsync(userId, ct);
-        if (user is null)
-        {
-            return Result<GetMeResult>.Fail(AccountErrors.NotFound(userId));
-        }
+        var initials = NameHelper.GetInitials(currentUser.FullName);
 
-        var initials = NameHelper.GetInitials(user.FullName);
+        var roleLabel = currentUser.IsApplicationAdmin
+            ? RoleLabel.ApplicationAdmin
+            : currentUser.Role.ToString();
 
-        return Result<GetMeResult>.Success(new GetMeResult(
-            user.Email,
-            user.FullName,
+        return Task.FromResult(Result<GetMeResult>.Success(new GetMeResult(
+            currentUser.Email,
+            currentUser.FullName,
             initials,
-            RoleLabel.Resolve(user)));
+            roleLabel)));
     }
 }

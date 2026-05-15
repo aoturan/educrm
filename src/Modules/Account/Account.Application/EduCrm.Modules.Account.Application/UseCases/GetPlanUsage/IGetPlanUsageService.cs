@@ -4,5 +4,5 @@ namespace EduCrm.Modules.Account.Application.UseCases.GetPlanUsage;
 
 public interface IGetPlanUsageService
 {
-    Task<Result<GetPlanUsageResult>> GetAsync(GetPlanUsageInput input, CancellationToken ct);
+    Task<Result<GetPlanUsageResult>> GetAsync(CancellationToken ct);
 }

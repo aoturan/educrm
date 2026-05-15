@@ -12,22 +12,16 @@ public sealed class ChangeUserStatusService(
     IUserRepository userRepo,
     IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
-    IClock clock)
+    IClock clock,
+    ICurrentUserSnapshot currentUser)
     : IChangeUserStatusService
 {
     public async Task<Result> ChangeAsync(ChangeUserStatusInput input, CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (currentUser.Role != UserRole.Admin)
             return Result.Fail(AccountErrors.NotAdmin());
 
-        if (input.TargetUserId == caller.Id)
+        if (input.TargetUserId == currentUser.UserId)
             return Result.Fail(AccountErrors.CannotChangeOwnStatus());
 
         if (input.TargetStatus != UserStatus.Active && input.TargetStatus != UserStatus.Disabled)
@@ -37,7 +31,7 @@ public sealed class ChangeUserStatusService(
         if (target is null)
             return Result.Fail(AccountErrors.NotFound(input.TargetUserId));
 
-        if (target.OrganizationId != caller.OrganizationId)
+        if (target.OrganizationId != currentUser.OrganizationId)
             return Result.Fail(AccountErrors.UserNotInOrganization());
 
         if (target.Status == input.TargetStatus)
@@ -47,8 +41,8 @@ public sealed class ChangeUserStatusService(
 
         if (input.TargetStatus == UserStatus.Active)
         {
-            var limits = await planLimitsResolver.ResolveAsync(caller.OrganizationId, ct);
-            var currentActive = await userRepo.CountActiveByOrganizationAsync(caller.OrganizationId, ct);
+            var limits = await planLimitsResolver.ResolveAsync(currentUser.OrganizationId, ct);
+            var currentActive = await userRepo.CountActiveByOrganizationAsync(currentUser.OrganizationId, ct);
             if (currentActive >= limits.Users)
                 return Result.Fail(AccountErrors.PlanUserLimitReached(limits.Users));
 

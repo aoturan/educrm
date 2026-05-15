@@ -12,20 +12,13 @@ public sealed class RescheduleDueDateService(
     IFollowUpRepository followUpRepo,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : IRescheduleDueDateService
+    ICurrentUserSnapshot user) : IRescheduleDueDateService
 {
     public async Task<Result<RescheduleDueDateResult>> RescheduleAsync(
         RescheduleDueDateInput input,
         CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<RescheduleDueDateResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<RescheduleDueDateResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var followUp = await followUpRepo.GetTrackedByIdAsync(input.FollowUpId, orgContext.OrganizationId.Value, ct);
+        var followUp = await followUpRepo.GetTrackedByIdAsync(input.FollowUpId, user.OrganizationId, ct);
         if (followUp is null)
             return Result<RescheduleDueDateResult>.Fail(PeopleErrors.FollowUpNotFound(input.FollowUpId));
 

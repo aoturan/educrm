@@ -1,6 +1,4 @@
-using System.Security.Claims;
-using EduCrm.Modules.Account.Application.Repositories;
-using EduCrm.Modules.Account.Domain.Enums;
+using EduCrm.SharedKernel.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EduCrm.WebApi.Authorization;
@@ -9,44 +7,31 @@ public sealed class ActiveUserHandler : AuthorizationHandler<ActiveUserRequireme
 {
     public const string FailureFlagKey = "__active_user_failed";
 
-    private readonly IUserRepository _userRepo;
+    private readonly ICurrentUserSnapshot _snapshot;
     private readonly IHttpContextAccessor _httpContext;
 
-    public ActiveUserHandler(IUserRepository userRepo, IHttpContextAccessor httpContext)
+    public ActiveUserHandler(ICurrentUserSnapshot snapshot, IHttpContextAccessor httpContext)
     {
-        _userRepo = userRepo;
+        _snapshot = snapshot;
         _httpContext = httpContext;
     }
 
-    protected override async Task HandleRequirementAsync(
+    protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         ActiveUserRequirement requirement)
     {
-        var raw =
-            context.User.FindFirstValue(ClaimTypes.NameIdentifier)
-            ?? context.User.FindFirstValue("sub");
-
-        if (!Guid.TryParse(raw, out var userId))
+        if (!_snapshot.IsLoaded || !_snapshot.IsActive)
         {
-            Flag(context);
+            Flag();
             context.Fail();
-            return;
-        }
-
-        var ct = _httpContext.HttpContext?.RequestAborted ?? CancellationToken.None;
-        var user = await _userRepo.GetByIdAsync(userId, ct);
-
-        if (user is null || user.Status != UserStatus.Active)
-        {
-            Flag(context);
-            context.Fail();
-            return;
+            return Task.CompletedTask;
         }
 
         context.Succeed(requirement);
+        return Task.CompletedTask;
     }
 
-    private void Flag(AuthorizationHandlerContext context)
+    private void Flag()
     {
         var http = _httpContext.HttpContext;
         if (http is not null)

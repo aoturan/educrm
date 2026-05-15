@@ -11,8 +11,7 @@ public sealed class ExportPersonsService(
     IPersonRepository personRepo,
     IPlanLimitsResolver planLimits,
     IExportRateLimiter rateLimiter,
-    IOrgContext orgContext,
-    ICurrentUser currentUser,
+    ICurrentUserSnapshot user,
     IClock clock) : IExportPersonsService
 {
     private const int MaxRows = 1000;
@@ -20,22 +19,16 @@ public sealed class ExportPersonsService(
 
     public async Task<Result<ExportPersonsResult>> ExportAsync(ExportPersonsInput input, CancellationToken ct)
     {
-        if (orgContext.OrganizationId is null)
-            return Result<ExportPersonsResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        if (currentUser.UserId is null)
-            return Result<ExportPersonsResult>.Fail(CommonErrors.Forbidden("Authenticated user is required."));
-
-        var limits = await planLimits.ResolveAsync(orgContext.OrganizationId.Value, ct);
+        var limits = await planLimits.ResolveAsync(user.OrganizationId, ct);
         if (!limits.ExportEnabled)
             return Result<ExportPersonsResult>.Fail(PeopleErrors.ExportNotAllowedOnPlan());
 
-        var reserved = await rateLimiter.TryReserveSlotAsync(currentUser.UserId.Value, ct);
+        var reserved = await rateLimiter.TryReserveSlotAsync(user.UserId, ct);
         if (!reserved)
             return Result<ExportPersonsResult>.Fail(PeopleErrors.ExportRateLimited(RateLimitSeconds));
 
         var rows = await personRepo.GetExportListAsync(
-            orgContext.OrganizationId.Value,
+            user.OrganizationId,
             MaxRows + 1,
             ct,
             input.SearchTerm,

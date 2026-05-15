@@ -1,28 +1,23 @@
 using EduCrm.Modules.Account.Application.Errors;
 using EduCrm.Modules.Account.Application.Repositories;
 using EduCrm.Modules.Account.Domain.Enums;
+using EduCrm.SharedKernel.Abstractions;
 using EduCrm.SharedKernel.Results;
 
 namespace EduCrm.Modules.Account.Application.UseCases.ListUsers;
 
 public sealed class ListUsersService(
-    IUserRepository userRepo)
+    IUserRepository userRepo,
+    ICurrentUserSnapshot user)
     : IListUsersService
 {
     public async Task<Result<ListUsersPagedResult>> ListAsync(ListUsersInput input, CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<ListUsersPagedResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<ListUsersPagedResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (user.Role != UserRole.Admin)
             return Result<ListUsersPagedResult>.Fail(AccountErrors.NotAdmin());
 
         var queryResult = await userRepo.GetPagedListByOrganizationAsync(
-            input.CallerOrganizationId,
+            user.OrganizationId,
             input.Page,
             input.PageSize,
             ct,

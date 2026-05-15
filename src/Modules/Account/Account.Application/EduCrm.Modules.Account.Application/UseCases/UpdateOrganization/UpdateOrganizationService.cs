@@ -8,25 +8,18 @@ using EduCrm.SharedKernel.Results;
 namespace EduCrm.Modules.Account.Application.UseCases.UpdateOrganization;
 
 public sealed class UpdateOrganizationService(
-    IUserRepository userRepo,
     IOrganizationRepository organizationRepo,
     IUnitOfWork uow,
-    IClock clock)
+    IClock clock,
+    ICurrentUserSnapshot user)
     : IUpdateOrganizationService
 {
     public async Task<Result<UpdateOrganizationResult>> UpdateAsync(UpdateOrganizationInput input, CancellationToken ct)
     {
-        var caller = await userRepo.GetByIdAsync(input.CallerUserId, ct);
-        if (caller is null)
-            return Result<UpdateOrganizationResult>.Fail(AccountErrors.NotFound(input.CallerUserId));
-
-        if (caller.OrganizationId != input.CallerOrganizationId)
-            return Result<UpdateOrganizationResult>.Fail(AccountErrors.UserNotInOrganization());
-
-        if (caller.Role != UserRole.Admin)
+        if (user.Role != UserRole.Admin)
             return Result<UpdateOrganizationResult>.Fail(AccountErrors.NotAdmin());
 
-        var organization = await organizationRepo.GetByIdAsync(input.CallerOrganizationId, ct);
+        var organization = await organizationRepo.GetByIdAsync(user.OrganizationId, ct);
         if (organization is null)
             return Result<UpdateOrganizationResult>.Fail(AccountErrors.UserNotInOrganization());
 

@@ -81,6 +81,9 @@ app.UseHttpsRedirection();
 app.UseCors();
 
 app.UseAuthentication();
+
+app.UseMiddleware<CurrentUserSnapshotMiddleware>();
+
 app.UseAuthorization();
 
 app.UseMiddleware<OrganizationContextMiddleware>();

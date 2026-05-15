@@ -10,4 +10,8 @@
       <Folder Include="Primitives\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Modules\Account\Account.Domain\EduCrm.Modules.Account.Domain\EduCrm.Modules.Account.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

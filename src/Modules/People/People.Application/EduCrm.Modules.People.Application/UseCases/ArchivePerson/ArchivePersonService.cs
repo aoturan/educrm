@@ -13,18 +13,11 @@ public sealed class ArchivePersonService(
     IPlanLimitsResolver planLimitsResolver,
     IUnitOfWork uow,
     IClock clock,
-    IOrgContext orgContext,
-    ICurrentUser currentUser) : IArchivePersonService
+    ICurrentUserSnapshot user) : IArchivePersonService
 {
     public async Task<Result<ArchivePersonResult>> ArchiveAsync(ArchivePersonInput input, CancellationToken ct)
     {
-        if (currentUser.UserId is null)
-            return Result<ArchivePersonResult>.Fail(CommonErrors.Unauthorized());
-
-        if (orgContext.OrganizationId is null)
-            return Result<ArchivePersonResult>.Fail(CommonErrors.Forbidden("Organization scope is missing."));
-
-        var person = await personRepo.GetTrackedByIdAsync(input.PersonId, orgContext.OrganizationId.Value, ct);
+        var person = await personRepo.GetTrackedByIdAsync(input.PersonId, user.OrganizationId, ct);
         if (person is null)
             return Result<ArchivePersonResult>.Fail(PeopleErrors.PersonNotFound(input.PersonId));
 
@@ -42,8 +35,8 @@ public sealed class ArchivePersonService(
             if (!person.IsArchived)
                 return Result<ArchivePersonResult>.Fail(PeopleErrors.PersonNotArchived(input.PersonId));
 
-            var limits = await planLimitsResolver.ResolveAsync(orgContext.OrganizationId.Value, ct);
-            var currentActive = await personRepo.CountActiveByOrganizationAsync(orgContext.OrganizationId.Value, ct);
+            var limits = await planLimitsResolver.ResolveAsync(user.OrganizationId, ct);
+            var currentActive = await personRepo.CountActiveByOrganizationAsync(user.OrganizationId, ct);
             if (currentActive >= limits.ActivePersons)
                 return Result<ArchivePersonResult>.Fail(PeopleErrors.PlanActivePersonLimitReached(limits.ActivePersons));
 

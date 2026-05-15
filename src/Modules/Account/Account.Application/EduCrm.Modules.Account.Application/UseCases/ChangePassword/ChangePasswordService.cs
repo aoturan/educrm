@@ -11,28 +11,25 @@ public sealed class ChangePasswordService(
     IUserRepository userRepo,
     IPasswordHasher passwordHasher,
     IUnitOfWork uow,
-    IClock clock) : IChangePasswordService
+    IClock clock,
+    ICurrentUserSnapshot currentUser) : IChangePasswordService
 {
     public async Task<Result> ChangePasswordAsync(ChangePasswordInput input, CancellationToken ct)
     {
-        // 1) Get user by ID
-        var user = await userRepo.GetByIdAsync(input.UserId, ct);
+        var user = await userRepo.GetByIdAsync(currentUser.UserId, ct);
         if (user is null)
         {
-            return Result.Fail(AccountErrors.NotFound(input.UserId));
+            return Result.Fail(AccountErrors.NotFound(currentUser.UserId));
         }
 
-        // 2) Verify old password
         var isOldPasswordValid = passwordHasher.Verify(input.OldPassword, user.PasswordHash);
         if (!isOldPasswordValid)
         {
             return Result.Fail(AccountErrors.InvalidOldPassword());
         }
 
-        // 3) Update password
         user.ChangePasswordHash(input.NewPasswordHash, clock.UtcNow.UtcDateTime);
 
-        // 4) Save changes
         await uow.SaveChangesAsync(ct);
 
         return Result.Success();
