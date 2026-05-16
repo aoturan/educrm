@@ -130,6 +130,10 @@ public class ApplicationController : ControllerBase
         [FromQuery] Guid? programId = null,
         CancellationToken ct = default)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("account.export.org", RateLimitKey.Org(HttpContext)));
+        if (blocked is not null) return blocked;
+
         var statuses = preFilter?
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Select(s => Enum.TryParse<ApplicationStatus>(s, ignoreCase: true, out var status) ? status : (ApplicationStatus?)null)

@@ -109,6 +109,10 @@ public class PersonController : ControllerBase
         [FromQuery] bool showArchived = false,
         CancellationToken ct = default)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("account.export.org", RateLimitKey.Org(HttpContext)));
+        if (blocked is not null) return blocked;
+
         var input = new ExportPersonsInput(q, preFilter, showArchived);
         var result = await _export.ExportAsync(input, ct);
 

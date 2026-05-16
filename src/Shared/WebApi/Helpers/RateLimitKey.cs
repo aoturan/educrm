@@ -1,3 +1,6 @@
+using EduCrm.SharedKernel.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace EduCrm.WebApi.Helpers;
 
 public static class RateLimitKey
@@ -7,4 +10,7 @@ public static class RateLimitKey
 
     public static string? Email(string? email) =>
         string.IsNullOrWhiteSpace(email) ? null : email.Trim().ToLowerInvariant();
+
+    public static string? Org(HttpContext ctx) =>
+        ctx.RequestServices.GetRequiredService<IOrgContext>().OrganizationId?.ToString();
 }
