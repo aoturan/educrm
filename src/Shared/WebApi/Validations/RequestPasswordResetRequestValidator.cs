@@ -3,18 +3,14 @@ using FluentValidation;
 
 namespace EduCrm.WebApi.Validations;
 
-public sealed class LoginRequestValidator : AbstractValidator<LoginRequest>
+public sealed class RequestPasswordResetRequestValidator : AbstractValidator<RequestPasswordResetRequest>
 {
-    public LoginRequestValidator()
+    public RequestPasswordResetRequestValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty()
             .EmailAddress()
             .MaximumLength(320);
-
-        RuleFor(x => x.Password)
-            .NotEmpty()
-            .MaximumLength(200);
 
         RuleFor(x => x.TurnstileToken)
             .NotEmpty();

@@ -26,5 +26,8 @@ public sealed class CreateSupportContactMessageRequestValidator : AbstractValida
             .NotEmpty()
             .MinimumLength(10)
             .MaximumLength(3000);
+
+        RuleFor(x => x.TurnstileToken)
+            .NotEmpty();
     }
 }

@@ -40,4 +40,19 @@ public static class CommonErrors
                 ["field"] = field
             }
         );
+
+    public static Error TurnstileFailed(IReadOnlyList<string>? cloudflareErrorCodes = null) =>
+        new(
+            Code: ErrorCodes.CommonTurnstileFailed,
+            Message: "Bot doğrulaması başarısız oldu.",
+            Metadata: cloudflareErrorCodes is { Count: > 0 }
+                ? new Dictionary<string, object> { ["cloudflareErrors"] = cloudflareErrorCodes }
+                : null
+        );
+
+    public static Error RateLimited() =>
+        new(
+            Code: ErrorCodes.CommonRateLimited,
+            Message: "Çok fazla istek yaptınız. Lütfen daha sonra tekrar deneyin."
+        );
 }

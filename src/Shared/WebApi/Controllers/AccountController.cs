@@ -25,7 +25,9 @@ using EduCrm.Modules.Account.Application.UseCases.UpdateOrganization;
 using EduCrm.Modules.Account.Application.UseCases.UpdateProfile;
 using EduCrm.Modules.Account.Application.UseCases.UpdateUserByAdmin;
 using EduCrm.Modules.Account.Application.UseCases.UpsertBillingDetail;
+using EduCrm.Infrastructure.Turnstile;
 using EduCrm.SharedKernel.Abstractions;
+using EduCrm.WebApi.Helpers;
 using EduCrm.WebApi.Contracts.Account;
 using EduCrm.WebApi.Extensions;
 using EduCrm.WebApi.Validations;
@@ -67,6 +69,7 @@ public sealed class AccountController : ControllerBase
     private readonly IOrgContext _orgContext;
     private readonly IPasswordHasher _hasher;
     private readonly IRequestValidator _validator;
+    private readonly ITurnstileVerifier _turnstile;
 
     public AccountController(
         IRegisterService register,
@@ -96,7 +99,8 @@ public sealed class AccountController : ControllerBase
         ICreatePaymentNotificationService createPaymentNotification,
         IOrgContext orgContext,
         IPasswordHasher hasher,
-        IRequestValidator validator)
+        IRequestValidator validator,
+        ITurnstileVerifier turnstile)
     {
         _register = register;
         _login = login;
@@ -126,6 +130,7 @@ public sealed class AccountController : ControllerBase
         _orgContext = orgContext;
         _hasher = hasher;
         _validator = validator;
+        _turnstile = turnstile;
     }
 
     [HttpPost("register")]
@@ -134,8 +139,16 @@ public sealed class AccountController : ControllerBase
         [FromBody] RegisterRequest req,
         CancellationToken ct)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("auth.register.ip",    RateLimitKey.Ip(HttpContext)),
+            ("auth.register.email", RateLimitKey.Email(req.Email)));
+        if (blocked is not null) return blocked;
+
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var turnstile = await _turnstile.VerifyAsync(req.TurnstileToken, HttpContext.Connection.RemoteIpAddress?.ToString(), ct);
+        if (turnstile.IsFailure) return turnstile.ToActionResult(HttpContext, this);
 
         // 1) hash (Phase 1)
         var passwordHash = _hasher.Hash(req.Password);
@@ -163,8 +176,16 @@ public sealed class AccountController : ControllerBase
         [FromBody] LoginRequest req,
         CancellationToken ct)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("auth.login.ip",    RateLimitKey.Ip(HttpContext)),
+            ("auth.login.email", RateLimitKey.Email(req.Email)));
+        if (blocked is not null) return blocked;
+
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var turnstile = await _turnstile.VerifyAsync(req.TurnstileToken, HttpContext.Connection.RemoteIpAddress?.ToString(), ct);
+        if (turnstile.IsFailure) return turnstile.ToActionResult(HttpContext, this);
 
         // 1) map -> input
         var input = new LoginInput(req.Email, req.Password);
@@ -182,6 +203,17 @@ public sealed class AccountController : ControllerBase
         [FromBody] RequestPasswordResetRequest req,
         CancellationToken ct)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("auth.forgot_password.ip",    RateLimitKey.Ip(HttpContext)),
+            ("auth.forgot_password.email", RateLimitKey.Email(req.Email)));
+        if (blocked is not null) return blocked;
+
+        var validation = await _validator.ValidateAsync(req, ct);
+        if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var turnstile = await _turnstile.VerifyAsync(req.TurnstileToken, HttpContext.Connection.RemoteIpAddress?.ToString(), ct);
+        if (turnstile.IsFailure) return turnstile.ToActionResult(HttpContext, this);
+
         await _requestPasswordReset.RequestAsync(new RequestPasswordResetInput(req.Email), ct);
 
         return Ok(new RequestPasswordResetResponse(
@@ -194,6 +226,17 @@ public sealed class AccountController : ControllerBase
         [FromBody] ResetPasswordRequest req,
         CancellationToken ct)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("auth.reset_password.ip",    RateLimitKey.Ip(HttpContext)),
+            ("auth.reset_password.email", RateLimitKey.Email(req.Email)));
+        if (blocked is not null) return blocked;
+
+        var turnstile = await _turnstile.VerifyAsync(
+            req.TurnstileToken,
+            HttpContext.Connection.RemoteIpAddress?.ToString(),
+            ct);
+        if (turnstile.IsFailure) return turnstile.ToActionResult(HttpContext, this);
+
         var result = await _resetPassword.ResetAsync(
             new ResetPasswordInput(req.Email, req.Token, req.NewPassword), ct);
 
@@ -209,6 +252,11 @@ public sealed class AccountController : ControllerBase
         [FromBody] VerifyEmailRequest req,
         CancellationToken ct)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("auth.verify_email.ip",    RateLimitKey.Ip(HttpContext)),
+            ("auth.verify_email.email", RateLimitKey.Email(req.Email)));
+        if (blocked is not null) return blocked;
+
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 
@@ -226,6 +274,11 @@ public sealed class AccountController : ControllerBase
         [FromBody] ResendEmailVerificationRequest req,
         CancellationToken ct)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("auth.resend_verification.ip",    RateLimitKey.Ip(HttpContext)),
+            ("auth.resend_verification.email", RateLimitKey.Email(req.Email)));
+        if (blocked is not null) return blocked;
+
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 

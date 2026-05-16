@@ -1,4 +1,6 @@
 using EduCrm.Infrastructure.Extensions;
+using EduCrm.Infrastructure.RateLimiting;
+using EduCrm.Infrastructure.Turnstile;
 using EduCrm.Modules.Account.Application.Email;
 using EduCrm.Modules.Account.Application.EmailVerification;
 using EduCrm.Modules.Account.Application.Errors;
@@ -18,6 +20,7 @@ using EduCrm.Modules.Account.Contracts.Dtos;
 using EduCrm.SharedKernel.Errors;
 using EduCrm.WebApi.Extensions;
 using EduCrm.WebApi.Middlewares;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +42,15 @@ builder.Services.Configure<DigitalOceanSpacesOptions>(builder.Configuration.GetS
 builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
 builder.Services.Configure<PasswordResetOptions>(builder.Configuration.GetSection("Account:PasswordReset"));
 builder.Services.Configure<EmailVerificationOptions>(builder.Configuration.GetSection("Account:EmailVerification"));
+builder.Services.AddTurnstile(builder.Configuration);
+builder.Services.AddRateLimiting(builder.Configuration);
+
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    o.KnownIPNetworks.Clear();
+    o.KnownProxies.Clear();
+});
 
 builder.Services.AddAccountInfra();
 builder.Services.AddAccountApplication();
@@ -66,6 +78,8 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 app.UseGlobalMiddlewares();
 

@@ -63,6 +63,10 @@ public class ApplicationController : ControllerBase
         [FromBody] CreateApplicationRequest req,
         CancellationToken ct)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("public.application.ip", RateLimitKey.Ip(HttpContext)));
+        if (blocked is not null) return blocked;
+
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
 

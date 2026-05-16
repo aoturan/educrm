@@ -24,6 +24,8 @@ public static class ErrorHttpStatusMapper
         [ErrorCodes.CommonForbidden] = Status403Forbidden,
         [ErrorCodes.CommonNotFound] = Status404NotFound,
         [ErrorCodes.CommonConflict] = Status409Conflict,
+        [ErrorCodes.CommonTurnstileFailed] = Status403Forbidden,
+        [ErrorCodes.CommonRateLimited] = Status429TooManyRequests,
 
         // Demo errors
         [ErrorCodes.DemoFail] = Status400BadRequest

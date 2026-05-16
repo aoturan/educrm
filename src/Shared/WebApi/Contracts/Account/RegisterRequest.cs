@@ -8,4 +8,5 @@ public sealed record RegisterRequest(
     string OrganizationName,
     string Password,
     string Phone,
-    PlanCode PlanCode);
+    PlanCode PlanCode,
+    string TurnstileToken);

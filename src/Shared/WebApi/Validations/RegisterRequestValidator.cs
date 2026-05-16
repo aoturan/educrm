@@ -33,5 +33,8 @@ public sealed class RegisterRequestValidator : AbstractValidator<RegisterRequest
         RuleFor(x => x.PlanCode)
             .IsInEnum()
             .WithMessage("Geçerli bir plan kodu belirtiniz.");
+
+        RuleFor(x => x.TurnstileToken)
+            .NotEmpty();
     }
 }

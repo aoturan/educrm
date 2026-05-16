@@ -14,6 +14,8 @@ public static class ErrorCodes
     public const string CommonForbidden = "common.forbidden";
     public const string CommonNotFound = "common.not_found";
     public const string CommonConflict = "common.conflict";
+    public const string CommonTurnstileFailed = "common.turnstile_failed";
+    public const string CommonRateLimited = "common.rate_limited";
 
     // ===========================
     // Demo/Test Errors

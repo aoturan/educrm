@@ -1,7 +1,9 @@
+using EduCrm.Infrastructure.Turnstile;
 using EduCrm.Modules.Support.Application.UseCases.CreateSupportContactMessage;
 using EduCrm.Modules.Support.Application.UseCases.CreateSupportRequest;
 using EduCrm.WebApi.Contracts.Support;
 using EduCrm.WebApi.Extensions;
+using EduCrm.WebApi.Helpers;
 using EduCrm.WebApi.Validations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +17,18 @@ public class SupportController : ControllerBase
     private readonly ICreateSupportRequestService _create;
     private readonly ICreateSupportContactMessageService _createContactMessage;
     private readonly IRequestValidator _validator;
+    private readonly ITurnstileVerifier _turnstile;
 
     public SupportController(
         ICreateSupportRequestService create,
         ICreateSupportContactMessageService createContactMessage,
-        IRequestValidator validator)
+        IRequestValidator validator,
+        ITurnstileVerifier turnstile)
     {
         _create = create;
         _createContactMessage = createContactMessage;
         _validator = validator;
+        _turnstile = turnstile;
     }
 
     [HttpPost]
@@ -48,8 +53,15 @@ public class SupportController : ControllerBase
         [FromBody] CreateSupportContactMessageRequest req,
         CancellationToken ct)
     {
+        var blocked = await this.CheckRateLimitsAsync(ct,
+            ("public.contact.ip", RateLimitKey.Ip(HttpContext)));
+        if (blocked is not null) return blocked;
+
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var turnstile = await _turnstile.VerifyAsync(req.TurnstileToken, HttpContext.Connection.RemoteIpAddress?.ToString(), ct);
+        if (turnstile.IsFailure) return turnstile.ToActionResult(HttpContext, this);
 
         var input = new CreateSupportContactMessageInput(req.FullName, req.Email, req.Subject, req.Message);
         var result = await _createContactMessage.CreateAsync(input, ct);
