@@ -28,7 +28,7 @@ jobs:
             -f src/Dockerfile
             -t $REGISTRY/$REGISTRY_NAME/$IMAGE_NAME:latest \
             -t $REGISTRY/$REGISTRY_NAME/$IMAGE_NAME:${{ github.sha }} \
-            .
+            ./src
 
       - name: Push Docker image
         run: |
