@@ -34,3 +34,15 @@ jobs:
         run: |
           docker push $REGISTRY/$REGISTRY_NAME/$IMAGE_NAME:latest
           docker push $REGISTRY/$REGISTRY_NAME/$IMAGE_NAME:${{ github.sha }}
+
+      - name: Deploy to Droplet
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            cd /opt/educrm
+            docker compose pull api
+            docker compose up -d api
+            docker image prune -f
