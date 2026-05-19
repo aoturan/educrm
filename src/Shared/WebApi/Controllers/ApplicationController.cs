@@ -1,3 +1,4 @@
+using EduCrm.Infrastructure.Turnstile;
 using EduCrm.Modules.Program.Application.Repositories;
 using EduCrm.Modules.Program.Application.UseCases.AssignPersonToApplication;
 using EduCrm.Modules.Program.Application.UseCases.CloseApplication;
@@ -32,6 +33,7 @@ public class ApplicationController : ControllerBase
     private readonly IListApplicationsService _list;
     private readonly IExportApplicationsService _export;
     private readonly IRequestValidator _validator;
+    private readonly ITurnstileVerifier _turnstile;
 
     public ApplicationController(
         IAssignPersonToApplicationService assignPerson,
@@ -43,7 +45,8 @@ public class ApplicationController : ControllerBase
         IGetApplicationByIdService getById,
         IListApplicationsService list,
         IExportApplicationsService export,
-        IRequestValidator validator)
+        IRequestValidator validator,
+        ITurnstileVerifier turnstile)
     {
         _assignPerson = assignPerson;
         _close = close;
@@ -55,6 +58,7 @@ public class ApplicationController : ControllerBase
         _list = list;
         _export = export;
         _validator = validator;
+        _turnstile = turnstile;
     }
 
     [HttpPost]
@@ -69,6 +73,9 @@ public class ApplicationController : ControllerBase
 
         var validation = await _validator.ValidateAsync(req, ct);
         if (!validation.IsValid) return validation.ToValidationProblem(this);
+
+        var turnstile = await _turnstile.VerifyAsync(req.TurnstileToken, HttpContext.Connection.RemoteIpAddress?.ToString(), ct);
+        if (turnstile.IsFailure) return turnstile.ToActionResult(HttpContext, this);
 
         var input = new CreateApplicationInput(
             req.ProgramSlug,

@@ -5,5 +5,6 @@ public sealed record CreateApplicationRequest(
     string? SubmittedFullName,
     string SubmittedPhone,
     string SubmittedEmail,
-    string? SubmittedMessage);
+    string? SubmittedMessage,
+    string TurnstileToken);
 

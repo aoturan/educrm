@@ -20,6 +20,9 @@ public sealed class CreateApplicationRequestValidator : AbstractValidator<Create
         RuleFor(x => x.SubmittedPhone)
             .NotEmpty()
             .WithMessage("Phone is required.");
+
+        RuleFor(x => x.TurnstileToken)
+            .NotEmpty();
     }
 }
 
