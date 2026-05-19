@@ -1,0 +1,36 @@
+name: Build and Push Backend
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  REGISTRY: registry.digitalocean.com
+  REGISTRY_NAME: educrm-registry
+  IMAGE_NAME: educrm-api
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to DigitalOcean Container Registry
+        run: echo "${{ secrets.DO_ACCESS_TOKEN }}" | docker login registry.digitalocean.com -u doctl --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -f src/Dockerfile
+            -t $REGISTRY/$REGISTRY_NAME/$IMAGE_NAME:latest \
+            -t $REGISTRY/$REGISTRY_NAME/$IMAGE_NAME:${{ github.sha }} \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push $REGISTRY/$REGISTRY_NAME/$IMAGE_NAME:latest
+          docker push $REGISTRY/$REGISTRY_NAME/$IMAGE_NAME:${{ github.sha }}
