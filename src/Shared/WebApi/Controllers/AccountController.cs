@@ -298,6 +298,11 @@ public sealed class AccountController : ControllerBase
             Ok(new MeResponse(r.Email, r.FullName, r.Initials, r.Role)));
     }
 
+    [HttpGet("validate-token")]
+    [Authorize]
+    public IActionResult ValidateToken()
+        => Ok(new ValidateTokenResponse(true));
+
     [HttpPost("notifications")]
     [Authorize(Policy = "ActiveUser")]
     public async Task<IActionResult> Notifications(CancellationToken ct)
